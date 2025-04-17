@@ -31,9 +31,9 @@ class GameManager(
         println("Welche Karte möchtest du spielen? (0 bis ${player.hand.lastIndex})")
         val index = readLine()?.toIntOrNull()
 
-        if (index != null && index in player.hand.indices) {
-            val card = player.hand[index]
-            val success = cardManager.playCard(card, player, this)
+        if (index != null && player.hand?.indices?.contains(index) == true ) {
+            val card = player.hand?.get(index)
+            val success = card?.let { cardManager.playCard(it, player, this) }
             if (success) {
                 println("Du spielst: ${card.type}")
             }
@@ -54,9 +54,5 @@ class GameManager(
 
         println("---- ${player.name}'s Zug wurde beendet ----")
         currentPlayer = null
-    }
-
-    fun returnCardToDeckAt(card: Card, position: Int) {
-        cardManager.returnCardToDeckAt(card, position)
     }
 }

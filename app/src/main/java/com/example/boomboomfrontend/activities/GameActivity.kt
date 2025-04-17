@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.logic.GameManager
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
-import com.example.boomboomfrontend.logic.Lobby
 
 class GameActivity : ComponentActivity() {
 
@@ -41,7 +39,7 @@ class GameActivity : ComponentActivity() {
 
         // Beispielhafte Startkarten
         players.forEach { player ->
-            player.hand.addAll(
+            player.hand?.addAll(
                 listOf(
                     Card(CardType.BLANK),
                     Card(CardType.DEFUSE),

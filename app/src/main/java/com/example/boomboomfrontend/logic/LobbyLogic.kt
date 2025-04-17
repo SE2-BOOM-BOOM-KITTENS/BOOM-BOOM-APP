@@ -65,14 +65,14 @@ class Lobby(private val host: Player, private val maxPlayers: Int) {
 }
 
 fun main() {
-    val host = Player("0", "Host", JOINED, 1, true)
+    val host = Player("0", "Host", JOINED, 1, true, null)
     val lobby = Lobby(host, 4)
     println("Lobby erstellt! Code: ${lobby.getRoomCode()}")
 
     val players = listOf(
-        Player("1", "Spieler1", NOT_CONNECTED, 1, true),
-        Player("2", "Spieler2", NOT_CONNECTED, 1, true),
-        Player("3", "Spieler3", NOT_CONNECTED, 1, true)
+        Player("1", "Spieler1", NOT_CONNECTED, 1, true, null),
+        Player("2", "Spieler2", NOT_CONNECTED, 1, true, null),
+        Player("3", "Spieler3", NOT_CONNECTED, 1, true, null)
     )
 
     players.forEach { lobby.joinLobby(it) }

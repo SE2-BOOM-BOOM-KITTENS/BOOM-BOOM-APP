@@ -2,28 +2,22 @@ package com.example.boomboomfrontend.logic
 
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
+import com.example.boomboomfrontend.model.Deck
 import com.example.boomboomfrontend.model.Player
 
 class CardManager {
 
-    private val deck: MutableList<Card> = mutableListOf()
+    private val deck = Deck()
     private val discardPile: MutableList<Card> = mutableListOf()
 
     fun initializeDeck(players: List<Player>) {
-        deck.clear()
-
-        // Sprint 1: Nur drei Kartentypen
-        repeat(players.size - 1) { deck.add(Card(CardType.EXPLODING_KITTEN)) }
-        repeat(players.size) { deck.add(Card(CardType.DEFUSE)) }
-        repeat(10) { deck.add(Card(CardType.BLANK)) }
-
-        deck.shuffle()
+        deck.initialize(players)                            // Deck wird vorbereitet
     }
 
-    fun drawCard(): Card? = if (deck.isNotEmpty()) deck.removeFirst() else null
+    fun drawCard(): Card? = deck.draw()
 
     fun playCard(card: Card, player: Player, gameManager: GameManager): Boolean {
-        return if (player.hand.remove(card)) {
+        return if (player.hand?.remove(card)!!) {
             discardPile.add(card)
 
             // Neue Logik: Effekt aus Registry holen und ausführen
@@ -35,11 +29,10 @@ class CardManager {
     }
 
     fun returnCardToDeckAt(card: Card, position: Int) {
-        val safePosition = position.coerceIn(0, deck.size) // falls Spieler Unsinn eingibt
-        deck.add(safePosition, card)
+        deck.insertAt(card, position)
     }
 
-    fun deckSize(): Int = deck.size
+    fun deckSize(): Int = deck.size()
 
     fun getDiscardPile(): List<Card> = discardPile
 }

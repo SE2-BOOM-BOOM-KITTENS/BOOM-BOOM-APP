@@ -1,4 +1,5 @@
 package com.example.boomboomfrontend.model
+import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.model.ConnectionStatus
 
 data class Player(
@@ -7,7 +8,7 @@ data class Player(
     var status: ConnectionStatus?,
     var defuseCount: Int = 1,
     var isAlive: Boolean = true,
-    val hand: MutableList<Card>
+    val hand: MutableList<Card>?
 ) {
     fun useDefuseCard(): Boolean {
         return if (defuseCount > 0) {
