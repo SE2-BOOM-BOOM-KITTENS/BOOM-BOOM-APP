@@ -17,7 +17,7 @@ class CardManager {
     fun drawCard(): Card? = deck.draw()
 
     fun playCard(card: Card, player: Player, gameManager: GameManager): Boolean {
-        return if (player.hand?.remove(card)!!) {
+        return if (player.hand.remove(card)) {
             discardPile.add(card)
 
             // Neue Logik: Effekt aus Registry holen und ausführen

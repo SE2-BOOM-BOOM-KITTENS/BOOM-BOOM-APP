@@ -21,7 +21,7 @@ class GameManager(
         println ("${player.name} has been eliminated!")
     }
 
-    fun getCurrentPlayer(): Player {
+    fun playerByIndex(): Player {
         return players[currentPlayerIndex]
     }
 
@@ -31,9 +31,9 @@ class GameManager(
         println("Welche Karte möchtest du spielen? (0 bis ${player.hand.lastIndex})")
         val index = readLine()?.toIntOrNull()
 
-        if (index != null && player.hand?.indices?.contains(index) == true ) {
-            val card = player.hand?.get(index)
-            val success = card?.let { cardManager.playCard(it, player, this) }
+        if (index != null && index in player.hand.indices) {
+            val card = player.hand[index]
+            val success = cardManager.playCard(card, player, this)
             if (success) {
                 println("Du spielst: ${card.type}")
             }
@@ -48,9 +48,12 @@ class GameManager(
 
         //Karte ziehen
         val drawn = cardManager.drawCard()
-
-        val effect = CardEffectRegistry.getEffect(drawn.type)
-        effect.apply(player, this)
+        if (drawn != null) {
+            val effect = CardEffectRegistry.getEffect(drawn.type)
+            effect.apply(player, this)
+        } else {
+            println("${player.name} konnte keine Karte ziehen – Deck ist leer.")
+        }
 
         println("---- ${player.name}'s Zug wurde beendet ----")
         currentPlayer = null
