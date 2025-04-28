@@ -54,7 +54,7 @@ fun LobbyScreen(navController: NavHostController) {
 
         Button(onClick = {
             if (name.isNotBlank()) {
-                val host = Player(id = "0", name, ConnectionStatus.JOINED)
+                val host = Player(id = "0", name, ConnectionStatus.JOINED, 1, isAlive = true)
                 lobby = Lobby(host, maxPlayers = 4)
             }
         }) {
@@ -70,7 +70,7 @@ fun LobbyScreen(navController: NavHostController) {
         Spacer(Modifier.height(8.dp))
 
         Button(onClick = {
-            val p = Player(id = "1", name = "Player", ConnectionStatus.NOT_CONNECTED)
+            val p = Player(id = "1", name = "Player", ConnectionStatus.NOT_CONNECTED, 1, isAlive = true)
             if (lobby?.joinLobby(p) == true) {
                 joined = true
             }
