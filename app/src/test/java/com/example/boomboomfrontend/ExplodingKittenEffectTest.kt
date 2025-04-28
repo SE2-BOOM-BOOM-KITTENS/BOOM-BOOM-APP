@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend
 
+import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.logic.effects.ExplodingKittenEffect
 import com.example.boomboomfrontend.logic.GameManager
 import com.example.boomboomfrontend.model.ConnectionStatus
@@ -13,7 +14,10 @@ class ExplodingKittenEffectTest {
     fun `exploding kitten kills player without defuse`(){
         val player = Player (id = "1", name = "Player1", status = ConnectionStatus.JOINED, defuseCount = 0, isAlive = true)
         val effect = ExplodingKittenEffect()
-        val gameManager = GameManager()
+        val dummyCardManager = CardManager()
+        val dummyPlayerList = mutableListOf(player)
+
+        val gameManager = GameManager(dummyCardManager, dummyPlayerList)
 
         effect.apply(player, gameManager)
 
@@ -24,7 +28,10 @@ class ExplodingKittenEffectTest {
     fun `exploding kitten defused when player has defuse card`(){
         val player = Player (id = "2", name = "Player2", status = ConnectionStatus.JOINED, defuseCount = 1, isAlive = true)
         val effect = ExplodingKittenEffect()
-        val gameManager = GameManager()
+        val dummyCardManager = CardManager()
+        val dummyPlayerList = mutableListOf(player)
+
+        val gameManager = GameManager(dummyCardManager, dummyPlayerList)
 
         effect.apply(player, gameManager)
 

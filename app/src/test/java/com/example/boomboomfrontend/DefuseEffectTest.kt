@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend
 
+import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.logic.effects.DefuseEffect
 import com.example.boomboomfrontend.logic.GameManager
 import com.example.boomboomfrontend.model.ConnectionStatus
@@ -13,7 +14,10 @@ class DefuseEffectTest {
     fun `defuse effect decreases count`(){
         val player = Player (id = "1", name = "Player", status = ConnectionStatus.JOINED, defuseCount = 0, isAlive = true)
         val effect = DefuseEffect()
-        val gameManager = GameManager()
+        val dummyCardManager = CardManager()
+        val dummyPlayerList = mutableListOf(player)
+
+        val gameManager = GameManager(dummyCardManager, dummyPlayerList)
 
         effect.apply(player, gameManager)
 

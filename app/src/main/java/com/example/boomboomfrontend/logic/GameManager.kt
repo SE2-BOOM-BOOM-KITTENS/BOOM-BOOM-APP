@@ -21,7 +21,7 @@ class GameManager(
         println ("${player.name} has been eliminated!")
     }
 
-    fun getCurrentPlayer(): Player {
+    fun playerByIndex(): Player {
         return players[currentPlayerIndex]
     }
 
@@ -48,15 +48,14 @@ class GameManager(
 
         //Karte ziehen
         val drawn = cardManager.drawCard()
-
-        val effect = CardEffectRegistry.getEffect(drawn.type)
-        effect.apply(player, this)
+        if (drawn != null) {
+            val effect = CardEffectRegistry.getEffect(drawn.type)
+            effect.apply(player, this)
+        } else {
+            println("${player.name} konnte keine Karte ziehen – Deck ist leer.")
+        }
 
         println("---- ${player.name}'s Zug wurde beendet ----")
         currentPlayer = null
-    }
-
-    fun returnCardToDeckAt(card: Card, position: Int) {
-        cardManager.returnCardToDeckAt(card, position)
     }
 }
