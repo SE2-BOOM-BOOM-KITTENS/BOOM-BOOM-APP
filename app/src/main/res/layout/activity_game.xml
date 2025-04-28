@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="24dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/gameRoot"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="24dp"
+              android:gravity="center_horizontal"
+              android:background="@android:color/white">
 
     <TextView
-            android:id="@+id/text_status"
+            android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status"
-            android:textSize="20sp" />
+            android:text="Spielerstatus"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="32dp" />
 
     <Button
-            android:id="@+id/button_draw"
-            android:layout_width="wrap_content"
+            android:id="@+id/drawButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zug beenden &amp; ziehen"
-            android:layout_marginTop="16dp" />
-
+            android:text="Zug beenden &amp; Karte ziehen"
+            android:textAllCaps="false"
+            android:padding="12dp" />
 </LinearLayout>

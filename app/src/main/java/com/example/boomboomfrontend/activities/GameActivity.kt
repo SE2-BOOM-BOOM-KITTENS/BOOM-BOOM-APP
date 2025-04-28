@@ -4,81 +4,83 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.logic.GameManager
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
-import com.example.boomboomfrontend.logic.Lobby
+import com.example.boomboomfrontend.viewmodel.PlayerViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class GameActivity : ComponentActivity() {
 
+    private val playerViewModel: PlayerViewModel by viewModels()
     private lateinit var drawButton: Button
     private lateinit var statusText: TextView
-
     private lateinit var gameManager: GameManager
     private lateinit var cardManager: CardManager
-    private var currentPlayerIndex = 0
 
-    val players = intent.getParcelableArrayListExtra<Player>("PLAYERS") ?: mutableListOf()
-
+    private var localPlayers: MutableList<Player> = mutableListOf()
+    private var lobbyId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        // View-Verknüpfung
-        drawButton = findViewById(R.id.button_draw)
-        statusText = findViewById(R.id.text_status)
+        statusText = findViewById(R.id.statusText)
+        drawButton = findViewById(R.id.drawButton)
 
-        // Wenn keine Spieler übergeben wurden, abbrechen
-        if (players.isEmpty()) {
-            statusText.text = "Keine Spieler übergeben!"
-            drawButton.isEnabled = false
-            return
-        }
+        // Hole lobbyId aus Intent
+        lobbyId = intent.getStringExtra("lobbyId")
 
-        // Beispielhafte Startkarten
-        players.forEach { player ->
-            player.hand.addAll(
-                listOf(
-                    Card(CardType.BLANK),
-                    Card(CardType.DEFUSE),
-                    Card(CardType.EXPLODING_KITTEN)
-                )
-            )
-        }
-
-        //Spiel initialisieren
+        // Initialisiere Logik-Komponenten
         cardManager = CardManager()
-        cardManager.initializeDeck(players)
-        gameManager = GameManager(cardManager, players)
 
-        // Button: Zug beenden & ziehen
+        // Lade Spieler aus Lobby
+        if (lobbyId != null) {
+            playerViewModel.getPlayersInLobby(lobbyId!!)
+        }
+
+        // Beobachte REST-Ergebnis
+        lifecycleScope.launch {
+            playerViewModel.players.collectLatest { playerResponses ->
+                if (playerResponses.isNotEmpty()) {
+                    // Konvertiere PlayerResponse zu Player-Objekten
+                    localPlayers = playerResponses.map {
+                        Player(name = it.name, id = it.id, isAlive = true)
+                    }.toMutableList()
+
+                    // Deck und GameManager initialisieren
+                    cardManager.initializeDeck(localPlayers)
+                    localPlayers.forEach {
+                        it.hand.clear() // optional, falls wir die Hand neu aufbauen wollen
+                        it.hand.addAll(List(5) { cardManager.drawCard()!! })
+                    }
+                    gameManager = GameManager(cardManager, localPlayers)
+
+                    updateUI()
+                }
+            }
+        }
+
+        // Button-Aktion
         drawButton.setOnClickListener {
-            gameManager.endTurn()
-            nextPlayer()
+            if (::gameManager.isInitialized) {
+                gameManager.endTurn()
+                gameManager.currentPlayerIndex =
+                    (gameManager.currentPlayerIndex + 1) % localPlayers.size
+                updateUI()
+            }
         }
-
-        //Start mit erstem Spieler
-        startNextTurn()
     }
 
-    private fun startNextTurn() {
-        if (players.isEmpty()) {
-            statusText.text = "Spiel vorbei!"
-            drawButton.isEnabled = false
-            return
-        }
-
-        val player = players[currentPlayerIndex]
-        gameManager.startTurn(player)
-        statusText.text = "${player.name} ist dran"
+    private fun updateUI() {
+        val currentPlayer = gameManager.playerByIndex()
+        statusText.text = "Am Zug: ${currentPlayer.name} | Karten: ${currentPlayer.hand.size}"
     }
-
-        private fun nextPlayer() {
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.size
-            startNextTurn()
-        }
 }

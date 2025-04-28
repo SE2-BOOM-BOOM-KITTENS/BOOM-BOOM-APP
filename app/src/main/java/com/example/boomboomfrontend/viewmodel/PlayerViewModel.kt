@@ -46,4 +46,17 @@ class PlayerViewModel : ViewModel() {
 
         }
     }
+
+    fun getPlayersInLobby(lobbyId: String) {
+        viewModelScope.launch {
+            val response = repository.getPlayersInLobby(lobbyId)
+            if (response.isSuccessful) {
+                _players.value = response.body() ?: emptyList()
+                Log.d("LobbyPlayers", "Spieler aus Lobby $lobbyId: ${_players.value}")
+            } else {
+                Log.e("LobbyPlayers", "Fehler: ${response.code()}")
+            }
+        }
+    }
+
 }
