@@ -3,7 +3,6 @@ package com.example.boomboomfrontend.network.websocket
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.example.boomboomfrontend.network.WebSocket.Callbacks
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import org.hildan.krossbow.stomp.StompClient

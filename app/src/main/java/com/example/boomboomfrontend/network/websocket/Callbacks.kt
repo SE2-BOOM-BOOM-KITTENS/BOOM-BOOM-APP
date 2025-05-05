@@ -1,4 +1,4 @@
-package com.example.boomboomfrontend.network.WebSocket
+package com.example.boomboomfrontend.network.websocket
 
 interface Callbacks {
     fun onResponse(res:String);
