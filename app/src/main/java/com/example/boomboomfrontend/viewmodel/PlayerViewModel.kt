@@ -6,11 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
 import com.example.boomboomfrontend.network.ApiRepository
-import com.example.boomboomfrontend.network.WebSocket.Callbacks
+import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
 
 class PlayerViewModel : ViewModel(), Callbacks {
 
