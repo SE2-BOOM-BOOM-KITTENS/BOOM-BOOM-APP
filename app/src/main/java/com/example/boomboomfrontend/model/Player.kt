@@ -3,7 +3,7 @@ import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.model.ConnectionStatus
 
 data class Player(
-    val id: String,
+    val id: String?,
     val name: String,
     var status: ConnectionStatus? = null,
     var defuseCount: Int = 1,

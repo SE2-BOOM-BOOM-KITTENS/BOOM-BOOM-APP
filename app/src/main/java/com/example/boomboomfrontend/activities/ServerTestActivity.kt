@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.activities
 
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -56,6 +57,39 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 }) {
                     Text("Show all Players")
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(onClick = {
+                    viewModel.connectWebSocket()
+                }) {
+                    Text("Connect WebSocket")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(onClick = {
+                    viewModel.sendResponseMessage()
+                }) {
+                    Text("Send Hello Message")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(onClick = {
+                    viewModel.sendJsonMessage(inputText)
+                    inputText = ""
+                }) {
+                    Text("Send JSON Message")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(onClick = {
+                    viewModel.disconnectWebSocket()
+                }) {
+                    Text("Disconnect WebSocket")
+                }
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -70,13 +104,11 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 Text("Ausgabe:")
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // 🆕 Zeige die Antwort vom Server
                 if (serverMessage.isNotBlank()) {
                     Text(serverMessage, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                // Liste aller Spieler
                 playerList.forEach {
                     Text(it.name)
                 }
