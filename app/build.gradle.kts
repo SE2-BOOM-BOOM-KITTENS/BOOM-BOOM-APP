@@ -139,7 +139,8 @@ sonar {
         property ("sonar.organization", "se2-boom-boom-kittens")
         property ("sonar.host.url", "https://sonarcloud.io")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
-
+        property("sonar.inclusions", "src/main/java/**")
+        property("sonar.coverage.exclusions", "src/test/**, **/generated/**")
     }
 }
 
