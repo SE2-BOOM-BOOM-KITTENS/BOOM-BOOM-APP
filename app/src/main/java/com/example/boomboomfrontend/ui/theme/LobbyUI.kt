@@ -10,8 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 import com.example.boomboomfrontend.model.ConnectionStatus
 import kotlinx.coroutines.*
-import java.lang.reflect.Modifier
-import java.nio.file.WatchEvent
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
