@@ -15,9 +15,12 @@ class AlterTheFutureEffectTest(cardManager: CardManager) {
 
     @BeforeEach
     fun setup() {
-        gameManager = object : GameManager() {
+        val dummyCardManager = CardManager()
+        val dummyPlayers = mutableListOf<Player>()
+
+        gameManager = object : GameManager(dummyCardManager, dummyPlayers) {
             override fun promptPlayerToReorder(player: Player, cards: List<Card>): List<Card> {
-                return cards.reversed() // Für den Test: Karten werden einfach umgedreht
+                return cards.reversed()
             }
         }
         player = Player(name = "TestPlayer", id = TODO())

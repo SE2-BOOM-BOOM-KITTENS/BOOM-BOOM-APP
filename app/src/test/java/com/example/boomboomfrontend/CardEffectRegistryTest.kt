@@ -30,13 +30,13 @@ class CardEffectRegistryTest {
     }
     @Test
     fun `returns SeeTheFutureEffect for SEETHEFUTURE card`(){
-        val effect = CardEffectRegistry.getEffect(CardType.SEETHEFUTURE)
+        val effect = CardEffectRegistry.getEffect(CardType.SEE_THE_FUTURE)
         assertTrue(effect is SeeTheFutureEffect)
     }
 
     @Test
     fun `returns AlterTheFutureEffect for ALTERTHEFUTURE card`(){
-        val effect = CardEffectRegistry.getEffect(CardType.ALTERTHEFUTURE)
+        val effect = CardEffectRegistry.getEffect(CardType.ALTER_THE_FUTURE)
         assertTrue(effect is AlterTheFutureEffect)
     }
 
