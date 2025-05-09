@@ -3,6 +3,7 @@ package com.example.boomboomfrontend.logic
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.CardType
+import java.util.LinkedList
 
 class GameManager(
     private val cardManager: CardManager,
@@ -11,6 +12,7 @@ class GameManager(
 
     var currentPlayer: Player? = null
     var currentPlayerIndex = 0
+    val drawPile: LinkedList<Card> = LinkedList()
   
       fun addPlayer (player: Player){
         players.add(player)
@@ -58,4 +60,8 @@ class GameManager(
         println("---- ${player.name}'s Zug wurde beendet ----")
         currentPlayer = null
     }
+    fun peekTopCards(count: Int): List<Card> {
+        return drawPile.take(count)
+    }
+
 }
