@@ -75,3 +75,4 @@ class GameManager(
             println("${index + 1}: ${card.type}")
         }
 }
+}
