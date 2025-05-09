@@ -74,5 +74,23 @@ class GameManager(
         cards.forEachIndexed { index, card ->
             println("${index + 1}: ${card.type}")
         }
-}
+        return TODO("Provide the return value")
+    }
+    fun setTopCards(newCards: List<Card>) {
+        if (newCards.size > drawPile.size) {
+            throw IllegalArgumentException("New card list is longer than the current draw pile.")
+        }
+
+        // Entferne die obersten Karten im Stapel
+        repeat(newCards.size) {
+            drawPile.removeFirst()
+        }
+
+        // Füge die neuen Karten in umgekehrter Reihenfolge oben auf den Stapel
+        for (i in newCards.indices.reversed()) {
+            drawPile.addFirst(newCards[i])
+        }
+
+        println("🔁 New top cards set: ${newCards.map { it.type }}")
+    }
 }
