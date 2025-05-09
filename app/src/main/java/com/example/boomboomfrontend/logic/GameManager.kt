@@ -5,7 +5,7 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.CardType
 import java.util.LinkedList
 
-class GameManager(
+open class GameManager(
     private val cardManager: CardManager,
     private val players: MutableList<Player>
 ) {
@@ -69,7 +69,7 @@ class GameManager(
             println("${index + 1}: ${card.type}")
         }
     }
-    fun promptPlayerToReorder(player: Player, cards: List<Card>): List<Card> {
+    open fun promptPlayerToReorder(player: Player, cards: List<Card>): List<Card> {
         println("🔁 ${player.name}, please enter the new order of the top cards (comma-separated indices)")
         cards.forEachIndexed { index, card ->
             println("${index + 1}: ${card.type}")

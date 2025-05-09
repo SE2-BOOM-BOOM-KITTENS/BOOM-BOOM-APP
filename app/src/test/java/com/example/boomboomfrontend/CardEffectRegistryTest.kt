@@ -28,6 +28,17 @@ class CardEffectRegistryTest {
         val effect = CardEffectRegistry.getEffect(CardType.EXPLODING_KITTEN)
         assertTrue(effect is ExplodingKittenEffect)
     }
+    @Test
+    fun `returns SeeTheFutureEffect for SEETHEFUTURE card`(){
+        val effect = CardEffectRegistry.getEffect(CardType.SEETHEFUTURE)
+        assertTrue(effect is SeeTheFutureEffect)
+    }
+
+    @Test
+    fun `returns AlterTheFutureEffect for ALTERTHEFUTURE card`(){
+        val effect = CardEffectRegistry.getEffect(CardType.ALTERTHEFUTURE)
+        assertTrue(effect is AlterTheFutureEffect)
+    }
 
     @Test
     fun `throws exception for unregistered card type`(){
