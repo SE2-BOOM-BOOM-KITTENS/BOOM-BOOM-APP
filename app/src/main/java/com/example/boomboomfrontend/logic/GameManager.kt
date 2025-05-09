@@ -63,5 +63,10 @@ class GameManager(
     fun peekTopCards(count: Int): List<Card> {
         return drawPile.take(count)
     }
-
+    fun showFutureCardsToPlayer(player: Player, cards: List<Card>) {
+        println("👁 ${player.name} sees the future:")
+        cards.forEachIndexed { index, card ->
+            println("${index + 1}: ${card.type}")
+        }
+    }
 }
