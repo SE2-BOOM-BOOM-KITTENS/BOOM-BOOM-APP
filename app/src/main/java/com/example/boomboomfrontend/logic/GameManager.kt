@@ -74,7 +74,7 @@ class GameManager(
         cards.forEachIndexed { index, card ->
             println("${index + 1}: ${card.type}")
         }
-        return TODO("Provide the return value")
+        return cards.reversed()
     }
     fun setTopCards(newCards: List<Card>) {
         if (newCards.size > drawPile.size) {
