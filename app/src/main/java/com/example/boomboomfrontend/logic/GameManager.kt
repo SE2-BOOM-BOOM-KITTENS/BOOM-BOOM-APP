@@ -69,4 +69,9 @@ class GameManager(
             println("${index + 1}: ${card.type}")
         }
     }
+    fun promptPlayerToReorder(player: Player, cards: List<Card>): List<Card> {
+        println("🔁 ${player.name}, please enter the new order of the top cards (comma-separated indices)")
+        cards.forEachIndexed { index, card ->
+            println("${index + 1}: ${card.type}")
+        }
 }
