@@ -23,16 +23,21 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun BoomBoomKittens() {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "connection-screen") {
-//                composable("lobby") {
-//                    LobbyScreen(navController = navController, onEnterLobby = {
-//                        navController.navigate("connection-screen")
-//                    })
-//                }
-                composable("connection-screen") {
-                    ConnectionScreen()
+            NavHost(navController = navController, startDestination = "lobby") {
+                composable("lobby") {
+                    LobbyScreen(navController = navController, onEnterLobby = {
+                        navController.navigate("connection-screen")
+                    })
                 }
-                composable("game") { GameScreen() }
+                composable("connection-screen") {
+                    ConnectionScreen(navController = navController, onEnterGameScreen = {
+                        navController.navigate("game")
+                    })
+                }
+                composable("game") {
+                    GameScreen()
+                }
+
                 composable("test-server") { ServerTestActivity() }
             }
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
