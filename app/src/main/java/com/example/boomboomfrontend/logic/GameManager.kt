@@ -49,8 +49,8 @@ class GameManager(
         //Karte ziehen
         val drawn = cardManager.drawCard()
         if (drawn != null) {
-            val effect = CardEffectRegistry.getEffect(drawn.type)
-            effect.apply(player, this)
+//            val effect = CardEffectRegistry.getEffect(drawn.type)
+//            effect.apply(player, this)
         } else {
             println("${player.name} konnte keine Karte ziehen – Deck ist leer.")
         }
