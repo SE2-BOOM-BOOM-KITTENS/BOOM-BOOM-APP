@@ -4,25 +4,37 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.boomboomfrontend.ui.ConnectionScreen
 import com.example.boomboomfrontend.ui.GameScreen
-import com.example.boomboomfrontend.ui.defaults.BoomBoomFrontendTheme
+import com.example.boomboomfrontend.ui.LobbyScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BoomBoomFrontendTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "lobby") {
-//                    composable("lobby") { LobbyScreen(navController) }
-                    composable("lobby") { GameScreen() }
-                    composable("test-server") { ServerTestActivity() }
-                }
-            }
+            BoomBoomKittens()
         }
+    }
+
+    @Composable
+    fun BoomBoomKittens() {
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "connection-screen") {
+//                composable("lobby") {
+//                    LobbyScreen(navController = navController, onEnterLobby = {
+//                        navController.navigate("connection-screen")
+//                    })
+//                }
+                composable("connection-screen") {
+                    ConnectionScreen()
+                }
+                composable("game") { GameScreen() }
+                composable("test-server") { ServerTestActivity() }
+            }
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 }

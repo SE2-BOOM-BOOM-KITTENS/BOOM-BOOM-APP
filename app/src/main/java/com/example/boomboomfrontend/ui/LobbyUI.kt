@@ -1,4 +1,5 @@
 package com.example.boomboomfrontend.ui
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -14,12 +15,10 @@ import androidx.navigation.NavHostController
 import com.example.boomboomfrontend.logic.Lobby
 import com.example.boomboomfrontend.model.ConnectionStatus
 import com.example.boomboomfrontend.model.Player
-import kotlinx.coroutines.*
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LobbyScreen(navController: NavHostController) {
+fun LobbyScreen(navController: NavHostController, onEnterLobby: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var lobby: Lobby? by remember { mutableStateOf(null) }
     var joined by remember { mutableStateOf(false) }
@@ -52,6 +51,7 @@ fun LobbyScreen(navController: NavHostController) {
             if (lobby?.joinLobby(p) == true) {
                 joined = true
             }
+            navController.navigate("connection-screen")
         }) {
             Text("Lobby beitreten")
         }
