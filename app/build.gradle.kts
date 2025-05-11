@@ -80,7 +80,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/R$*.class",
         "**/BuildConfig.*",
         "**/Manifest*.*",
-        "**/*Test*.*",
+      //  "**/*Test*.*",
         "android/**/*.*"
     )
 
