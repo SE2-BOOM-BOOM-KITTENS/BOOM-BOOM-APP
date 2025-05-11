@@ -21,8 +21,8 @@ class CardManager {
             discardPile.add(card)
 
             // Neue Logik: Effekt aus Registry holen und ausführen
-            val effect = CardEffectRegistry.getEffect(card.type)
-            effect.apply(player, gameManager)
+            //val effect = CardEffectRegistry.getEffect(card.type)
+            //effect.apply(player, gameManager)
 
             true
         } else false

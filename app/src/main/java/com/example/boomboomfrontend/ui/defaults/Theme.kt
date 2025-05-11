@@ -1,4 +1,4 @@
-package com.example.boomboomfrontend.ui.theme
+package com.example.boomboomfrontend.ui.defaults
 
 import android.app.Activity
 import android.os.Build

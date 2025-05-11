@@ -1,4 +1,4 @@
-package com.example.boomboomfrontend.ui.theme
+package com.example.boomboomfrontend.ui.defaults
 
 import androidx.compose.ui.graphics.Color
 
