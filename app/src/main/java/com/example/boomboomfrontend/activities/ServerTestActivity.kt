@@ -68,7 +68,7 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(onClick = {
-                    viewModel.sendResponseMessage()
+                    viewModel.sendAction()
                 }) {
                     Text("Send Hello Message")
                 }
