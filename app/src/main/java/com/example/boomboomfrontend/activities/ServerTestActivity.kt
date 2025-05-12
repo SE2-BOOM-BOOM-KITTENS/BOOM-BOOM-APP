@@ -40,22 +40,44 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    if (inputText.isNotBlank()) {
-                        viewModel.addPlayer(inputText)
-                        inputText = ""
+                Row {
+                    Button(onClick = {
+                        if (inputText.isNotBlank()) {
+                            viewModel.addPlayer(inputText)
+                            inputText = ""
+                        }
+                    }) {
+                        Text("Add Player")
                     }
-                }) {
-                    Text("Add Player")
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = {
+                        viewModel.getAllPlayers()
+                    }) {
+                        Text("Show all Players")
+                    }
                 }
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    viewModel.getAllPlayers()
-                }) {
-                    Text("Show all Players")
+                Row{
+                    Button(onClick = {
+                        viewModel.sendErrorAction()
+                    }) {
+                        Text("Send Error Action")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = {
+                        viewModel.testBroadcast()
+                    }) {
+                        Text("Test Broadcast")
+                    }
                 }
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 
