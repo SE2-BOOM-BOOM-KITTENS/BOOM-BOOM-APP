@@ -15,13 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
 @Preview(
     showSystemUi = true,
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
 )
 @Composable
-fun GameScreen() {
+fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
+
+    Text(
+        text = gameStateViewModel.playerName
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
         Box(
