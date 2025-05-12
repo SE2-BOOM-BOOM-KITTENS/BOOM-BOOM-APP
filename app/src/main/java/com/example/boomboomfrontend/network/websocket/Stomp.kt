@@ -25,12 +25,17 @@ class Stomp(private val callbacks: Callbacks) {
 
     private var isConnected = false
 
+    private var playerName = ""
+
     fun connect(name: String) {
+        playerName = name
+
         if (isConnected) {
             callback("already connected")
             return
         }
         client = StompClient(OkHttpWebSocketClient())
+
 
         sessionJob = coroutineScope.launch {
             try {
@@ -39,7 +44,7 @@ class Stomp(private val callbacks: Callbacks) {
 
                 session?.let { stompSession ->
                     launch {
-                        stompSession.subscribeText("/test").collectLatest { msg ->
+                        stompSession.subscribeText("/topic/test").collectLatest { msg ->
                             try {
                                 // if Msg is JSON
                                 if (msg.trim().startsWith("{")) {
@@ -72,20 +77,33 @@ class Stomp(private val callbacks: Callbacks) {
                 callback("Not Connected yet")
                 return@launch
             }
-            session?.sendText("/app/session", "Hello from client")
+
+            val json = JSONObject().apply {
+                put("playerName", playerName)
+                put("action", "TEST")
+                put("cardsPlayed", org.json.JSONArray()) // leeres Array
+            }
+
+            Log.e("STOMP", "Sende TEST-Message an /app/test: $json")
+            session?.sendText("/app/test", json.toString())
         }
     }
 
-    fun sendAction(action: String, payload: String) {
+
+
+
+    fun sendAction(action: String, payload: String, playerName: String = "Andi") {
         val json = JSONObject().apply {
+            put("playerName", playerName)
             put("action", action)
-            put("payload", payload)
+            put("cardsPlayed", org.json.JSONArray())
         }
 
         coroutineScope.launch {
             session?.sendText("/app/action", json.toString())
         }
     }
+
 
 
     fun disconnect() {
