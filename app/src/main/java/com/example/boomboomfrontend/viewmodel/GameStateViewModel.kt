@@ -10,15 +10,17 @@ import java.util.UUID
 class GameStateViewModel :ViewModel() ,Callbacks {
 
     lateinit var playerId: UUID
-    lateinit var playerName: String
+    var playerName: String
     lateinit var lobbyId: UUID
     lateinit var opponents: MutableList<Player>
     lateinit var cardHand: MutableList<Card>
+    var cardType: String
     var gameOver: Boolean = false
     var gameReady: Boolean = false
 
     init {
         playerName = "Steve"
+        cardType = "BLANK\nCARD"
     }
 
     fun updateGameState(newGameState: GameStateNetworkPacket){

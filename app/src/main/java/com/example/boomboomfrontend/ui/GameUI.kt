@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,10 +26,9 @@ import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 )
 @Composable
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
+    val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
 
-    Text(
-        text = gameStateViewModel.playerName
-    )
+    Text(text = gameStateViewModel.playerName)
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
@@ -36,7 +37,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             contentAlignment = Alignment.Center
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardUI()
+                CardUI(selectedCardText.value)
                 DeckUI()
             }
         }
@@ -67,9 +68,18 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             ButtonGroup(
                 labels = listOf("Blank", "Defuse", "Nope"),
                 onClicks = listOf(
-                    { bottomLeftBlank() },
-                    { bottomLeftDefuse() },
-                    { bottomLeftNope() }
+                    {
+                        selectedCardText.value = "BLANK\nCARD"
+                        bottomLeftBlank()
+                    },
+                    {
+                        selectedCardText.value = "DEFUSE"
+                        bottomLeftDefuse()
+                    },
+                    {
+                        selectedCardText.value = "NOPE"
+                        bottomLeftNope()
+                    }
                 )
             )
         }
@@ -78,10 +88,9 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
 
 
 
-@Composable
-fun CardUI() {
-    val textField = "BLANK\nCARD"
 
+@Composable
+fun CardUI(textField: String) {
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
