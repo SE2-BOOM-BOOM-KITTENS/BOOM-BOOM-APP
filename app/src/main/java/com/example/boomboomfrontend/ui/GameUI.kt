@@ -57,23 +57,6 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             OpponentHands()
         }
 
-        // Top right
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            ButtonGroup(
-                labels = listOf("Blank", "Defuse", "Nope"),
-                onClicks = listOf(
-                    { topRightBlank() },
-                    { topRightDefuse() },
-                    { topRightNope() }
-                )
-            )
-        }
-
         // Bottom left
         Box(
             modifier = Modifier
@@ -97,13 +80,15 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
 
 @Composable
 fun CardUI() {
+    val textField = "BLANK\nCARD"
+
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
             .background(Color(0xffb2766b))
     ) {
         Text(
-            text = "BLANK\nCARD",
+            text = textField,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
@@ -173,12 +158,3 @@ fun ButtonGroup(
         }
     }
 }
-
-fun topRightBlank() { /**/ }
-fun topRightDefuse() { /**/ }
-fun topRightNope() { /**/ }
-
-fun bottomLeftBlank() { /**/ }
-fun bottomLeftDefuse() { /**/ }
-fun bottomLeftNope() { /**/ }
-

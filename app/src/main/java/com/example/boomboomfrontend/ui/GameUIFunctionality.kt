@@ -4,33 +4,6 @@ import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 
-fun topRightBlank() {
-    val player = "OPPONENT"
-    val action = "CARDS_PLAYED"
-    val cardsPlayed = Card("Blank", CardType.BLANK)
-    val cardList = mutableListOf(cardsPlayed)
-
-    ComposeMessage(player, action, cardList)
-}
-
-fun topRightDefuse() {
-    val player = "OPPONENT"
-    val action = "CARDS_PLAYED"
-    val cardsPlayed = Card("Defuse", CardType.DEFUSE)
-    val cardList = mutableListOf(cardsPlayed)
-
-    ComposeMessage(player, action, cardList)
-}
-
-fun topRightNope() {
-    val player = "OPPONENT"
-    val action = "CARDS_PLAYED"
-    val cardsPlayed = Card("Nope", CardType.NOPE)
-    val cardList = mutableListOf(cardsPlayed)
-
-    ComposeMessage(player, action, cardList)
-}
-
 fun bottomLeftBlank() {
     val player = "PLAYER"
     val action = "CARDS_PLAYED"
