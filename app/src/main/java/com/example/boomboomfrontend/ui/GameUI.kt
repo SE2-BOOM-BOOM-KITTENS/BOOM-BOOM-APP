@@ -167,7 +167,9 @@ fun ButtonGroup(
     }
 }
 
-fun topRightBlank() { /**/ }
+fun topRightBlank() {
+
+}
 fun topRightDefuse() { /**/ }
 fun topRightNope() { /**/ }
 
