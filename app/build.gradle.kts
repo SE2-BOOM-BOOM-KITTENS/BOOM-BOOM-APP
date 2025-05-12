@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.sonarqube") version "5.1.0.4882"
     id("jacoco")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 
 }
 
@@ -118,6 +119,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
