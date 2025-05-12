@@ -8,9 +8,9 @@ class Deck {
         cards.clear()
 
         // Beispielhaftes Setup für Sprint 1
-        repeat(players.size - 1) { cards.add(Card(CardType.EXPLODING_KITTEN)) }
-        repeat(players.size) { cards.add(Card(CardType.DEFUSE)) }
-        repeat(10) { cards.add(Card(CardType.BLANK)) }
+        repeat(players.size - 1) { cards.add(Card("Exploding Kitten", CardType.EXPLODING_KITTEN)) }
+        repeat(players.size) { cards.add(Card("Defuse", CardType.DEFUSE)) }
+        repeat(10) { cards.add(Card("Blank", CardType.BLANK)) }
 
         cards.shuffle()
     }

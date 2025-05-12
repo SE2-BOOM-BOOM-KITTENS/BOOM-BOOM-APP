@@ -103,4 +103,12 @@ class PlayerViewModel : ViewModel(), Callbacks {
     fun sendAction() {
         stomp.sendAction("Test", "Hello")
     }
+
+    fun testBroadcast(){
+        stomp.sendDebugTest()
+    }
+
+    fun sendErrorAction(){
+        stomp.sendErrorAction()
+    }
 }
