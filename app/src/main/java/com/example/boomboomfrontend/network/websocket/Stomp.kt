@@ -12,7 +12,7 @@ import org.hildan.krossbow.stomp.subscribeText
 import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
-private const val WEBSOCKET_URI = "ws://10.0.2.2:8080/game"
+private const val WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name="
 
 class Stomp(private val callbacks: Callbacks) {
 
@@ -25,7 +25,7 @@ class Stomp(private val callbacks: Callbacks) {
 
     private var isConnected = false
 
-    fun connect() {
+    fun connect(name: String) {
         if (isConnected) {
             callback("already connected")
             return
@@ -34,11 +34,12 @@ class Stomp(private val callbacks: Callbacks) {
 
         sessionJob = coroutineScope.launch {
             try {
-                session = client.connect(WEBSOCKET_URI)
+                session = client.connect(WEBSOCKET_URI + name)
+           //     Log.e("TESST", WEBSOCKET_URI+name)
 
                 session?.let { stompSession ->
                     launch {
-                        stompSession.subscribeText("/topic/session").collectLatest { msg ->
+                        stompSession.subscribeText("/test").collectLatest { msg ->
                             try {
                                 // if Msg is JSON
                                 if (msg.trim().startsWith("{")) {
@@ -75,20 +76,17 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
-    fun sendJson(from: String = "client", text: String = "from client") {
+    fun sendAction(action: String, payload: String) {
         val json = JSONObject().apply {
-            put("from", from)
-            put("text", text)
+            put("action", action)
+            put("payload", payload)
         }
 
         coroutineScope.launch {
-            if (session == null) {
-                callback("Not connected yet")
-                return@launch
-            }
-            session?.sendText("/app/session", json.toString())
+            session?.sendText("/app/action", json.toString())
         }
     }
+
 
     fun disconnect() {
         coroutineScope.launch {

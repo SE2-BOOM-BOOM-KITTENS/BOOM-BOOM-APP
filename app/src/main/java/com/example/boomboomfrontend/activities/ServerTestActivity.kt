@@ -1,6 +1,5 @@
 package com.example.boomboomfrontend.activities
 
-import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -61,7 +60,7 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(onClick = {
-                    viewModel.connectWebSocket()
+                    viewModel.connectWebSocket(inputText)
                 }) {
                     Text("Connect WebSocket")
                 }
@@ -69,7 +68,7 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(onClick = {
-                    viewModel.sendResponseMessage()
+                    viewModel.sendAction()
                 }) {
                     Text("Send Hello Message")
                 }
