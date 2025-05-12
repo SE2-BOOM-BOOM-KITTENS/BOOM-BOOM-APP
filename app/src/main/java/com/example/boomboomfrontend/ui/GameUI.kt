@@ -21,7 +21,7 @@ import com.example.boomboomfrontend.model.Player
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
 )*/
 @Composable
-fun GameScreen(player: Player) {
+fun GameScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
         Box(

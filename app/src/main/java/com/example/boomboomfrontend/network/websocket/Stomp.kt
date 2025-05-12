@@ -12,17 +12,14 @@ import org.hildan.krossbow.stomp.subscribeText
 import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
-private const val WEBSOCKET_URI = "ws://10.0.2.2:8080/game"
+private const val WEBSOCKET_URI = "ws://192.168.0.100:8080/game"
 
 class Stomp(private val callbacks: Callbacks) {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     private lateinit var client: StompClient
     private var session: StompSession? = null
-
     private var sessionJob: Job? = null
-
     private var isConnected = false
 
     fun connect() {
