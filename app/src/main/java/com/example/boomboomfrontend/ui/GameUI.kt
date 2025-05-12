@@ -13,15 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.boomboomfrontend.model.Player
 
-@Preview(
+/*@Preview(
     showSystemUi = true,
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
-)
+)*/
 @Composable
-fun GameScreen() {
+fun GameScreen(player: Player) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
         Box(
@@ -166,14 +166,3 @@ fun ButtonGroup(
         }
     }
 }
-
-fun topRightBlank() {
-
-}
-fun topRightDefuse() { /**/ }
-fun topRightNope() { /**/ }
-
-fun bottomLeftBlank() { /**/ }
-fun bottomLeftDefuse() { /**/ }
-fun bottomLeftNope() { /**/ }
-
