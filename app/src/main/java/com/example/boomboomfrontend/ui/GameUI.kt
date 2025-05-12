@@ -10,18 +10,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
 @Preview(
     showSystemUi = true,
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
 )
 @Composable
-fun GameScreen() {
+fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
+    val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
+
+    Text(text = gameStateViewModel.playerName)
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
         Box(
@@ -29,7 +37,7 @@ fun GameScreen() {
             contentAlignment = Alignment.Center
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardUI()
+                CardUI(selectedCardText.value)
                 DeckUI()
             }
         }
@@ -50,23 +58,6 @@ fun GameScreen() {
             OpponentHands()
         }
 
-        // Top right
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            ButtonGroup(
-                labels = listOf("Blank", "Defuse", "Nope"),
-                onClicks = listOf(
-                    { topRightBlank() },
-                    { topRightDefuse() },
-                    { topRightNope() }
-                )
-            )
-        }
-
         // Bottom left
         Box(
             modifier = Modifier
@@ -77,9 +68,18 @@ fun GameScreen() {
             ButtonGroup(
                 labels = listOf("Blank", "Defuse", "Nope"),
                 onClicks = listOf(
-                    { bottomLeftBlank() },
-                    { bottomLeftDefuse() },
-                    { bottomLeftNope() }
+                    {
+                        selectedCardText.value = "BLANK\nCARD"
+                        bottomLeftBlank()
+                    },
+                    {
+                        selectedCardText.value = "DEFUSE"
+                        bottomLeftDefuse()
+                    },
+                    {
+                        selectedCardText.value = "NOPE"
+                        bottomLeftNope()
+                    }
                 )
             )
         }
@@ -88,15 +88,16 @@ fun GameScreen() {
 
 
 
+
 @Composable
-fun CardUI() {
+fun CardUI(textField: String) {
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
             .background(Color(0xffb2766b))
     ) {
         Text(
-            text = "BLANK\nCARD",
+            text = textField,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
@@ -166,12 +167,3 @@ fun ButtonGroup(
         }
     }
 }
-
-fun topRightBlank() { /**/ }
-fun topRightDefuse() { /**/ }
-fun topRightNope() { /**/ }
-
-fun bottomLeftBlank() { /**/ }
-fun bottomLeftDefuse() { /**/ }
-fun bottomLeftNope() { /**/ }
-
