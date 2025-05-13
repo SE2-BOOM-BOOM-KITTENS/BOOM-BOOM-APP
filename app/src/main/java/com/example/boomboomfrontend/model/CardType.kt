@@ -4,6 +4,8 @@ enum class CardType {
     EXPLODING_KITTEN,
     DEFUSE,
     BLANK,
+    SEE_THE_FUTURE,
+    ALTER_THE_FUTURE,
     NOPE,
     TEST // nur zum Testen der Klasse CardEffectRegistry
 }
