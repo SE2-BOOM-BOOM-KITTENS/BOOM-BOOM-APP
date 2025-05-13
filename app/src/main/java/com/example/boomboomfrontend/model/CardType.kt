@@ -6,6 +6,6 @@ enum class CardType {
     BLANK,
     SEE_THE_FUTURE,
     ALTER_THE_FUTURE,
-    TEST
-    // nur zum Testen der Klasse CardEffectRegistry
+    NOPE,
+    TEST // nur zum Testen der Klasse CardEffectRegistry
 }
