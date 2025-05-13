@@ -1,22 +1,28 @@
-package com.example.boomboomfrontend.ui
+package com.example.boomboomfrontend.ui.gameUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
@@ -27,6 +33,8 @@ import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 @Composable
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
+
+    val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
     Text(text = gameStateViewModel.playerName)
 
@@ -47,7 +55,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            PlayerHands()
+            PlayerHands(viewModel())
         }
 
         // Top center
@@ -66,22 +74,35 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             contentAlignment = Alignment.BottomStart
         ) {
             ButtonGroup(
-                labels = listOf("Blank", "Defuse", "Nope"),
+                labels = listOf("Blank", "Defuse", "Nope", "Pass"),
                 onClicks = listOf(
                     {
                         selectedCardText.value = "BLANK\nCARD"
-                        bottomLeftBlank()
+                        bottomLeftBlank(gameStateViewModel)
                     },
                     {
                         selectedCardText.value = "DEFUSE"
-                        bottomLeftDefuse()
+                        bottomLeftDefuse(gameStateViewModel)
                     },
                     {
                         selectedCardText.value = "NOPE"
-                        bottomLeftNope()
+                        bottomLeftNope(gameStateViewModel)
+                    },
+                    {
+                        bottomLeftPass(gameStateViewModel)
                     }
                 )
             )
+        }
+
+        // Top Right
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.TopEnd
+        ){
+            ServerMessage(serverMessage)
         }
     }
 }
@@ -120,15 +141,16 @@ fun DeckUI() {
 }
 
 @Composable
-fun PlayerHands() {
+fun PlayerHands(viewModel: GameStateViewModel) {
     Box(
         modifier = Modifier
             .size(250.dp, 90.dp)
             .background(Color(0xffb2766b))
     ) {
         Text(
-            text = "PLAYER\nHAND",
+            text = viewModel.getCardHandText(),
             color = Color.White,
+            fontSize = 11.sp,
             modifier = Modifier.align(Alignment.Center)
         )
     }
@@ -155,7 +177,7 @@ fun ButtonGroup(
     onClicks: List<() -> Unit>
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         labels.zip(onClicks).forEach { (label, onClick) ->
             Button(
@@ -164,6 +186,23 @@ fun ButtonGroup(
             ) {
                 Text(text = label)
             }
+        }
+    }
+}
+
+@Composable
+fun ServerMessage(serverMessage: String){
+    Row(
+        modifier = Modifier
+            .background(Color.White)
+            .padding(8.dp)
+    ) {
+        Text("Ausgabe:")
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (serverMessage.isNotBlank()) {
+            Text(serverMessage, color = Color.DarkGray)
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

@@ -80,9 +80,9 @@ class PlayerViewModel : ViewModel(), Callbacks {
     }
 
     // WebSocket: send JSON - might need later
-    fun sendJsonMessage(from: String = "Client") {
-        stomp.sendAction(action = from, payload = "Text von $from")
-    }
+//    fun sendJsonMessage(from: String = "Client") {
+//        stomp.sendAction(action = from, payload = "Text von $from")
+//    }
 
     // WebSocket: disconnect
     fun disconnectWebSocket() {
@@ -100,9 +100,9 @@ class PlayerViewModel : ViewModel(), Callbacks {
         disconnectWebSocket()
     }
 
-    fun sendAction() {
-        stomp.sendAction("Test", "Hello")
-    }
+//    fun sendAction() {
+//        stomp.sendAction("Test", "Hello")
+//    }
 
     fun testBroadcast(){
         stomp.sendDebugTest()

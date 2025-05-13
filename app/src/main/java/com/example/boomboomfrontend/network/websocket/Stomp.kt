@@ -3,6 +3,7 @@ package com.example.boomboomfrontend.network.websocket
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.example.boomboomfrontend.network.messages.PlayerMessage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import org.hildan.krossbow.stomp.StompClient
@@ -25,9 +26,10 @@ class Stomp(private val callbacks: Callbacks) {
 
     private var isConnected = false
 
-    fun connect(name: String) {
+    fun connect(name: String, onConnected: (()-> Unit)?=null) {
         if (isConnected) {
             callback("already connected")
+            onConnected?.invoke()
             return
         }
         client = StompClient(OkHttpWebSocketClient())
@@ -62,6 +64,7 @@ class Stomp(private val callbacks: Callbacks) {
                     }
 
                     callback("WebSocket connected")
+                    onConnected?.invoke()
                 }
             } catch (e: Exception) {
                 Log.e("STOMP", "Connection error", e)
@@ -80,14 +83,52 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
-    fun sendAction(action: String, payload: String) {
+    fun sendAction(playerMessage: PlayerMessage) {
         val json = JSONObject().apply {
-            put("action", action)
-            put("payload", payload)
+            put("playerName",playerMessage.playerName)
+            put("action", playerMessage.action)
+            put("payload", playerMessage.cardsPlayed)
         }
 
         coroutineScope.launch {
             session?.sendText("/app/action", json.toString())
+        }
+    }
+
+    fun joinGame(playerMessage: PlayerMessage, onJoined: (()-> Unit)?=null){
+        val json = JSONObject().apply {
+            put("playerName",playerMessage.playerName)
+            put("action", null)
+            put("payload", null)
+        }
+
+        coroutineScope.launch {
+            session?.sendText("/app/addPlayer",json.toString())
+        }
+        onJoined?.invoke()
+    }
+
+    fun getHand(playerName:String){
+        val json = JSONObject().apply {
+            put("playerName",playerName)
+            put("action", null)
+            put("payload", null)
+        }
+
+        coroutineScope.launch {
+            session?.sendText("/app/getHand",json.toString())
+        }
+    }
+
+    fun explode(playerName: String){
+        val json = JSONObject().apply {
+            put("playerName",playerName)
+            put("action", "EXPLODE")
+            put("payload", null)
+        }
+
+        coroutineScope.launch {
+            session?.sendText("/app/action",json.toString())
         }
     }
 
@@ -145,8 +186,7 @@ class Stomp(private val callbacks: Callbacks) {
             val type = json.getString("type")
             val message = json.getString("message")
 
-
-            callback("[$type] $message")
+            callback(msg)
 
         } catch (e:Exception){
             callback("Error parsing message: ${e.localizedMessage}")
