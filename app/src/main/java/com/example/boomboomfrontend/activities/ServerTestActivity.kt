@@ -1,6 +1,5 @@
 package com.example.boomboomfrontend.activities
 
-import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -41,47 +40,69 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    if (inputText.isNotBlank()) {
-                        viewModel.addPlayer(inputText)
-                        inputText = ""
+                Row {
+                    Button(onClick = {
+                        if (inputText.isNotBlank()) {
+                            viewModel.addPlayer(inputText)
+                            inputText = ""
+                        }
+                    }) {
+                        Text("Add Player")
                     }
-                }) {
-                    Text("Add Player")
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = {
+                        viewModel.getAllPlayers()
+                    }) {
+                        Text("Show all Players")
+                    }
                 }
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row{
+                    Button(onClick = {
+                        viewModel.sendErrorAction()
+                    }) {
+                        Text("Send Error Action")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = {
+                        viewModel.testBroadcast()
+                    }) {
+                        Text("Test Broadcast")
+                    }
+                }
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(onClick = {
-                    viewModel.getAllPlayers()
-                }) {
-                    Text("Show all Players")
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(onClick = {
-                    viewModel.connectWebSocket()
+                    viewModel.connectWebSocket(inputText)
                 }) {
                     Text("Connect WebSocket")
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    viewModel.sendResponseMessage()
-                }) {
-                    Text("Send Hello Message")
-                }
+//                Button(onClick = {
+//                    viewModel.sendAction()
+//                }) {
+//                    Text("Send Hello Message")
+//                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    viewModel.sendJsonMessage(inputText)
-                    inputText = ""
-                }) {
-                    Text("Send JSON Message")
-                }
+//                Button(onClick = {
+//                    viewModel.sendJsonMessage(inputText)
+//                    inputText = ""
+//                }) {
+//                    Text("Send JSON Message")
+//                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
