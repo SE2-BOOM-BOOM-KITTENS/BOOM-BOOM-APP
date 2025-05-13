@@ -70,8 +70,8 @@ class PlayerViewModel : ViewModel(), Callbacks {
     }
 
     // WebSocket: connect
-    fun connectWebSocket() {
-        stomp.connect()
+    fun connectWebSocket(name: String) {
+        stomp.connect(name)
     }
 
     // WebSocket: send Response from WebSocket
@@ -81,7 +81,7 @@ class PlayerViewModel : ViewModel(), Callbacks {
 
     // WebSocket: send JSON - might need later
     fun sendJsonMessage(from: String = "Client") {
-        stomp.sendJson(from = from, text = "Text von $from")
+        stomp.sendAction(action = from, payload = "Text von $from")
     }
 
     // WebSocket: disconnect
@@ -98,5 +98,17 @@ class PlayerViewModel : ViewModel(), Callbacks {
     override fun onCleared() {
         super.onCleared()
         disconnectWebSocket()
+    }
+
+    fun sendAction() {
+        stomp.sendAction("Test", "Hello")
+    }
+
+    fun testBroadcast(){
+        stomp.sendDebugTest()
+    }
+
+    fun sendErrorAction(){
+        stomp.sendErrorAction()
     }
 }
