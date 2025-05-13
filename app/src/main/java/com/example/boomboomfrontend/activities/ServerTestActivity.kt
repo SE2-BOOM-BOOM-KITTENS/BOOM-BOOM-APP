@@ -89,20 +89,20 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    viewModel.sendAction()
-                }) {
-                    Text("Send Hello Message")
-                }
+//                Button(onClick = {
+//                    viewModel.sendAction()
+//                }) {
+//                    Text("Send Hello Message")
+//                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = {
-                    viewModel.sendJsonMessage(inputText)
-                    inputText = ""
-                }) {
-                    Text("Send JSON Message")
-                }
+//                Button(onClick = {
+//                    viewModel.sendJsonMessage(inputText)
+//                    inputText = ""
+//                }) {
+//                    Text("Send JSON Message")
+//                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
