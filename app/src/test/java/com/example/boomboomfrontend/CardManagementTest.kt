@@ -1,3 +1,5 @@
+package com.example.boomboomfrontend
+
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -31,7 +33,9 @@ class CardManagementTest {
     @Test
     fun `drawCard returns null if deck is empty`() {
         // Leere das Deck komplett
-        while (cardManager.drawCard() != null) {}
+        while (cardManager.drawCard() != null) {
+            // Absichtlich leer – wir leeren das Deck
+        }
 
         val result = cardManager.drawCard()
         assertNull(result)
@@ -39,10 +43,10 @@ class CardManagementTest {
 
     @Test
     fun `playCard removes from hand and adds to discardPile`() {
-        val card = Card(CardType.BLANK)
+        val card = Card(CardType.BLANK.name, CardType.BLANK)
         testPlayer.hand.add(card)
 
-        val result = cardManager.playCard(card, testPlayer, gameManager)
+        val result = cardManager.playCard(card, testPlayer)
 
         assertTrue(result, "Card should be successfully played")
         assertFalse(testPlayer.hand.contains(card), "Card should be removed from hand")

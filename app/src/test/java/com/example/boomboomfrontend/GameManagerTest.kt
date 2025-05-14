@@ -1,3 +1,5 @@
+package com.example.boomboomfrontend
+
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,7 +35,7 @@ class GameManagerTest {
     @Test
     fun `endTurn wendet Effekt an und setzt currentPlayer zurueck`() {
         gameManager.currentPlayer = testPlayer
-        cardManager.returnCardToDeckAt(Card(CardType.BLANK), 0)
+        cardManager.returnCardToDeckAt(Card(CardType.BLANK.name, CardType.BLANK ), 0)
 
         gameManager.endTurn()
 
@@ -42,7 +44,7 @@ class GameManagerTest {
 
     @Test
     fun `startTurn ohne Eingabe veraendert Hand nicht`() {
-        testPlayer.hand.add(Card(CardType.BLANK))
+        testPlayer.hand.add(Card(CardType.BLANK.name, CardType.BLANK))
         val initialHandSize = testPlayer.hand.size
 
         gameManager.startTurn(testPlayer) // Simuliert keine Eingabe

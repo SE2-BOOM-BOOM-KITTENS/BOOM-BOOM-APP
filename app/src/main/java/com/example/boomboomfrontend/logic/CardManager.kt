@@ -1,7 +1,6 @@
 package com.example.boomboomfrontend.logic
 
 import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.model.Deck
 import com.example.boomboomfrontend.model.Player
 
@@ -16,7 +15,7 @@ class CardManager {
 
     fun drawCard(): Card? = deck.draw()
 
-    fun playCard(card: Card, player: Player, gameManager: GameManager): Boolean {
+    fun playCard(card: Card, player: Player): Boolean {
         return if (player.hand.remove(card)) {
             discardPile.add(card)
 
@@ -32,7 +31,7 @@ class CardManager {
         deck.insertAt(card, position)
     }
 
-    fun deckSize(): Int = deck.size()
+    //fun deckSize(): Int = deck.size()
 
     fun getDiscardPile(): List<Card> = discardPile
 }
