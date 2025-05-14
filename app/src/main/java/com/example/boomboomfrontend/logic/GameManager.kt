@@ -33,7 +33,7 @@ class GameManager(
 
         if (index != null && index in player.hand.indices) {
             val card = player.hand[index]
-            val success = cardManager.playCard(card, player, this)
+            val success = cardManager.playCard(card, player)
             if (success) {
                 println("Du spielst: ${card.type}")
             }

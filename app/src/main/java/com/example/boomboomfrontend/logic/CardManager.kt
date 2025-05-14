@@ -16,7 +16,7 @@ class CardManager {
 
     fun drawCard(): Card? = deck.draw()
 
-    fun playCard(card: Card, player: Player, gameManager: GameManager): Boolean {
+    fun playCard(card: Card, player: Player): Boolean {
         return if (player.hand.remove(card)) {
             discardPile.add(card)
 

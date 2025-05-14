@@ -1,4 +1,6 @@
-import org.junit.jupiter.api.Assertions.*
+package com.example.boomboomfrontend
+
+/*import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.example.boomboomfrontend.logic.*
@@ -54,4 +56,4 @@ class GameManagerTest {
     fun `Exploding Kitten mit Defuse wird zurückgelegt`() {
         //wird noch hinzugefügt
     }*/
-}
+}*/

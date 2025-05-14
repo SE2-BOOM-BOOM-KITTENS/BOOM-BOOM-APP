@@ -3,8 +3,7 @@
 package com.example.boomboomfrontend.logic.cardlogic
 
 import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.model.CardType
-import kotlinx.serialization.encodeToString
+import com.example.boomboomfrontend.network.messages.CatComboMessage
 import kotlinx.serialization.json.Json
 
 enum class CatComboType {
@@ -24,37 +23,20 @@ fun detectCatCombo(cards: List<Card>): CatComboType {
 }
 
 fun sendCatCombo(socket: WebSocketClient, selectedCards: List<Card>) {
-    val message = mapOf(
-        "action" to "catComboPlayed",
-        "cardIds" to selectedCards.map { it.id }
+    val message = CatComboMessage(
+        action = "catComboPlayed",
+        cardIds = selectedCards.map { it.name }
     )
     socket.sendJson(message)
 }
 
-fun respondToSpecificSteal(socket: WebSocketClient, targetId: String, cardType: CardType) {
-    val response = mapOf(
-        "action" to "resolveSpecificSteal",
-        "targetPlayerId" to targetId,
-        "cardType" to cardType.name
-    )
-    socket.sendJson(response)
-}
-
-fun respondToDiscardSelection(socket: WebSocketClient, selectedType: CardType) {
-    val response = mapOf(
-        "action" to "resolveDiscardSelection",
-        "selectedCardType" to selectedType.name
-    )
-    socket.sendJson(response)
-}
-
-// Extension function to simplify JSON sending
-fun WebSocketClient.sendJson(data: Any) {
-    val json = Json.encodeToString(data)
-    this.send(json)
-}
-
-// Dummy WebSocketClient interface for reference
+// Dummy interface for WebSocket sending
 interface WebSocketClient {
     fun send(text: String)
+}
+
+// Extension function to send JSON
+fun WebSocketClient.sendJson(message: CatComboMessage) {
+    val json = Json.encodeToString(CatComboMessage.serializer(), message)
+    this.send(json)
 }
