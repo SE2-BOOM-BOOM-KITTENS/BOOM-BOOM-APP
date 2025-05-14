@@ -1,6 +1,6 @@
 package com.example.boomboomfrontend
 
-/*import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.example.boomboomfrontend.logic.*
@@ -41,13 +41,13 @@ class CardManagementTest {
 
     @Test
     fun `playCard removes from hand and adds to discardPile`() {
-        val card = Card(CardType.BLANK)
+        val card = Card(CardType.BLANK.name, CardType.BLANK)
         testPlayer.hand.add(card)
 
-        val result = cardManager.playCard(card, testPlayer, gameManager)
+        val result = cardManager.playCard(card, testPlayer)
 
         assertTrue(result, "Card should be successfully played")
         assertFalse(testPlayer.hand.contains(card), "Card should be removed from hand")
         assertTrue(cardManager.getDiscardPile().contains(card), "Card should be in discard pile")
     }
-}*/
+}
