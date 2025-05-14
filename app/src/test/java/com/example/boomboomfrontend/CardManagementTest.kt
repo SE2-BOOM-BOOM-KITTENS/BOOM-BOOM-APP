@@ -33,7 +33,9 @@ class CardManagementTest {
     @Test
     fun `drawCard returns null if deck is empty`() {
         // Leere das Deck komplett
-        while (cardManager.drawCard() != null) {}
+        while (cardManager.drawCard() != null) {
+            // Absichtlich leer – wir leeren das Deck
+        }
 
         val result = cardManager.drawCard()
         assertNull(result)

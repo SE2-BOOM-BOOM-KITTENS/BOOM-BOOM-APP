@@ -1,8 +1,6 @@
 package com.example.boomboomfrontend.logic
 
-import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
-import com.example.boomboomfrontend.model.CardType
 
 class GameManager(
     private val cardManager: CardManager,
@@ -12,9 +10,9 @@ class GameManager(
     var currentPlayer: Player? = null
     var currentPlayerIndex = 0
   
-      fun addPlayer (player: Player){
-        players.add(player)
-    }
+   //   fun addPlayer (player: Player){
+   //     players.add(player)
+   // }
 
     fun eliminatePlayer (player:Player){
         player.isAlive = false
