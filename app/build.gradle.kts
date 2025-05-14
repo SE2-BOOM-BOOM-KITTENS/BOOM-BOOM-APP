@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.sonarqube") version "5.1.0.4882"
     id("jacoco")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
 android {
@@ -21,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,6 +44,12 @@ android {
         viewBinding = true
     }
 
+    lint {
+        xmlReport = true
+        htmlReport = false // optional
+    }
+
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
@@ -56,8 +63,6 @@ android {
         }
     }
 
-
-// Jacoco report task – muss außerhalb des android-Blocks stehen!
     tasks.register<JacocoReport>("jacocoTestReport") {
         group = "verification"
         description = "Generates code coverage report for the test task."
@@ -106,6 +111,9 @@ android {
         implementation("org.hildan.krossbow:krossbow-websocket-okhttp:7.0.0")
         implementation("org.hildan.krossbow:krossbow-stomp-core:7.0.0")
         implementation("org.hildan.krossbow:krossbow-websocket-builtin:7.0.0")
+
+        implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
         implementation("androidx.core:core-ktx:1.9.0")
         implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
         implementation("androidx.activity:activity-compose:1.7.0")
@@ -119,11 +127,15 @@ android {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         implementation("androidx.recyclerview:recyclerview:1.3.1")
         implementation("androidx.navigation:navigation-compose:2.7.7")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
         testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
         testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
         testImplementation("org.mockito:mockito-core:5.2.0")
         testImplementation(kotlin("test"))
+        testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
 
         androidTestImplementation("androidx.test.ext:junit:1.1.5")
         androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -139,10 +151,8 @@ android {
             property("sonar.projectKey", "SE2-BOOM-BOOM-KITTENS_BOOOM-BOOM-FRONTEND")
             property("sonar.organization", "se2-boom-boom-kittens")
             property("sonar.host.url", "https://sonarcloud.io")
-            property(
-                "sonar.coverage.jacoco.xmlReportPaths",
-                "${project.projectDir}app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-            )
+            property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+            property("sonar.androidLint.reportPaths", "build/reports/lint-results-debug.xml")
         }
     }
 }

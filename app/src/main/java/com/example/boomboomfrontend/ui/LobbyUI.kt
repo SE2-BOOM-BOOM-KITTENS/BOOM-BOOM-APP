@@ -11,14 +11,16 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.boomboomfrontend.logic.Lobby
 import com.example.boomboomfrontend.model.ConnectionStatus
 import com.example.boomboomfrontend.model.Player
+import com.example.boomboomfrontend.viewmodel.LobbyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LobbyScreen(navController: NavHostController, onEnterLobby: () -> Unit) {
+fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: NavHostController, onEnterLobby: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var lobby: Lobby? by remember { mutableStateOf(null) }
     var joined by remember { mutableStateOf(false) }
