@@ -27,6 +27,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     var playerCount: Int = 0
     val players: MutableList<Player> = mutableListOf()
+    var myTurn: Boolean = false
     var cardType: String
     var gameOver: Boolean = false
     var gameReady: Boolean = false
@@ -72,6 +73,17 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         if(gameStateJson != null){
             lobbyId = UUID.fromString(gameStateJson.getString("lobbyId"))
             playerCount = gameStateJson.getInt("playerCount")
+            //myTurn = gameStateJson.getBoolean("myTurn")
+
+            val currentPlayer = gameStateJson.getJSONObject("currentPlayer")
+            val id = UUID.fromString(currentPlayer.getString("playerId"))
+
+            if(playerId == id){
+                myTurn = true
+            } else {
+                myTurn = false
+            }
+
 
             val playersJSON = gameStateJson.getJSONArray("players")
             for(i in 0 until playersJSON.length()){
