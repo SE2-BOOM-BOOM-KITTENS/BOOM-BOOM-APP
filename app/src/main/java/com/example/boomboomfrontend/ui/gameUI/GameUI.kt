@@ -1,6 +1,7 @@
 package com.example.boomboomfrontend.ui.gameUI
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +22,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.viewmodel.GameStateViewModel
+
+const val background = 0xff962319
+const val cardback = 0xff1c0e0b
+const val cardfront = 0xffb2766b
+const val border = 0xff000000
+const val servertext = 0x99eeeeee
 
 @Preview(
     showSystemUi = true,
@@ -38,7 +46,10 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
 
     Text(text = gameStateViewModel.playerName)
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color(background))
+    ) {
         // Center content
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -107,15 +118,13 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     }
 }
 
-
-
-
 @Composable
 fun CardUI(textField: String) {
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
-            .background(Color(0xffb2766b))
+            .background(Color(cardfront), RoundedCornerShape(10.dp))
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
     ) {
         Text(
             text = textField,
@@ -130,7 +139,8 @@ fun DeckUI() {
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
-            .background(Color(0xff1c0e0b))
+            .background(Color(cardback), RoundedCornerShape(10.dp))
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
     ) {
         Text(
             text = "DECK",
@@ -145,7 +155,7 @@ fun PlayerHands(viewModel: GameStateViewModel) {
     Box(
         modifier = Modifier
             .size(250.dp, 90.dp)
-            .background(Color(0xffb2766b))
+            .background(Color(cardfront))
     ) {
         Text(
             text = viewModel.getCardHandText(),
@@ -161,7 +171,7 @@ fun OpponentHands() {
     Box(
         modifier = Modifier
             .size(250.dp, 90.dp)
-            .background(Color(0xff1c0e0b))
+            .background(Color(cardback))
     ) {
         Text(
             text = "OPPONENT\nHAND",
@@ -194,8 +204,9 @@ fun ButtonGroup(
 fun ServerMessage(serverMessage: String){
     Row(
         modifier = Modifier
-            .background(Color.White)
+            .background(Color(servertext))
             .padding(8.dp)
+            .width(240.dp)
     ) {
         Text("Ausgabe:")
         Spacer(modifier = Modifier.height(4.dp))
