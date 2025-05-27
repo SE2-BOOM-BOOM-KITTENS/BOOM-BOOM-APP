@@ -7,6 +7,8 @@ class GameManager(
     private val players: MutableList<Player>
 ) {
 
+    // fixme dont forget to send updates to the server
+
     var currentPlayer: Player? = null
     var currentPlayerIndex = 0
   

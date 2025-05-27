@@ -6,6 +6,7 @@ import com.example.boomboomfrontend.model.Player
 
 class CardManager {
 
+    // fixme dont forget to send deck updates to the server
     private val deck = Deck()
     private val discardPile: MutableList<Card> = mutableListOf()
 

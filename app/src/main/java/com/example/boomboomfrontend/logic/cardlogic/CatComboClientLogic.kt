@@ -35,6 +35,7 @@ interface WebSocketClient {
     fun send(text: String)
 }
 
+// fixme avoid extension methods in packages you own. use a default method in the interface (in Kotlin its just a message with body)
 // Extension function to send JSON
 fun WebSocketClient.sendJson(message: CatComboMessage) {
     val json = Json.encodeToString(CatComboMessage.serializer(), message)

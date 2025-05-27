@@ -16,6 +16,7 @@ import org.json.JSONObject
 import java.util.UUID
 
 class GameStateViewModel :ViewModel() ,Callbacks {
+    // fixme instead of passing this whole object just pass the callback method (after annotating the interface as functional)
     private val stomp = Stomp(this)
 
     lateinit var playerId: UUID

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-
+// fixme remove from model package, to viewmodel package?
 class DeckViewModel : ViewModel() {
 
     // speichert Zustand des Decks
