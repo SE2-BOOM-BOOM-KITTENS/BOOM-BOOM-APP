@@ -1,3 +1,4 @@
+// fixme put all test classes in corresponding packages (analogous to production code)
 package com.example.boomboomfrontend.logic.cardlogic
 
 import com.example.boomboomfrontend.model.Card
