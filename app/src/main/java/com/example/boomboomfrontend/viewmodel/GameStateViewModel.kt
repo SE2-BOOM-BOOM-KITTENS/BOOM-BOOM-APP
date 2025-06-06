@@ -59,6 +59,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
             when(type){
                 "GAME_STATE" -> updateState(gameStateJson)
+                "GAME_START" -> {
+                    updateState(gameStateJson)
+                    gameReady = true
+                }
                 "HAND" -> updateHand(gameStateJson)
                 "EXPLODE" -> handleExplosion()
             }
@@ -118,6 +122,15 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             explode()
         }
 
+    }
+
+    fun startGame() {
+        val playerMessage = PlayerMessage(
+            playerName = playerName,
+            action = "START_GAME",
+            cardsPlayed = null
+        )
+        stomp.sendAction(playerMessage)
     }
 
     fun handleExplosion(){

@@ -55,14 +55,6 @@ class GameActivity : ComponentActivity() {
                         Player(name = it.name, id = it.id, isAlive = true)
                     }.toMutableList()
 
-                    // Deck und GameManager initialisieren
-                    cardManager.initializeDeck(localPlayers)
-                    localPlayers.forEach {
-                        it.hand.clear() // optional, falls wir die Hand neu aufbauen wollen
-                        it.hand.addAll(List(5) { cardManager.drawCard()!! })
-                    }
-                    gameManager = GameManager(cardManager, localPlayers)
-
                     updateUI()
                 }
             }
