@@ -2,15 +2,9 @@ package com.example.boomboomfrontend.ui.gameUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
 const val background = 0xff962319
@@ -41,8 +38,8 @@ const val servertext = 0x99eeeeee
 @Composable
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
-
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
+    val cardList = gameStateViewModel.getCardHandText()
 
     Text(text = gameStateViewModel.playerName)
 
@@ -61,12 +58,13 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             }
         }
 
-        // Bottom center
-        Box(
-            modifier = Modifier.fillMaxSize(),
+        Box (
+            modifier = Modifier
+                .width(1020.dp)
+                .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            PlayerHands(viewModel())
+            CardSelect(gameStateViewModel, selectedCardText)
         }
 
         // Top center
@@ -75,35 +73,6 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             contentAlignment = Alignment.TopCenter
         ) {
             OpponentHands()
-        }
-
-        // Bottom left
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            ButtonGroup(
-                labels = listOf("Blank", "Defuse", "Nope", "Pass"),
-                onClicks = listOf(
-                    {
-                        selectedCardText.value = "BLANK\nCARD"
-                        bottomLeftBlank(gameStateViewModel)
-                    },
-                    {
-                        selectedCardText.value = "DEFUSE"
-                        bottomLeftDefuse(gameStateViewModel)
-                    },
-                    {
-                        selectedCardText.value = "NOPE"
-                        bottomLeftNope(gameStateViewModel)
-                    },
-                    {
-                        bottomLeftPass(gameStateViewModel)
-                    }
-                )
-            )
         }
 
         // Top Right
@@ -151,22 +120,6 @@ fun DeckUI() {
 }
 
 @Composable
-fun PlayerHands(viewModel: GameStateViewModel) {
-    Box(
-        modifier = Modifier
-            .size(250.dp, 90.dp)
-            .background(Color(cardfront))
-    ) {
-        Text(
-            text = viewModel.getCardHandText(),
-            color = Color.White,
-            fontSize = 11.sp,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
 fun OpponentHands() {
     Box(
         modifier = Modifier
@@ -192,7 +145,8 @@ fun ButtonGroup(
         labels.zip(onClicks).forEach { (label, onClick) ->
             Button(
                 onClick = onClick,
-                modifier = Modifier.size(width = 95.dp, height = 36.dp) // adjust as needed
+                modifier = Modifier.size(110.dp, 150.dp),
+                shape = RectangleShape
             ) {
                 Text(text = label)
             }
@@ -214,6 +168,39 @@ fun ServerMessage(serverMessage: String){
         if (serverMessage.isNotBlank()) {
             Text(serverMessage, color = Color.DarkGray)
             Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: MutableState<String>){
+    val labels = gameStateViewModel.getCardHandText()
+
+    val onClicks = gameStateViewModel.cardHand.map { card ->
+        {
+            selectedCardText.value = card.name
+            when (card.type) {
+                CardType.BLANK -> bottomLeftBlank(gameStateViewModel)
+                CardType.DEFUSE -> bottomLeftDefuse(gameStateViewModel)
+                CardType.NOPE -> bottomLeftNope(gameStateViewModel)
+                else -> bottomLeftPass(gameStateViewModel) // fallback
+            }
+        }
+    }
+
+        Box (
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(Color(cardfront))
+                    .size(450.dp, 110.dp)
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                ButtonGroup(
+                    labels = labels,
+                    onClicks = onClicks
+                )
         }
     }
 }
