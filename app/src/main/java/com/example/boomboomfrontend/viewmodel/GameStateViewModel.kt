@@ -25,7 +25,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     lateinit var lobbyId: UUID
     var cardHand: MutableList<Card> = mutableListOf()
 
-
     var playerCount: Int = 0
     val players: MutableList<Player> = mutableListOf()
     var myTurn: Boolean = false
@@ -47,7 +46,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     private fun processServerMessage(msg: String){
         try{
             val json = JSONObject(msg)
-
 
             val type = json.getString("type")
             val message = json.getString("message")
@@ -106,9 +104,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             val card = Card(cardJSON.getString("name"),CardType.valueOf(type))
             newHand.add(card)
         }
-
-
-
 
         playerId = handId
         cardHand = newHand
