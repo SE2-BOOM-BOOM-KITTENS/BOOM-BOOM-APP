@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.ui.gameUI
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
 @Preview(
@@ -35,6 +37,10 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
 
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
+    val openAlertDialog = remember { mutableStateOf(false) }
+
+    BackHandler(enabled = true) {
+    }
 
     Text(text = gameStateViewModel.playerName)
 
