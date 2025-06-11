@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.boomboomfrontend.viewmodel.GameStateViewModel
 
 @Composable
 fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> Unit) {
@@ -54,13 +56,15 @@ fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> 
         * I kno the button looks weird PLS ignore thanks
         * */
 
+        val gameStateViewModel: GameStateViewModel = viewModel()
+
         Button(
-            onClick = { navController.navigate("game") }
+            onClick = {
+                navController.navigate("game")
+                gameStateViewModel.startGame()
+            }
         ) {
-            Text("Zum Spiel",
-                modifier = Modifier
-                    .weight(2f)
-            )
+            Text("Spiel starten")
         }
     }
 }
