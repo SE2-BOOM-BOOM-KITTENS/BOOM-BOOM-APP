@@ -6,12 +6,10 @@ import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.network.messages.PlayerMessage
-import com.example.boomboomfrontend.network.messages.networkPackets.GameStateNetworkPacket
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
@@ -25,11 +23,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     lateinit var lobbyId: UUID
     var cardHand: MutableList<Card> = mutableListOf()
 
-
-    var playerCount: Int = 0
+    private var playerCount: Int = 0
     val players: MutableList<Player> = mutableListOf()
-    var myTurn: Boolean = false
-    var cardType: String
+    private var myTurn: Boolean = false
+    private var cardType: String
     var gameOver: Boolean = false
     var gameReady: Boolean = false
 
@@ -39,6 +36,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     init {
         playerName = "Steve"
         cardType = "BLANK\nCARD"
+        cardHand = mutableListOf(Card("Nope", CardType.NOPE), Card("Defuse", CardType.DEFUSE), Card("Blank", CardType.BLANK), Card("Defuse", CardType.DEFUSE), Card("Cat Beard", CardType.CAT_BEARD))
         stomp.connect(playerName){
             joinGame()
         }
@@ -47,7 +45,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     private fun processServerMessage(msg: String){
         try{
             val json = JSONObject(msg)
-
 
             val type = json.getString("type")
             val message = json.getString("message")
@@ -73,7 +70,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         }
     }
 
-    private fun updateState(gameStateJson:JSONObject?){
+    private fun updateState(gameStateJson: JSONObject?){
         Log.i("UPDATESTATE",gameStateJson.toString())
         if(gameStateJson != null){
             lobbyId = UUID.fromString(gameStateJson.getString("lobbyId"))
@@ -111,9 +108,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             newHand.add(card)
         }
 
-
-
-
         playerId = handId
         cardHand = newHand
         Log.i("HAND",gameStateJson.toString())
@@ -133,7 +127,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stomp.sendAction(playerMessage)
     }
 
-    fun handleExplosion(){
+    private fun handleExplosion(){
     }
 
     override fun onResponse(res: String) {
@@ -150,12 +144,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stomp.getHand(playerName)
     }
 
-    fun joinGame(){
+    private fun joinGame(){
         val playerMessage = PlayerMessage(playerName,null,null)
         stomp.joinGame(playerMessage)
     }
 
-    fun explode(){
+    private fun explode(){
         stomp.explode(playerName)
     }
 
@@ -177,12 +171,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         return false
     }
 
-    fun getCardHandText():String{
-        var text = ""
-        for(card in cardHand){
-            text += card.name
-            text += ", "
-        }
-        return text
+    fun getCardHandText(): List<String> {
+        return cardHand.map { it.name }
     }
 }
