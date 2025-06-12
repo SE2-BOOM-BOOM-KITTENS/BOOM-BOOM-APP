@@ -14,7 +14,7 @@ import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
 private const val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name="
-private const val REMOTE_WEBSOCKET_URI = "ws://192.168.56.1:53200/game?name="
+private const val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?name="
 
 class Stomp(private val callbacks: Callbacks) {
 
