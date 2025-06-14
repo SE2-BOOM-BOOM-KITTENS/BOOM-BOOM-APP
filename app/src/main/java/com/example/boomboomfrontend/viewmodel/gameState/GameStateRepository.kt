@@ -7,22 +7,27 @@ import com.example.boomboomfrontend.model.Player
 import org.json.JSONObject
 import java.util.UUID
 
-class GameStateRepository(private val clientInfo: ClientInfo) {
+class GameStateRepository() {
+    val clientInfo = ClientInfoHolder.clientInfo
     val players = mutableListOf<Player>()
     var cardHand: MutableList<Card> = mutableListOf()
     var playerCount: Int = 0
     var myTurn: Boolean = false
 
     fun processServerMessage(msg:String): Triple<String, String, JSONObject?>{
+        Log.i("JSON_PROCESSING", "Processing json")
         val json = JSONObject(msg)
+        Log.i("JSON_PROCESSING", "Processing type")
         val type = json.getString("type")
+        Log.i("JSON_PROCESSING", "Processing message")
         val message = json.getString("message")
-        val gameStateJson = json.optJSONObject("gameState")
+        Log.i("JSON_PROCESSING", "Processing payload")
+        val gameStateJson = json.optJSONObject("payload")
         return Triple(type,message,gameStateJson)
     }
 
     fun updateState(gameStateJson: JSONObject?){
-        Log.i("UPDATESTATE",gameStateJson.toString())
+        Log.i("UPDATE_STATE",gameStateJson.toString())
         if(gameStateJson != null){
             clientInfo.currentLobbyID = UUID.fromString(gameStateJson.getString("lobbyId"))
             playerCount = gameStateJson.getInt("playerCount")

@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.example.boomboomfrontend.network.messages.PlayerMessage
+import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import org.hildan.krossbow.stomp.StompClient
@@ -13,10 +14,12 @@ import org.hildan.krossbow.stomp.subscribeText
 import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
-private const val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name="
-private const val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?name="
+val clientInfo = ClientInfoHolder.clientInfo
+private val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name=${clientInfo.playerName}"
+private val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?name=${clientInfo.playerName}"
 
 class Stomp(private val callbacks: Callbacks) {
+
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -55,7 +58,7 @@ class Stomp(private val callbacks: Callbacks) {
                     }
 
                     launch {
-                        stompSession.subscribeText("/topic/lobby/1234").collectLatest { msg ->
+                        stompSession.subscribeText("/topic/lobby/${clientInfo.currentLobbyID}").collectLatest { msg ->
                             handleIncomingMessage(msg)
                         }
                     }
@@ -85,7 +88,8 @@ class Stomp(private val callbacks: Callbacks) {
         val json = JSONObject().apply {
             put("playerName",playerMessage.playerName)
             put("action", playerMessage.action)
-            put("payload", playerMessage.cardsPlayed)
+            put("payload", playerMessage.payload)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
@@ -98,6 +102,7 @@ class Stomp(private val callbacks: Callbacks) {
             put("playerName",playerMessage.playerName)
             put("action", null)
             put("payload", null)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
@@ -106,11 +111,12 @@ class Stomp(private val callbacks: Callbacks) {
         onJoined?.invoke()
     }
 
-    fun getHand(playerName:String){
+    fun getHand(playerMessage: PlayerMessage){
         val json = JSONObject().apply {
-            put("playerName",playerName)
+            put("playerName",playerMessage.lobbyId)
             put("action", null)
             put("payload", null)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
@@ -118,11 +124,12 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
-    fun explode(playerName: String){
+    fun explode(playerMessage: PlayerMessage){
         val json = JSONObject().apply {
-            put("playerName",playerName)
+            put("playerName",playerMessage)
             put("action", "EXPLODE")
             put("payload", null)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
@@ -130,29 +137,29 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
-    fun sendErrorAction(){
-
-        val playerMessage = JSONObject().apply {
-            put("playerName", "Steve")
+    fun sendErrorAction(playerMessage: PlayerMessage){
+        val json = JSONObject().apply {
+            put("playerName", playerMessage.playerName)
             put("action","ERROR")
             put("cardsPlayed", null)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
-            session?.sendText("/app/action", playerMessage.toString())
+            session?.sendText("/app/action", json.toString())
         }
     }
 
-    fun sendDebugTest(){
-
-        val playerMessage = JSONObject().apply {
-            put("playerName", "Test")
+    fun sendDebugTest(playerMessage: PlayerMessage){
+        val json = JSONObject().apply {
+            put("playerName", playerMessage.playerName)
             put("action","DEBUG")
             put("cardsPlayed", null)
+            put("lobbyId", playerMessage.lobbyId)
         }
 
         coroutineScope.launch {
-            session?.sendText("/app/test",playerMessage.toString())
+            session?.sendText("/app/test",json.toString())
         }
     }
 
