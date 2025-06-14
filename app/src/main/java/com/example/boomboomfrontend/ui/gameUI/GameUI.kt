@@ -21,12 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.boomboomfrontend.ui.dialogs.ExitPopup
-import com.example.boomboomfrontend.viewmodel.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 
 @Preview(
     showSystemUi = true,
@@ -42,7 +40,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     BackHandler(enabled = true) {
     }
 
-    Text(text = gameStateViewModel.playerName)
+    Text(text = gameStateViewModel.clientInfo.playerName)
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Center content
@@ -152,14 +150,7 @@ fun PlayerHands(viewModel: GameStateViewModel) {
         modifier = Modifier
             .size(250.dp, 90.dp)
             .background(Color(0xffb2766b))
-    ) {
-        Text(
-            text = viewModel.getCardHandText(),
-            color = Color.White,
-            fontSize = 11.sp,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
+    )
 }
 
 @Composable
