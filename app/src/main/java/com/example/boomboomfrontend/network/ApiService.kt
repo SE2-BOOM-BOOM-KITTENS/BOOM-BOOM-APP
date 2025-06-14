@@ -2,6 +2,7 @@ package com.example.boomboomfrontend.network
 
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
+import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetworkPacket
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,5 +22,8 @@ interface ApiService {
     suspend fun getPlayersInLobby(
         @Header("lobbyId") lobbyId: String
     ): Response<List<PlayerResponse>>
+
+    @POST("lobbies")
+    suspend fun createLobby(@Body request: CreateLobbyRequest): Response<LobbyNetworkPacket>
 
 }
