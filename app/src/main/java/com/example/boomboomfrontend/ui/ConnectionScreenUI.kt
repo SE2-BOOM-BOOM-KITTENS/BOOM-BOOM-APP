@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.viewmodel.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 
 @Composable
 fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> Unit) {
@@ -61,7 +61,7 @@ fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> 
         Button(
             onClick = {
                 navController.navigate("game")
-                gameStateViewModel.startGame()
+                //gameStateViewModel.startGame()
             }
         ) {
             Text("Spiel starten")
