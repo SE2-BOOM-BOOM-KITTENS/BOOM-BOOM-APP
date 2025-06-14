@@ -10,14 +10,15 @@ import kotlinx.coroutines.flow.StateFlow
 class GameStateViewModel :ViewModel() ,Callbacks {
 
     private val stompService = StompService(this)
-    val clientInfo = ClientInfo()
-    val repository = GameStateRepository(clientInfo)
+    val repository = GameStateRepository()
+    val clientInfo = ClientInfoHolder.clientInfo
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
 
     init {
         stompService.connect(clientInfo.playerName){
+            Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             joinGame()
         }
     }
@@ -42,12 +43,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     fun playCard(playerMessage: PlayerMessage){
         stompService.sendAction(playerMessage)
-        stompService.getHand(clientInfo.playerName)
+        stompService.getHand()
     }
 
     fun pass(playerMessage: PlayerMessage){
         stompService.sendAction(playerMessage)
-        stompService.getHand(clientInfo.playerName)
+        stompService.getHand()
     }
 
     fun joinGame(){
@@ -56,7 +57,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun explode(){
-        stompService.explode(clientInfo.playerName)
+        stompService.explode()
     }
 
     fun handleExplosion(){

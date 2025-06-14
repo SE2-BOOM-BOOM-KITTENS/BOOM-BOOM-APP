@@ -82,7 +82,8 @@ android {
             "**/BuildConfig.*",
             "**/Manifest*.*",
             "**/*Test*.*",
-            "android/**/*.*"
+            "android/**/*.*",
+            "**/gameUI/**/*.*"
         )
 
         val debugTree =
