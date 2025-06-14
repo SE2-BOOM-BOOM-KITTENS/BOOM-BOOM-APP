@@ -3,9 +3,9 @@ package com.example.boomboomfrontend.ui.gameUI
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.PlayerMessage
-import com.example.boomboomfrontend.viewmodel.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 
-fun bottomLeftBlank(viewModel:GameStateViewModel) {
+fun bottomLeftBlank(viewModel: GameStateViewModel) {
     val player = "PLAYER"
     val action = "PLAY_CARDS"
     val cardsPlayed = Card("Blank", CardType.BLANK)

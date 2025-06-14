@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.model.CardType
-import com.example.boomboomfrontend.viewmodel.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -39,9 +39,9 @@ const val servertext = 0x99eeeeee
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
-    val cardList = gameStateViewModel.getCardHandText()
+    val cardList = gameStateViewModel.repository.getCardHandText()
 
-    Text(text = gameStateViewModel.playerName)
+    Text(text = gameStateViewModel.clientInfo.playerName)
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -174,9 +174,9 @@ fun ServerMessage(serverMessage: String){
 
 @Composable
 fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: MutableState<String>){
-    val labels = gameStateViewModel.getCardHandText()
+    val labels = gameStateViewModel.repository.getCardHandText()
 
-    val onClicks = gameStateViewModel.cardHand.map { card ->
+    val onClicks = gameStateViewModel.repository.cardHand.map { card ->
         {
             selectedCardText.value = card.name
             when (card.type) {
