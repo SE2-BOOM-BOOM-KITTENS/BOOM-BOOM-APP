@@ -16,15 +16,15 @@ class StompService(callbacks: Callbacks) {
         stomp.sendAction(playerMessage)
     }
 
-    fun getHand(playerName: String){
-        stomp.getHand(playerName)
+    fun getHand(){
+        stomp.getHand(PlayerMessage())
     }
 
     fun joinGame(playerMessage: PlayerMessage){
         stomp.joinGame(playerMessage)
     }
 
-    fun explode(playerName: String){
-        stomp.explode(playerName)
+    fun explode(){
+        stomp.explode(PlayerMessage())
     }
 }

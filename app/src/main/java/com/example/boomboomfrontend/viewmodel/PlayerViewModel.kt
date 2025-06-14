@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
 import com.example.boomboomfrontend.network.ApiRepository
+import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -105,10 +106,12 @@ class PlayerViewModel : ViewModel(), Callbacks {
 //    }
 
     fun testBroadcast(){
-        stomp.sendDebugTest()
+        val playerMessage = PlayerMessage()
+        stomp.sendDebugTest(playerMessage)
     }
 
     fun sendErrorAction(){
-        stomp.sendErrorAction()
+        val playerMessage = PlayerMessage()
+        stomp.sendErrorAction(playerMessage)
     }
 }
