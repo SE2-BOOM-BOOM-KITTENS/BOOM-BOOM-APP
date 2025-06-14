@@ -13,7 +13,8 @@ import org.hildan.krossbow.stomp.subscribeText
 import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
-private const val WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name="
+private const val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name="
+private const val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?name="
 
 class Stomp(private val callbacks: Callbacks) {
 
@@ -34,41 +35,38 @@ class Stomp(private val callbacks: Callbacks) {
         }
         client = StompClient(OkHttpWebSocketClient())
 
+        tryConnect(name=name, LOCAL_WEBSOCKET_URI,onConnected=onConnected){
+            tryConnect(name=name, REMOTE_WEBSOCKET_URI, onConnected=onConnected)
+        }
+    }
+
+    private fun tryConnect(name:String, uri: String, onConnected: (() -> Unit)?, fallback: (()->Unit)?=null){
         sessionJob = coroutineScope.launch {
-            try {
-                session = client.connect(WEBSOCKET_URI + name)
-           //     Log.e("TESST", WEBSOCKET_URI+name)
+            try{
+                session = client.connect(uri + name)
 
                 session?.let { stompSession ->
+                    isConnected = true
 
                     launch {
-                        Log.d("STOMP","Received on topic/test")
                         stompSession.subscribeText("/topic/test").collectLatest { msg ->
                             handleIncomingMessage(msg)
                         }
                     }
 
                     launch {
-                            Log.d("STOMP","Received on user/queue/private")
-                            stompSession.subscribeText("/user/queue/private").collectLatest {msg->
-                                handleIncomingMessage(msg)
-                            }
-                        }
-
-
-                    launch {
-                        Log.d("STOMP","Received on topic/lobby/1234")
-                        stompSession.subscribeText("/topic/lobby/1234").collectLatest { msg->
+                        stompSession.subscribeText("/topic/lobby/1234").collectLatest { msg ->
                             handleIncomingMessage(msg)
                         }
                     }
 
-                    callback("WebSocket connected")
+                    callback("Websocket connected to $uri")
                     onConnected?.invoke()
                 }
-            } catch (e: Exception) {
-                Log.e("STOMP", "Connection error", e)
-                callback("Connection Error: ${e.localizedMessage}")
+            } catch (e:Exception){
+                Log.e("STOMP", "Connection error on $uri", e)
+                callback("Connection error on $uri:${e.localizedMessage}")
+                fallback?.invoke()
             }
         }
     }
