@@ -15,7 +15,7 @@ class Deck {
         cards.shuffle()
     }
 
-    fun draw(): Card? = if (cards.isNotEmpty()) cards.removeFirst() else null
+    fun draw(): Card? = if (cards.isNotEmpty()) cards.removeAt(0) else null
 
     fun insertAt(card: Card, index: Int) {
         cards.add(index.coerceIn(0, cards.size), card)

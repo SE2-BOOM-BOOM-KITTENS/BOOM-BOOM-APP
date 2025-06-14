@@ -8,6 +8,7 @@ import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetwork
 import okhttp3.ResponseBody
 import retrofit2.Response
 
+// fixme rename to show its handling players for maintainability
 class ApiRepository {
 
     suspend fun addPlayer(player: Player) = RetrofitInstance.api.addPlayer(player)

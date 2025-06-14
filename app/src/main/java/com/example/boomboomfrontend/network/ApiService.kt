@@ -10,6 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 
+// fixme add player information in name
 interface ApiService {
     @POST("/players")
     suspend fun addPlayer(@Body player: Player): Response<ResponseBody>
