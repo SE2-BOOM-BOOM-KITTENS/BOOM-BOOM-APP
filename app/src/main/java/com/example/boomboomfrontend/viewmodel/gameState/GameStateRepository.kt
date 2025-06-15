@@ -34,7 +34,7 @@ class GameStateRepository() {
             //myTurn = gameStateJson.getBoolean("myTurn")
 
             val currentPlayer = gameStateJson.getJSONObject("currentPlayer")
-            val id = UUID.fromString(currentPlayer.getString("playerId"))
+            val id = UUID.fromString(currentPlayer.getString("id"))
 
             if(clientInfo.playerId == id){
                 myTurn = true

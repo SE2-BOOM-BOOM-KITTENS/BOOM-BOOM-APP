@@ -63,6 +63,12 @@ class Stomp(private val callbacks: Callbacks) {
                         }
                     }
 
+                    launch {
+                        stompSession.subscribeText("/user/queue/private").collectLatest { msg ->
+                            handleIncomingMessage(msg)
+                        }
+                    }
+
                     callback("Websocket connected to $uri")
                     onConnected?.invoke()
                 }
