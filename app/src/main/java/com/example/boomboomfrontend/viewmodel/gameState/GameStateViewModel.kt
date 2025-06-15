@@ -31,6 +31,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             when(type){
                 "GAME_STATE" -> repository.updateState(gameStateJson)
                 "HAND" -> {
+                    Log.i("Hand","updating Hand")
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
                 }
