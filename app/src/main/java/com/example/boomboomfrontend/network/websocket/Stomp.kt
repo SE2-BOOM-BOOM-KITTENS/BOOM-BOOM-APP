@@ -105,9 +105,9 @@ class Stomp(private val callbacks: Callbacks) {
 
     fun joinGame(playerMessage: PlayerMessage, onJoined: (()-> Unit)?=null){
         val json = JSONObject().apply {
+            put("payload",playerMessage.payload)
             put("playerName",playerMessage.playerName)
             put("action", null)
-            put("payload", null)
             put("lobbyId", playerMessage.lobbyId)
         }
 

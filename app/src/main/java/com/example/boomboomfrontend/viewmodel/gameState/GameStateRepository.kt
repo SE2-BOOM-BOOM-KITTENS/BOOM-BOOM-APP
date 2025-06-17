@@ -90,7 +90,7 @@ class GameStateRepository() {
                     defuse++
                 }
             }
-            return explodingKitten <= defuse
+            return explodingKitten > defuse
         }
         return false
     }
