@@ -56,7 +56,7 @@ fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> 
         * I kno the button looks weird PLS ignore thanks
         * */
 
-        val gameStateViewModel: GameStateViewModel = viewModel()
+        //val gameStateViewModel: GameStateViewModel = viewModel()
 
         Button(
             onClick = {
