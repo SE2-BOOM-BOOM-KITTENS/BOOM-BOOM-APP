@@ -10,5 +10,9 @@ enum class CardType {
     CAT_HAIRY_POTATO,
     CAT_RAINBOW_RALPHING,
     CAT_CATERMELON,
+    SHUFFLE,
+    ALTER_THE_FUTURE,
+    SEE_THE_FUTURE,
+    FERAL_CAT,
     TEST // nur zum Testen der Klasse CardEffectRegistry
 }
