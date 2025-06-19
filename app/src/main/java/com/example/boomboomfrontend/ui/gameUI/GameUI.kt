@@ -8,8 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,13 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -38,14 +40,20 @@ const val servertext = 0x99eeeeee
 @Composable
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
+
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
+
     val cardList = gameStateViewModel.repository.getCardHandText()
 
-    Text(text = gameStateViewModel.clientInfo.playerName)
+    //Gotta extract all players...
+    val opponentName1 = gameStateViewModel.clientInfo.playerName
+    val opponentName2 = gameStateViewModel.clientInfo.playerName
+    val opponentName3 = gameStateViewModel.clientInfo.playerName
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(background))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(background))
     ) {
         // Center content
         Box(
@@ -58,7 +66,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             }
         }
 
-        Box (
+        Box(
             modifier = Modifier
                 .width(1020.dp)
                 .fillMaxSize(),
@@ -67,12 +75,29 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             CardSelect(gameStateViewModel, selectedCardText)
         }
 
+        // Left
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            LeftOpponentHand(opponentName1)
+        }
+
         // Top center
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            OpponentHands()
+            TopOpponentHand(opponentName2)
+        }
+
+
+        //Right
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            RightOpponentHand(opponentName3)
         }
 
         // Top Right
@@ -81,7 +106,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
                 .fillMaxSize()
                 .padding(8.dp),
             contentAlignment = Alignment.TopEnd
-        ){
+        ) {
             ServerMessage(serverMessage)
         }
     }
@@ -120,14 +145,15 @@ fun DeckUI() {
 }
 
 @Composable
-fun OpponentHands() {
+fun TopOpponentHand(opponentName: String) {
     Box(
         modifier = Modifier
             .size(250.dp, 90.dp)
             .background(Color(cardback))
     ) {
         Text(
-            text = "OPPONENT\nHAND",
+            text = opponentName,
+            fontSize = 18.sp,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
@@ -135,18 +161,79 @@ fun OpponentHands() {
 }
 
 @Composable
+fun LeftOpponentHand(opponentName: String) {
+    Box(
+        modifier = Modifier
+            .size(250.dp, 90.dp)
+            .offset((-80).dp)
+            .vertical()
+            .rotate(-90f)
+            .background(Color(cardback))
+    ) {
+        Text(
+            text = opponentName,
+            fontSize = 18.sp,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(30.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun RightOpponentHand(opponentName: String) {
+    Box(
+        modifier = Modifier
+            .size(250.dp, 90.dp)
+            .offset((80).dp)
+            .vertical()
+            .rotate(90f)
+            .background(Color(cardback))
+    ) {
+        Text(
+            text = opponentName,
+            fontSize = 18.sp,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(30.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+fun Modifier.vertical() =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        layout(placeable.height, placeable.width) {
+            placeable.place(
+                x = -(placeable.width / 2 - placeable.height / 2),
+                y = -(placeable.height / 2 - placeable.width / 2)
+            )
+        }
+    }
+
+@Composable
 fun ButtonGroup(
     labels: List<String>,
     onClicks: List<() -> Unit>
 ) {
     Row(
+        modifier = Modifier.background(Color(cardback)),
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         labels.zip(onClicks).forEach { (label, onClick) ->
             Button(
                 onClick = onClick,
-                modifier = Modifier.size(110.dp, 150.dp),
-                shape = RectangleShape
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(cardfront)
+                ),
+                modifier = Modifier.size(110.dp, 150.dp)
+                    .background(Color(cardfront), RoundedCornerShape(10.dp))
+                    .border(2.dp, Color(border), RoundedCornerShape(10.dp)),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(text = label)
             }
