@@ -9,7 +9,7 @@ import java.util.UUID
 
 class GameStateRepository() {
     val clientInfo = ClientInfoHolder.clientInfo
-    val players = mutableListOf<Player>()
+    var players = mutableListOf<Player>()
     var cardHand: MutableList<Card> = mutableListOf()
     var playerCount: Int = 0
     var myTurn: Boolean = false
@@ -63,9 +63,6 @@ class GameStateRepository() {
             val card = Card(cardJSON.getString("name"), CardType.valueOf(type))
             newHand.add(card)
         }
-
-
-
 
         clientInfo.playerId = handId
         cardHand = newHand

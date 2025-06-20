@@ -26,6 +26,8 @@ import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.model.Player
+import java.util.UUID
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -45,10 +47,14 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
 
     val cardList = gameStateViewModel.repository.getCardHandText()
 
-    //Gotta extract all players...
-    val opponentName1 = gameStateViewModel.clientInfo.playerName
-    val opponentName2 = gameStateViewModel.clientInfo.playerName
-    val opponentName3 = gameStateViewModel.clientInfo.playerName
+    //These are sample players just to fill the list! Remove later
+    gameStateViewModel.repository.players = mutableListOf(
+        Player(UUID.randomUUID().toString(), "Steve"),
+        Player(UUID.randomUUID().toString(), "Evil Steve"),
+        Player(UUID.randomUUID().toString(), "Dani"))
+    val opponentName1 = gameStateViewModel.repository.players[0].name
+    val opponentName2 = gameStateViewModel.repository.players[1].name
+    val opponentName3 = gameStateViewModel.repository.players[2].name
 
     Box(
         modifier = Modifier
