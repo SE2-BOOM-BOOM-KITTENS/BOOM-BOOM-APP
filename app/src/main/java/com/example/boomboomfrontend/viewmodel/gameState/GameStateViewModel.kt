@@ -17,7 +17,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     val responseMessage: StateFlow<String> = _responseMessage
 
     init {
-        stompService.connect(clientInfo.playerName){
+        stompService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             joinGame()
         }

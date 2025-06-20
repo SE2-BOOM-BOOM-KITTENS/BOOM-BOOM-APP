@@ -12,18 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
+
 
 @Composable
 fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> Unit) {
+    val clientInfo = ClientInfoHolder.clientInfo
     /*
     * Replace all "Player1" mentions with references to the list of players
     * IDK How we'll fetch connection status
     * */
 
-    val players = listOf("PLAYERS", "Player1", "Player2", "Player3", "Player4", "Player5")
+    val players = listOf("PLAYERS", "${clientInfo.playerName}:${clientInfo.playerId}", "Player2", "Player3", "Player4", "Player5")
     val connectionstatus = listOf("CONNECTION STATUS", "HOST", "ONLINE", "CONNECTION PENDING", "OFFLINE", "OFFLINE")
 
     Column(
@@ -51,12 +52,6 @@ fun ConnectionScreen(navController: NavHostController, onEnterGameScreen: () -> 
                 )
             }
         }
-
-        /*
-        * I kno the button looks weird PLS ignore thanks
-        * */
-
-        //val gameStateViewModel: GameStateViewModel = viewModel()
 
         Button(
             onClick = {

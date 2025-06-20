@@ -15,8 +15,8 @@ import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
 import org.json.JSONObject
 
 val clientInfo = ClientInfoHolder.clientInfo
-private val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?name=${clientInfo.playerName}"
-private val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?name=${clientInfo.playerName}"
+private val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?id=${clientInfo.playerId}"
+private val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?id=${clientInfo.playerId}"
 
 class Stomp(private val callbacks: Callbacks) {
 
@@ -30,7 +30,7 @@ class Stomp(private val callbacks: Callbacks) {
 
     private var isConnected = false
 
-    fun connect(name: String, onConnected: (()-> Unit)?=null) {
+    fun connect(onConnected: (()-> Unit)?=null) {
         if (isConnected) {
             callback("already connected")
             onConnected?.invoke()
@@ -38,15 +38,15 @@ class Stomp(private val callbacks: Callbacks) {
         }
         client = StompClient(OkHttpWebSocketClient())
 
-        tryConnect(name=name, LOCAL_WEBSOCKET_URI,onConnected=onConnected){
-            tryConnect(name=name, REMOTE_WEBSOCKET_URI, onConnected=onConnected)
+        tryConnect( LOCAL_WEBSOCKET_URI,onConnected=onConnected){
+            tryConnect(REMOTE_WEBSOCKET_URI, onConnected=onConnected)
         }
     }
 
-    private fun tryConnect(name:String, uri: String, onConnected: (() -> Unit)?, fallback: (()->Unit)?=null){
+    private fun tryConnect(uri: String, onConnected: (() -> Unit)?, fallback: (()->Unit)?=null){
         sessionJob = coroutineScope.launch {
             try{
-                session = client.connect(uri + name)
+                session = client.connect(uri)
 
                 session?.let { stompSession ->
                     isConnected = true
@@ -115,19 +115,6 @@ class Stomp(private val callbacks: Callbacks) {
             session?.sendText("/app/addPlayer",json.toString())
         }
         onJoined?.invoke()
-    }
-
-    fun getHand(playerMessage: PlayerMessage){
-        val json = JSONObject().apply {
-            put("playerName",playerMessage.lobbyId)
-            put("action", null)
-            put("payload", null)
-            put("lobbyId", playerMessage.lobbyId)
-        }
-
-        coroutineScope.launch {
-            session?.sendText("/app/getHand",json.toString())
-        }
     }
 
     fun explode(playerMessage: PlayerMessage){

@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.ui.ConnectionScreen
 import com.example.boomboomfrontend.ui.gameUI.GameScreen
 import com.example.boomboomfrontend.ui.LobbyScreen
+import com.example.boomboomfrontend.ui.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +24,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun BoomBoomKittens() {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "lobby") {
+            NavHost(navController = navController, startDestination = "register") {
+                composable("register"){
+                    RegisterScreen(navController)
+                }
                 composable("lobby") {
                     LobbyScreen(navController = navController, onEnterLobby = {
                         navController.navigate("connection-screen")
