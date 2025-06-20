@@ -82,7 +82,7 @@ fun ServerTestActivity(viewModel: PlayerViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(onClick = {
-                    viewModel.connectWebSocket(inputText)
+                    viewModel.connectWebSocket()
                 }) {
                     Text("Connect WebSocket")
                 }
