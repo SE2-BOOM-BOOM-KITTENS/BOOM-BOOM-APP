@@ -26,6 +26,7 @@ import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
 import java.util.UUID
 
@@ -42,16 +43,19 @@ const val servertext = 0x99eeeeee
 @Composable
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
-
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
-    val cardList = gameStateViewModel.repository.getCardHandText()
-
+    gameStateViewModel.repository.myTurn = false
     //These are sample players just to fill the list! Remove later
     gameStateViewModel.repository.players = mutableListOf(
         Player(UUID.randomUUID().toString(), "Steve"),
         Player(UUID.randomUUID().toString(), "Evil Steve"),
         Player(UUID.randomUUID().toString(), "Dani"))
+    gameStateViewModel.repository.cardHand = mutableListOf(
+        Card("Blank", CardType.BLANK),
+        Card("Defuse", CardType.DEFUSE),
+        Card("Alter the Future", CardType.SEE_THE_FUTURE)
+    )
     val opponentName1 = gameStateViewModel.repository.players[0].name
     val opponentName2 = gameStateViewModel.repository.players[1].name
     val opponentName3 = gameStateViewModel.repository.players[2].name
@@ -222,26 +226,26 @@ fun Modifier.vertical() =
     }
 
 @Composable
-fun ButtonGroup(
-    labels: List<String>,
-    onClicks: List<() -> Unit>
-) {
+fun Cards(labels: List<String>, onClicks: List<() -> Unit>, gameStateViewModel: GameStateViewModel) {
     Row(
         modifier = Modifier.background(Color(cardback)),
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         labels.zip(onClicks).forEach { (label, onClick) ->
             Button(
+                enabled = gameStateViewModel.repository.myTurn,
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(cardfront)
                 ),
-                modifier = Modifier.size(110.dp, 150.dp)
-                    .background(Color(cardfront), RoundedCornerShape(10.dp))
-                    .border(2.dp, Color(border), RoundedCornerShape(10.dp)),
+                modifier = Modifier.size(90.dp, 150.dp)
+                    .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+                    .background(Color(cardfront), RoundedCornerShape(10.dp)),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text(text = label)
+                Text(text = label,
+                    color = Color.White,
+                    fontSize = 13.sp)
             }
         }
     }
@@ -273,10 +277,13 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         {
             selectedCardText.value = card.name
             when (card.type) {
-                CardType.BLANK -> bottomLeftBlank(gameStateViewModel)
-                CardType.DEFUSE -> bottomLeftDefuse(gameStateViewModel)
-                CardType.NOPE -> bottomLeftNope(gameStateViewModel)
-                else -> bottomLeftPass(gameStateViewModel) // fallback
+                CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
+                CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
+                CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
+                CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
+                CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
+                CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
+                else -> passTurn(gameStateViewModel) // fallback
             }
         }
     }
@@ -286,13 +293,14 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         ) {
             Column(
                 modifier = Modifier
-                    .background(Color(cardfront))
+                    .background(Color(cardback))
                     .size(450.dp, 110.dp)
                     .horizontalScroll(rememberScrollState())
             ) {
-                ButtonGroup(
+                Cards(
                     labels = labels,
-                    onClicks = onClicks
+                    onClicks = onClicks,
+                    gameStateViewModel = gameStateViewModel,
                 )
         }
     }

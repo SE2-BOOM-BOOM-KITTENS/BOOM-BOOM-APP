@@ -5,40 +5,18 @@ import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 
-fun bottomLeftBlank(viewModel: GameStateViewModel) {
+fun playCard(viewModel: GameStateViewModel, cardname: String, cardtype: CardType) {
     val player = "PLAYER"
     val action = "PLAY_CARDS"
-    val cardsPlayed = Card("Blank", CardType.BLANK)
-    val cardList :MutableList<Card> = mutableListOf()
+    val cardsPlayed = Card(cardname, cardtype)
+    val cardList: MutableList<Card> = mutableListOf()
     cardList.add(cardsPlayed)
 
     val message = composeMessage(player, action, cardList)
     viewModel.playCard(message)
 }
 
-fun bottomLeftDefuse(viewModel: GameStateViewModel) {
-    val player = "PLAYER"
-    val action = "PLAY_CARDS"
-    val cardsPlayed = Card("Defuse", CardType.DEFUSE)
-    val cardList :MutableList<Card> = mutableListOf()
-    cardList.add(cardsPlayed)
-
-    val message = composeMessage(player, action, cardList)
-    viewModel.playCard(message)
-}
-
-fun bottomLeftNope(viewModel: GameStateViewModel) {
-    val player = "PLAYER"
-    val action = "PLAY_CARDS"
-    val cardsPlayed = Card("Nope", CardType.NOPE)
-    val cardList :MutableList<Card> = mutableListOf()
-    cardList.add(cardsPlayed)
-
-    val message = composeMessage(player, action, cardList)
-    viewModel.playCard(message)
-}
-
-fun bottomLeftPass(viewModel: GameStateViewModel){
+fun passTurn(viewModel: GameStateViewModel){
     val player = "PLAYER"
     val action = "PASS"
 
