@@ -20,6 +20,8 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stompService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             joinGame()
+            joinGame()
+            joinGame()
         }
     }
 

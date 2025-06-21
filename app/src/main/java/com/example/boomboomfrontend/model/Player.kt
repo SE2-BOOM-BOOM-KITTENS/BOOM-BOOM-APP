@@ -1,6 +1,4 @@
 package com.example.boomboomfrontend.model
-import com.example.boomboomfrontend.logic.CardManager
-import com.example.boomboomfrontend.model.ConnectionStatus
 
 data class Player(
     val id: String?,

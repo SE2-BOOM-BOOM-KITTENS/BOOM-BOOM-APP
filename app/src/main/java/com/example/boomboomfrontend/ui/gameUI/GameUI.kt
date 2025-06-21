@@ -8,8 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,13 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.boomboomfrontend.model.Card
+import com.example.boomboomfrontend.model.Player
+import java.util.UUID
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -39,13 +44,26 @@ const val servertext = 0x99eeeeee
 fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
-    val cardList = gameStateViewModel.repository.getCardHandText()
 
-    Text(text = gameStateViewModel.clientInfo.playerName)
+    gameStateViewModel.repository.myTurn = false
+    //These are sample players just to fill the list! Remove later
+    gameStateViewModel.repository.players = mutableListOf(
+        Player(UUID.randomUUID().toString(), "Steve"),
+        Player(UUID.randomUUID().toString(), "Evil Steve"),
+        Player(UUID.randomUUID().toString(), "Dani"))
+    gameStateViewModel.repository.cardHand = mutableListOf(
+        Card("Blank", CardType.BLANK),
+        Card("Defuse", CardType.DEFUSE),
+        Card("Alter the Future", CardType.SEE_THE_FUTURE)
+    )
+    val opponentName1 = gameStateViewModel.repository.players[0].name
+    val opponentName2 = gameStateViewModel.repository.players[1].name
+    val opponentName3 = gameStateViewModel.repository.players[2].name
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(background))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(background))
     ) {
         // Center content
         Box(
@@ -58,7 +76,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             }
         }
 
-        Box (
+        Box(
             modifier = Modifier
                 .width(1020.dp)
                 .fillMaxSize(),
@@ -67,12 +85,29 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
             CardSelect(gameStateViewModel, selectedCardText)
         }
 
+        // Left
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            LeftOpponentHand(opponentName1)
+        }
+
         // Top center
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            OpponentHands()
+            TopOpponentHand(opponentName2)
+        }
+
+
+        //Right
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            RightOpponentHand(opponentName3)
         }
 
         // Top Right
@@ -81,7 +116,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
                 .fillMaxSize()
                 .padding(8.dp),
             contentAlignment = Alignment.TopEnd
-        ){
+        ) {
             ServerMessage(serverMessage)
         }
     }
@@ -120,14 +155,15 @@ fun DeckUI() {
 }
 
 @Composable
-fun OpponentHands() {
+fun TopOpponentHand(opponentName: String) {
     Box(
         modifier = Modifier
             .size(250.dp, 90.dp)
             .background(Color(cardback))
     ) {
         Text(
-            text = "OPPONENT\nHAND",
+            text = opponentName,
+            fontSize = 18.sp,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
@@ -135,20 +171,81 @@ fun OpponentHands() {
 }
 
 @Composable
-fun ButtonGroup(
-    labels: List<String>,
-    onClicks: List<() -> Unit>
-) {
+fun LeftOpponentHand(opponentName: String) {
+    Box(
+        modifier = Modifier
+            .size(250.dp, 90.dp)
+            .offset((-80).dp)
+            .vertical()
+            .rotate(-90f)
+            .background(Color(cardback))
+    ) {
+        Text(
+            text = opponentName,
+            fontSize = 18.sp,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(30.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun RightOpponentHand(opponentName: String) {
+    Box(
+        modifier = Modifier
+            .size(250.dp, 90.dp)
+            .offset((80).dp)
+            .vertical()
+            .rotate(90f)
+            .background(Color(cardback))
+    ) {
+        Text(
+            text = opponentName,
+            fontSize = 18.sp,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(30.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+fun Modifier.vertical() =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        layout(placeable.height, placeable.width) {
+            placeable.place(
+                x = -(placeable.width / 2 - placeable.height / 2),
+                y = -(placeable.height / 2 - placeable.width / 2)
+            )
+        }
+    }
+
+@Composable
+fun Cards(labels: List<String>, onClicks: List<() -> Unit>, gameStateViewModel: GameStateViewModel) {
     Row(
+        modifier = Modifier.background(Color(cardback)),
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         labels.zip(onClicks).forEach { (label, onClick) ->
             Button(
+                enabled = gameStateViewModel.repository.myTurn,
                 onClick = onClick,
-                modifier = Modifier.size(110.dp, 150.dp),
-                shape = RectangleShape
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(cardfront)
+                ),
+                modifier = Modifier.size(90.dp, 150.dp)
+                    .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+                    .background(Color(cardfront), RoundedCornerShape(10.dp)),
+                shape = RoundedCornerShape(10.dp)
             ) {
-                Text(text = label)
+                Text(text = label,
+                    color = Color.White,
+                    fontSize = 13.sp)
             }
         }
     }
@@ -180,10 +277,13 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         {
             selectedCardText.value = card.name
             when (card.type) {
-                CardType.BLANK -> bottomLeftBlank(gameStateViewModel)
-                CardType.DEFUSE -> bottomLeftDefuse(gameStateViewModel)
-                CardType.NOPE -> bottomLeftNope(gameStateViewModel)
-                else -> bottomLeftPass(gameStateViewModel) // fallback
+                CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
+                CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
+                CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
+                CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
+                CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
+                CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
+                else -> passTurn(gameStateViewModel) // fallback
             }
         }
     }
@@ -193,13 +293,14 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         ) {
             Column(
                 modifier = Modifier
-                    .background(Color(cardfront))
+                    .background(Color(cardback))
                     .size(450.dp, 110.dp)
                     .horizontalScroll(rememberScrollState())
             ) {
-                ButtonGroup(
+                Cards(
                     labels = labels,
-                    onClicks = onClicks
+                    onClicks = onClicks,
+                    gameStateViewModel = gameStateViewModel,
                 )
         }
     }
