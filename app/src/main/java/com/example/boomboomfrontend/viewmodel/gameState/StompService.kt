@@ -8,8 +8,8 @@ class StompService(callbacks: Callbacks) {
     // fixme instead of passing this whole object just pass the callback method (after annotating the interface as functional)
     private val stomp = Stomp(callbacks)
 
-    fun connect(playerName: String, onConnect: ()->Unit){
-        stomp.connect(playerName,onConnect)
+    fun connect(onConnect: ()->Unit){
+        stomp.connect(onConnect)
     }
 
     fun sendAction(playerMessage:PlayerMessage){
@@ -17,7 +17,8 @@ class StompService(callbacks: Callbacks) {
     }
 
     fun getHand(){
-        stomp.getHand(PlayerMessage())
+        val playerMessage = PlayerMessage(action = "HAND")
+        stomp.sendAction(playerMessage)
     }
 
     fun joinGame(playerMessage: PlayerMessage){

@@ -33,9 +33,7 @@ class PlayerViewModel : ViewModel(), Callbacks {
     // API: add player
     fun addPlayer(name: String) {
         viewModelScope.launch {
-            val response = repository.addPlayer(
-                Player(id = null, name = name, status = null)
-            )
+            val response = repository.addPlayer(name)
             if (response.isSuccessful) {
                 _responseMessage.value = response.body()?.string() ?: "Leere Antwort"
             } else {
@@ -71,8 +69,8 @@ class PlayerViewModel : ViewModel(), Callbacks {
     }
 
     // WebSocket: connect
-    fun connectWebSocket(name: String) {
-        stomp.connect(name)
+    fun connectWebSocket() {
+        stomp.connect()
     }
 
     // WebSocket: send Response from WebSocket

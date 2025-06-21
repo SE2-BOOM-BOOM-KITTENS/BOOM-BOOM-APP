@@ -1,6 +1,5 @@
 package com.example.boomboomfrontend.network
 
-import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
 import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetworkPacket
 import okhttp3.ResponseBody
@@ -13,7 +12,7 @@ import retrofit2.http.POST
 // fixme add player information in name
 interface ApiService {
     @POST("/players")
-    suspend fun addPlayer(@Body player: Player): Response<ResponseBody>
+    suspend fun addPlayer(@Body name: String): Response<ResponseBody>
 
     @GET("/players/allPlayers")
     suspend fun getAllPlayers(): Response<List<PlayerResponse>>
