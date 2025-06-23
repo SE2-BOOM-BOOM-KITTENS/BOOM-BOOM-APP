@@ -1,11 +1,15 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModel
+import com.example.boomboomfrontend.game.GameClient
+import com.example.boomboomfrontend.game.ShuffleActionHandler
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Contextual
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
@@ -22,6 +26,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             joinGame()
         }
     }
+
 
     override fun onResponse(res: String) {
         try{

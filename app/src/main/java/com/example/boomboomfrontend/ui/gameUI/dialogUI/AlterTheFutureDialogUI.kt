@@ -1,4 +1,4 @@
-package com.example.boomboomfrontend.ui
+package com.example.boomboomfrontend.ui.gameUI.dialogUI
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
@@ -34,13 +34,13 @@ import kotlinx.coroutines.delay
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
 )
 @Composable
-fun DialogUI(
+fun AlterTheFutureDialogUI(
     visible: Boolean = true,
     cards: List<Card> = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),
-        Card("Alter the Future", CardType.SEE_THE_FUTURE),
-        Card("Alter the Future", CardType.SEE_THE_FUTURE)
+        Card("See the Future", CardType.SEE_THE_FUTURE),
+        Card("See the Future", CardType.SEE_THE_FUTURE)
     ),
     onDismiss: () -> Unit = {},
     durationMillis: Long = 3000L
@@ -66,7 +66,7 @@ fun DialogUI(
                     .widthIn(min = 200.dp, max = 400.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Previous Player played:", fontSize = 18.sp, color = Color.Black)
+                Text("Choose your card order:", fontSize = 18.sp, color = Color.Black)
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -78,21 +78,5 @@ fun DialogUI(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Card(textField: String){
-    Box(
-        modifier = Modifier
-            .size(110.dp, 150.dp)
-            .background(Color(cardfront), RoundedCornerShape(10.dp))
-            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
-    ) {
-        Text(
-            text = textField,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.Center)
-        )
     }
 }
