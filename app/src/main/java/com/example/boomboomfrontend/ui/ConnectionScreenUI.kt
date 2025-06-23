@@ -3,28 +3,23 @@ package com.example.boomboomfrontend.ui
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.boomboomfrontend.viewmodel.LobbyViewModel
 import com.example.boomboomfrontend.viewmodel.PlayerViewModel
 import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 
-
 @Composable
 fun ConnectionScreen(
-    navController: NavHostController,
+    navController: NavController,
     onEnterGameScreen: () -> Unit,
     playerViewModel: PlayerViewModel = viewModel(),
     lobbyViewModel: LobbyViewModel = viewModel()
@@ -38,6 +33,7 @@ fun ConnectionScreen(
             .padding(horizontal = 70.dp, vertical = 70.dp)
             .width(600.dp)
     ) {
+        // Fetch lobbies button
         Button(onClick = {
             lobbyViewModel.getAllLobbies()
             Log.e("LOBBIES", "Request sent to fetch lobbies")
@@ -45,6 +41,7 @@ fun ConnectionScreen(
             Text("Fetch Lobbies")
         }
 
+        // Display all lobbies
         if (lobbies.isNotEmpty()) {
             Text("Fetched Lobby IDs:", modifier = Modifier.padding(vertical = 8.dp))
             lobbies.forEach { (id, lobby) ->
@@ -65,6 +62,7 @@ fun ConnectionScreen(
                         onClick = {
                             lobbyViewModel.joinLobby(id, clientInfo.playerId)
                             Log.e("ConnectionScreen", "Joining lobby: $id")
+                            navController.navigate("players_in_lobby/$id")
                         }
                     ) {
                         Text("Join")
@@ -73,6 +71,7 @@ fun ConnectionScreen(
             }
         }
 
+        // Show current players
         players.forEachIndexed { i, player ->
             Row(
                 Modifier
@@ -92,16 +91,6 @@ fun ConnectionScreen(
                         .padding(8.dp)
                 )
             }
-        }
-
-        Button(
-            onClick = {
-                navController.navigate("game")
-                onEnterGameScreen()
-            },
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text("Spiel starten")
         }
     }
 }
