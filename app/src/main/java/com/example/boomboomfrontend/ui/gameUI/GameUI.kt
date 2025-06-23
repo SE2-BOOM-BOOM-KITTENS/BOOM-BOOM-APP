@@ -387,6 +387,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
                 CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
+                CardType.DRAW_FROM_THE_BOTTOM -> drawFromBottom(gameStateViewModel)
                 else -> passTurn(gameStateViewModel) // fallback
             }
         }
