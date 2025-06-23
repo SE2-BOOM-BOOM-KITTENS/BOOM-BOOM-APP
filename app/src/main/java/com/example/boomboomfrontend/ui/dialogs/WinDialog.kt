@@ -1,17 +1,15 @@
 package com.example.boomboomfrontend.ui.dialogs
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-
+import androidx.compose.runtime.Composable
 
 @Composable
-fun ExitPopup(
-    title: String = "Exit?",
-    message: String = "Do you wish to disconnect",
+fun WinPopup(
+    title: String = "Winner!",
+    message: String = "Congratulation, you won!",
     onPlay: () -> Unit,
-    onPass: () -> Unit,
     onDismiss: () -> Unit
 ){
     AlertDialog(
@@ -21,17 +19,8 @@ fun ExitPopup(
         confirmButton = {
             Button(onClick={
                 onPlay()
-                onDismiss()
             }){
-                Text("Stay")
-            }
-        },
-        dismissButton = {
-            Button(onClick = {
-                onPass()
-                onDismiss()
-            }) {
-                Text("Exit")
+                Text("Close")
             }
         }
     )
