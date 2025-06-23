@@ -20,8 +20,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stompService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             joinGame()
-            joinGame()
-            joinGame()
         }
     }
 
@@ -57,6 +55,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     fun joinGame(){
         val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
         stompService.joinGame(playerMessage)
+    }
+
+    fun exit(){
+        stompService.disconnect()
     }
 
     fun explode(){
