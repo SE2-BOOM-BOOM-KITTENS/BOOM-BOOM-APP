@@ -35,9 +35,4 @@ fun sendCatCombo(socket: WebSocketClient, selectedCards: List<Card>) {
 // Dummy interface for WebSocket sending
 interface WebSocketClient {
     fun send(text: String)
-
-    fun sendJson(message: CatComboMessage) {
-        val json = Json.encodeToString(CatComboMessage.serializer(), message)
-        send(json)
-    }
 }
