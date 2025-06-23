@@ -389,6 +389,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
                 CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
                 CardType.DRAW_FROM_THE_BOTTOM -> drawFromBottom(gameStateViewModel)
+                CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
                 else -> passTurn(gameStateViewModel) // fallback
             }
         }
