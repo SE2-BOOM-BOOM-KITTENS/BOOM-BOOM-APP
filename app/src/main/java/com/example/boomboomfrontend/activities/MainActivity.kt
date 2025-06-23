@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     })
                 }
                 composable("game") {
-                    GameScreen()
+                    GameScreen(navController= navController)
                 }
 
                 composable("test-server") { ServerTestActivity() }
