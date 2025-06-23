@@ -26,8 +26,9 @@ fun sendCatCombo(socket: WebSocketClient, selectedCards: List<Card>) {
     val message = CatComboMessage(
         action = "catComboPlayed",
         cardIds = selectedCards.map { it.name }
-    )
-    socket.sendJson(message)
+        )
+    val json = Json.encodeToString(CatComboMessage.serializer(), message)
+    socket.send(json)
 }
 
 // Dummy interface for WebSocket sending

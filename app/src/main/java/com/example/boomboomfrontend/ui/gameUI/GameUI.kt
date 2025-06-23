@@ -39,6 +39,8 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
+import com.example.boomboomfrontend.logic.cardlogic.CatComboType
+import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
 import com.example.boomboomfrontend.ui.DialogUI
 
 const val background = 0xff962319
@@ -418,5 +420,36 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                     gameStateViewModel = gameStateViewModel,
                 )
         }
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    // Nur anzeigen, wenn Combo-Logik aktiv ist
+    if (gameStateViewModel.selectedCombo.isNotEmpty()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { gameStateViewModel.trySendCombo() },
+                enabled = detectCatCombo(gameStateViewModel.selectedCombo) != CatComboType.NONE
+            ) {
+                Text("Combo ausspielen")
+            }
+
+            Button(
+                onClick = { gameStateViewModel.clearCombo() }
+            ) {
+                Text("Combo abbrechen")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        //Optional: Zeige gewählte Cats live an
+        Text(
+            text = "Gewählt: ${gameStateViewModel.selectedCombo.joinToString { it.name }}",
+            color = Color.White,
+            fontSize = 12.sp
+        )
     }
 }
