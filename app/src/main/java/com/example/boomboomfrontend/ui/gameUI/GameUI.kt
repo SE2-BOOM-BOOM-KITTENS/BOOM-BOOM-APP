@@ -98,7 +98,7 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
         Box (
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.BottomStart
+            contentAlignment = Alignment.BottomEnd
         ) {
             PassButton(gameStateViewModel)
         }
