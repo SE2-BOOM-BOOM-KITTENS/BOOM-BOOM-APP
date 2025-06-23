@@ -403,7 +403,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
                 CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
-                CardType.DRAW_FROM_THE_BOTTOM -> drawFromBottom(gameStateViewModel)
+                CardType.DRAW_FROM_THE_BOTTOM -> playCard(gameStateViewModel,"Draw from the Bottom",CardType.DRAW_FROM_THE_BOTTOM)
                 CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
                 CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
                 else -> passTurn(gameStateViewModel) // fallback
