@@ -42,13 +42,13 @@ fun DialogUI(
         Card("Alter the Future", CardType.SEE_THE_FUTURE),
         Card("Alter the Future", CardType.SEE_THE_FUTURE)
     ),
-    //onDismiss: () -> Unit,
+    onDismiss: () -> Unit = {},
     durationMillis: Long = 3000L
 ) {
     if (visible) {
         LaunchedEffect(Unit) {
             delay(durationMillis)
-            //onDismiss()
+            onDismiss()
         }
 
         Box(
