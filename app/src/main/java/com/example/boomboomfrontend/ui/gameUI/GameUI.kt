@@ -40,6 +40,7 @@ import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.ui.DialogUI
+import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -78,6 +79,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+
     BackHandler(enabled = true) {
         showExitDialog = true
     }
@@ -93,6 +95,19 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             },
             onDismiss = {
                 showExitDialog = false
+            }
+        )
+    }
+
+    if(gameStateViewModel.repository.gameFinished){
+        WinPopup(
+            onPlay = {
+                gameStateViewModel.exit()
+                navController.navigate("lobby")
+            },
+            onDismiss = {
+                gameStateViewModel.exit()
+                navController.navigate("lobby")
             }
         )
     }
