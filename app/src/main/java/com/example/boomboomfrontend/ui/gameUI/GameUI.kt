@@ -29,8 +29,7 @@ import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.model.Player
+import com.example.boomboomfrontend.model.*
 import java.util.UUID
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.ui.gameUI.dialogUI.DialogUI

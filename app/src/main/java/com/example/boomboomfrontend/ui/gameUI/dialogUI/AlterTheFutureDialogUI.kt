@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,43 +41,87 @@ fun AlterTheFutureDialogUI(
     cards: List<Card> = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),
-        Card("See the Future", CardType.SEE_THE_FUTURE),
         Card("See the Future", CardType.SEE_THE_FUTURE)
     ),
-    onDismiss: () -> Unit = {},
-    durationMillis: Long = 3000L
+    onOrderConfirmed: (List<Card>) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
-    if (visible) {
-        LaunchedEffect(Unit) {
-            delay(durationMillis)
+    if (!visible) return
+
+    val selectedIndices = remember { mutableStateListOf<Int>() }
+
+    LaunchedEffect(selectedIndices.size) {
+        if (selectedIndices.size == 3) {
+            val reordered = selectedIndices.map { cards[it] }
+            delay(1000) // Optional: Give user feedback before closing
+            onOrderConfirmed(reordered)
             onDismiss()
         }
+    }
 
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .zIndex(2f),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
-                .zIndex(2f), // sits on top
-            contentAlignment = Alignment.Center
+                .background(Color.White, RoundedCornerShape(12.dp))
+                .padding(16.dp)
+                .wrapContentHeight()
+                .widthIn(min = 200.dp, max = 400.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(12.dp))
-                    .padding(16.dp)
-                    .wrapContentHeight()
-                    .widthIn(min = 200.dp, max = 400.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Choose your card order:", fontSize = 18.sp, color = Color.Black)
+            Text("Reorder the top 3 cards", fontSize = 18.sp, color = Color.Black)
 
-                Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    cards.forEach { card ->
-                        Card(textField = card.name)
-                    }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                cards.forEachIndexed { index, card ->
+                    val isSelected = selectedIndices.contains(index)
+                    val selectionOrder = selectedIndices.indexOf(index) + 1
+
+                    CardSelectable(
+                        card = card,
+                        selectedOrder = if (isSelected) selectionOrder else null,
+                        onClick = {
+                            if (!isSelected && selectedIndices.size < 3) {
+                                selectedIndices.add(index)
+                            }
+                        }
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardSelectable(card: Card, selectedOrder: Int?, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(110.dp, 150.dp)
+            .background(Color(cardfront), RoundedCornerShape(10.dp))
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+            .clickable { onClick() })
+    {
+        Text(
+            text = card.name,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center)
+        )
+        selectedOrder?.let {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+                    .background(Color.Red, RoundedCornerShape(10.dp))
+                    .size(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("$it", color = Color.White, fontSize = 12.sp)
             }
         }
     }
