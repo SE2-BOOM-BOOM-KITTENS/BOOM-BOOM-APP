@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -22,7 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
@@ -34,6 +37,7 @@ import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
+import com.example.boomboomfrontend.R
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -100,6 +104,12 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.backgroundtable),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 CardUI(selectedCardText.value)
                 DeckUI()
@@ -113,6 +123,22 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             contentAlignment = Alignment.BottomCenter
         ) {
             CardSelect(gameStateViewModel, selectedCardText)
+        }
+
+        Box (
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            PassButton(gameStateViewModel)
+        }
+
+        Box (
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopStart
+        ) {
+            ExitButton(gameStateViewModel)
         }
 
         // Left
@@ -149,6 +175,44 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
         ) {
             ServerMessage(serverMessage)
         }
+    }
+}
+
+@Composable
+fun PassButton(gameStateViewModel: GameStateViewModel) {
+    Button(
+        enabled = gameStateViewModel.repository.myTurn,
+        onClick = { passTurn(gameStateViewModel) },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(cardback)
+        ),
+        modifier = Modifier.size(120.dp, 40.dp)
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+            .background(Color(cardfront), RoundedCornerShape(10.dp)),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text(text = "Pass Turn",
+            color = Color.White,
+            fontSize = 13.sp)
+    }
+}
+
+@Composable
+fun ExitButton(gameStateViewModel: GameStateViewModel) {
+    Button(
+        enabled = gameStateViewModel.repository.myTurn,
+        onClick = { },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(cardback)
+        ),
+        modifier = Modifier.size(120.dp, 40.dp)
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+            .background(Color(cardback), RoundedCornerShape(10.dp)),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text(text = "Exit Game",
+            color = Color.White,
+            fontSize = 13.sp)
     }
 }
 
