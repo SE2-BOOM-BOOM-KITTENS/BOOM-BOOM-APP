@@ -2,10 +2,13 @@ package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
+import com.example.boomboomfrontend.logic.cardlogic.CatComboType
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
@@ -65,5 +68,33 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     }
 
+    // Combo-Liste
+    val selectedCombo: MutableList<Card> = mutableListOf()
 
+    // Karte toggeln (hinzufügen oder entfernen)
+    fun toggleCardInCombo(card: Card) {
+        if (selectedCombo.contains(card)) {
+            selectedCombo.remove(card)
+        } else {
+            selectedCombo.add(card)
+        }
+    }
+
+    // Combo prüfen & senden
+    fun trySendCombo() {
+        val comboType = detectCatCombo(selectedCombo)
+        if (comboType != CatComboType.NONE) {
+            val message = PlayerMessage(
+                action = "catComboPlayed",
+                payload = selectedCombo
+            )
+            stompService.sendAction(message)
+            selectedCombo.clear()
+        }
+    }
+
+    // Combo zurücksetzen
+    fun clearCombo() {
+        selectedCombo.clear()
+    }
 }

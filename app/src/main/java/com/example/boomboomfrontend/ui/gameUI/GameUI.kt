@@ -341,13 +341,24 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         {
             selectedCardText.value = card.name
             when (card.type) {
+                // CAT-Karten: toggeln
+                CardType.CAT_TACO,
+                CardType.CAT_BEARD,
+                CardType.CAT_HAIRY_POTATO,
+                CardType.CAT_RAINBOW_RALPHING,
+                CardType.CAT_CATERMELON,
+                CardType.FERAL_CAT -> {
+                    gameStateViewModel.toggleCardInCombo(card)
+                }
+
                 CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
                 CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
                 CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
                 CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
                 CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
-                else -> passTurn(gameStateViewModel) // fallback
+
+                else -> { /* do nothing */ }
             }
         }
     }
