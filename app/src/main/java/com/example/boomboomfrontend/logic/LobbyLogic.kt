@@ -16,17 +16,17 @@ class Lobby(private val host: Player, private val maxPlayers: Int) {
 
     fun getRoomCode(): String = roomCode
 
-    fun joinLobby(player: Player): Boolean {
-        if (players.size >= maxPlayers) {
-            println("${player.name} konnte nicht beitreten. Raum ist voll!")
-            return false
-        }
-        player.status = CONNECTION_PENDING
-        players.add(player)
-        println("${player.name} ist beigetreten. Status: ${player.status}")
-        simulateConnection(player)
-        return true
-    }
+//    fun joinLobby(player: Player): Boolean {
+//        if (players.size >= maxPlayers) {
+//            println("${player.name} konnte nicht beitreten. Raum ist voll!")
+//            return false
+//        }
+//        player.status = CONNECTION_PENDING
+//        players.add(player)
+//        println("${player.name} ist beigetreten. Status: ${player.status}")
+//        simulateConnection(player)
+//        return true
+//    }
 
     private fun simulateConnection(player: Player) {
         scope.launch {
@@ -75,7 +75,7 @@ fun main() {
         Player("3", "Spieler3", NOT_CONNECTED, 1, true)
     )
 
-    players.forEach { lobby.joinLobby(it) }
+//    players.forEach { lobby.joinLobby(it) }
 
     Thread.sleep(10000) // Hauptthread läuft, damit die Coroutines Zeit haben
     lobby.cancelLobby() // Aufräumen
