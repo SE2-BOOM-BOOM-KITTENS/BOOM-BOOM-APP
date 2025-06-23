@@ -12,6 +12,11 @@ class StompService(callbacks: Callbacks) {
         stomp.connect(onConnect)
     }
 
+    fun disconnect(){
+        val playerMessage = PlayerMessage(action = "EXIT")
+        stomp.sendAction(playerMessage)
+    }
+
     fun sendAction(playerMessage:PlayerMessage){
         stomp.sendAction(playerMessage)
     }

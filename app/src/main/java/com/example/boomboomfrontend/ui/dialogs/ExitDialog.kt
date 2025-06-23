@@ -23,7 +23,7 @@ fun ExitPopup(
                 onPlay()
                 onDismiss()
             }){
-                Text("Play")
+                Text("Stay")
             }
         },
         dismissButton = {
@@ -31,7 +31,7 @@ fun ExitPopup(
                 onPass()
                 onDismiss()
             }) {
-                Text("Pass")
+                Text("Exit")
             }
         }
     )
