@@ -39,7 +39,7 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
-import com.example.boomboomfrontend.ui.DialogUI
+import com.example.boomboomfrontend.ui.gameUI.dialogUI.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
