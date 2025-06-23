@@ -157,10 +157,13 @@ class Stomp(private val callbacks: Callbacks) {
     }
 
 
-    fun disconnect() {
+    suspend fun disconnect() {
         coroutineScope.launch {
             try {
                 session?.disconnect()
+                session = null
+                isConnected = false
+                clientInfo.currentLobbyID = null
                 callback("Disconnected")
             } catch (e: Exception) {
                 callback("Error disconnecting: ${e.localizedMessage}")
