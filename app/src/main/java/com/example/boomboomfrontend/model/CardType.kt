@@ -17,6 +17,7 @@ enum class CardType {
     TEST, // nur zum Testen der Klasse CardEffectRegistry
     REVERSE,
     DRAW_FROM_THE_BOTTOM,
-    ATTACK
+    ATTACK,
+    SKIP
 
 }

@@ -390,6 +390,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
                 CardType.DRAW_FROM_THE_BOTTOM -> drawFromBottom(gameStateViewModel)
                 CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
+                CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
                 else -> passTurn(gameStateViewModel) // fallback
             }
         }
