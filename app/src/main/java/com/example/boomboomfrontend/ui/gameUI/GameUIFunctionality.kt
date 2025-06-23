@@ -31,3 +31,11 @@ fun composeMessage(player: String, action: String, cardList: List<Card>?):Player
         cardList
     )
 }
+
+fun drawFromBottom(viewModel: GameStateViewModel) {
+    val player = "PLAYER"
+    val action = "DRAW_FROM_BOTTOM"
+
+    val message = composeMessage(player, action, null)
+    viewModel.playCard(message)
+}
