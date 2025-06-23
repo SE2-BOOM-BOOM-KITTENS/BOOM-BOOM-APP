@@ -2,10 +2,12 @@ package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
@@ -20,12 +22,14 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stompService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             joinGame()
-            joinGame()
-            joinGame()
         }
     }
 
     override fun onResponse(res: String) {
+        if(res.equals("Disconnected")){
+            clientInfo.currentLobbyID = null
+            return
+        }
         try{
             val(type, message, gameStateJson) = repository.processServerMessage(res)
             _responseMessage.value = message
@@ -57,6 +61,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     fun joinGame(){
         val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
         stompService.joinGame(playerMessage)
+    }
+
+    fun exit(){
+        viewModelScope.launch {
+            stompService.disconnect()
+        }
     }
 
     fun explode(){

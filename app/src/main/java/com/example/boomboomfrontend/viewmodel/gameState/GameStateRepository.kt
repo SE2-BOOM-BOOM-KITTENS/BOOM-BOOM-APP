@@ -1,6 +1,9 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.model.Player
@@ -11,6 +14,8 @@ class GameStateRepository() {
     val clientInfo = ClientInfoHolder.clientInfo
     var players = mutableListOf<Player>()
     var cardHand: MutableList<Card> = mutableListOf()
+    var winner: Player? = null;
+    var gameFinished by mutableStateOf(false)
     var playerCount: Int = 0
     var myTurn: Boolean = false
 
@@ -42,7 +47,13 @@ class GameStateRepository() {
                 myTurn = false
             }
 
-
+            val winnerJson = gameStateJson.optJSONObject("winner")
+            if(winnerJson != null) {
+                winner = Player(
+                    winnerJson.getString("id"),
+                    winnerJson.getString("name"))
+                gameFinished = true
+            }
             val playersJSON = gameStateJson.getJSONArray("players")
             for(i in 0 until playersJSON.length()){
                 val playerJSON = playersJSON.getJSONObject(i)

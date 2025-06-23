@@ -85,7 +85,9 @@ class PlayerViewModel : ViewModel(), Callbacks {
 
     // WebSocket: disconnect
     fun disconnectWebSocket() {
+        viewModelScope.launch {
         stomp.disconnect()
+            }
     }
 
     // Callback for WebSocket messages
