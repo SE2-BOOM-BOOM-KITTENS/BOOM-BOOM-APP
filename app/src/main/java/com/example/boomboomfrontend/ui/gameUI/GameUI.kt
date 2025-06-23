@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -33,6 +34,7 @@ import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
 import java.util.UUID
 import com.example.boomboomfrontend.R
+import com.example.boomboomfrontend.ui.DialogUI
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -64,11 +66,20 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val opponentName2 = gameStateViewModel.repository.players[1].name
     val opponentName3 = gameStateViewModel.repository.players[2].name
 
+    val showCardDialog = remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(background))
     ) {
+
+        DialogUI(
+            visible = showCardDialog.value,
+            cards = gameStateViewModel.repository.cardHand,
+            onDismiss = { showCardDialog.value = false }
+        )
+
         // Center content
         Box(
             modifier = Modifier.fillMaxSize(),
