@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.ui.gameUI
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -20,6 +21,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -29,10 +32,14 @@ import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.Player
+import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
+import com.example.boomboomfrontend.ui.DialogUI
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -45,7 +52,12 @@ const val servertext = 0x99eeeeee
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
 )
 @Composable
-fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
+fun GameScreenPreview(navController: NavController = rememberNavController()){
+    GameScreen(navController)
+}
+
+@Composable
+fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewModel = viewModel()) {
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
@@ -64,11 +76,39 @@ fun GameScreen(gameStateViewModel: GameStateViewModel = viewModel()) {
     val opponentName2 = gameStateViewModel.repository.players[1].name
     val opponentName3 = gameStateViewModel.repository.players[2].name
 
+    val showCardDialog = remember { mutableStateOf(false) }
+    var showExitDialog by remember { mutableStateOf(false) }
+    BackHandler(enabled = true) {
+        showExitDialog = true
+    }
+
+    if(showExitDialog){
+        ExitPopup(
+            onPlay = {
+
+            },
+            onPass = {
+                gameStateViewModel.exit()
+                navController.navigate("lobby")
+            },
+            onDismiss = {
+                showExitDialog = false
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(background))
     ) {
+
+        DialogUI(
+            visible = showCardDialog.value,
+            cards = gameStateViewModel.repository.cardHand,
+            onDismiss = { showCardDialog.value = false }
+        )
+
         // Center content
         Box(
             modifier = Modifier.fillMaxSize(),

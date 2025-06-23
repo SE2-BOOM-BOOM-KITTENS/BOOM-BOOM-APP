@@ -60,6 +60,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stompService.joinGame(playerMessage)
     }
 
+    fun exit(){
+        stompService.disconnect()
+    }
+
     fun explode(){
         stompService.explode()
     }
