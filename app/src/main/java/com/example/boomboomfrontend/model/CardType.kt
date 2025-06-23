@@ -15,5 +15,7 @@ enum class CardType {
     SEE_THE_FUTURE,
     FERAL_CAT,
     TEST, // nur zum Testen der Klasse CardEffectRegistry
+    REVERSE,
     DRAW_FROM_THE_BOTTOM
+
 }
