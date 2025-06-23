@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -450,6 +451,33 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
             text = "Gewählt: ${gameStateViewModel.selectedCombo.joinToString { it.name }}",
             color = Color.White,
             fontSize = 12.sp
+        )
+    }
+
+    val feralCatToPick by gameStateViewModel.showFeralCatPicker.collectAsState()
+
+    if (feralCatToPick != null) {
+        AlertDialog(
+            onDismissRequest = { gameStateViewModel.cancelFeralCatPicker() },
+            title = { Text("Feral Cat wählen") },
+            text = {
+                Column {
+                    Text("Als welche Cat soll die Feral Cat zählen?")
+                    // List Cat Types:
+                    val catTypes = listOf(
+                        CardType.CAT_TACO, CardType.CAT_BEARD,
+                        CardType.CAT_HAIRY_POTATO, CardType.CAT_RAINBOW_RALPHING, CardType.CAT_CATERMELON
+                    )
+                    catTypes.forEach { type ->
+                        Button(onClick = {
+                            gameStateViewModel.confirmFeralCatType(type)
+                        }) {
+                            Text(type.name)
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
         )
     }
 }

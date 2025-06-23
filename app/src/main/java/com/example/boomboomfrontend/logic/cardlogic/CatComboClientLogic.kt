@@ -3,6 +3,7 @@
 package com.example.boomboomfrontend.logic.cardlogic
 
 import com.example.boomboomfrontend.model.Card
+import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.CatComboMessage
 import kotlinx.serialization.json.Json
 
@@ -11,7 +12,7 @@ enum class CatComboType {
 }
 
 fun detectCatCombo(cards: List<Card>): CatComboType {
-    val types = cards.map { it.type }
+    val types = cards.map { if (it.type == CardType.FERAL_CAT) it.aliasType ?: it.type else it.type }
     val unique = types.toSet()
 
     return when {

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
 import com.example.boomboomfrontend.logic.cardlogic.CatComboType
+import com.example.boomboomfrontend.model.CardType
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
@@ -74,13 +75,20 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     // Combo-Liste
     val selectedCombo: MutableList<Card> = mutableListOf()
+    private val _showFeralCatPicker = MutableStateFlow<Card?>(null)
+    val showFeralCatPicker: StateFlow<Card?> = _showFeralCatPicker
 
     // Karte toggeln (hinzufügen oder entfernen)
     fun toggleCardInCombo(card: Card) {
         if (selectedCombo.contains(card)) {
             selectedCombo.remove(card)
         } else {
-            selectedCombo.add(card)
+            if (card.type == CardType.FERAL_CAT) {
+                // Trigger UI: Frage den Spieler nach aliasType.
+                _showFeralCatPicker.value = card
+            } else {
+                selectedCombo.add(card)
+            }
         }
     }
 
@@ -101,4 +109,16 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     fun clearCombo() {
         selectedCombo.clear()
     }
+
+    fun cancelFeralCatPicker() {
+        _showFeralCatPicker.value = null
+    }
+
+    fun confirmFeralCatType(chosenType: CardType) {
+        val feralCat = _showFeralCatPicker.value ?: return
+        feralCat.aliasType = chosenType
+        selectedCombo.add(feralCat)
+        _showFeralCatPicker.value = null
+    }
+
 }
