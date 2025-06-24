@@ -59,9 +59,6 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
 
         Button(onClick = {
             val p = Player(id = "1", name = "Player", ConnectionStatus.NOT_CONNECTED, 1, isAlive = true)
-            if (lobby?.joinLobby(p) == true) {
-                joined = true
-            }
             navController.navigate("connection-screen")
         }) {
             Text("Lobby beitreten")
