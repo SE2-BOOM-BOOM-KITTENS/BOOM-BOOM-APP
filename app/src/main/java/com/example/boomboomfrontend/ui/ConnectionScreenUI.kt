@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.example.boomboomfrontend.viewmodel.LobbyViewModel
 import com.example.boomboomfrontend.viewmodel.PlayerViewModel
 import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
+import java.util.UUID
 
 @Composable
 fun ConnectionScreen(
@@ -61,6 +62,7 @@ fun ConnectionScreen(
                     Button(
                         onClick = {
                             lobbyViewModel.joinLobby(id, clientInfo.playerId)
+                            clientInfo.currentLobbyID = UUID.fromString(id)
                             Log.e("ConnectionScreen", "Joining lobby: $id")
                             navController.navigate("players_in_lobby/$id")
                         }

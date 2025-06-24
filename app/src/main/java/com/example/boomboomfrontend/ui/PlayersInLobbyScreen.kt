@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.boomboomfrontend.viewmodel.LobbyViewModel
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import java.util.*
 
 @Composable
@@ -21,7 +22,8 @@ fun PlayersInLobbyScreen(
     navController: NavController,
     onEnterGameScreen: () -> Unit,
     lobbyId: String?,
-    lobbyViewModel: LobbyViewModel = viewModel()
+    lobbyViewModel: LobbyViewModel = viewModel(),
+    gameStateViewModel: GameStateViewModel = viewModel()
 ) {
     val players by lobbyViewModel.players.collectAsState()
 
@@ -57,13 +59,17 @@ fun PlayersInLobbyScreen(
         }
 
         Button(
-            onClick = { navController.navigate("game")
-                onEnterGameScreen() },
+            onClick = {
+                gameStateViewModel.repository.players = players.toMutableList()
+                navController.navigate("game")
+                onEnterGameScreen()
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
         ) {
             Text("Start Game")
         }
+
     }
 }

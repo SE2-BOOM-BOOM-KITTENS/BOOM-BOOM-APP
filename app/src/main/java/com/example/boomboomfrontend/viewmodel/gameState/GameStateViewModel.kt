@@ -3,6 +3,7 @@ package com.example.boomboomfrontend.viewmodel.gameState
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -76,6 +77,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     fun handleExplosion(){
 
     }
+
+    fun setPlayersFromLobby(playersFromLobby: List<Player>) {
+        repository.players.clear()
+        repository.players.addAll(playersFromLobby)
+    }
+
 
 
 }

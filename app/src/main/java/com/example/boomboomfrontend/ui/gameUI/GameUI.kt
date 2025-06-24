@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.ui.gameUI
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,18 +66,21 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
 
     gameStateViewModel.repository.myTurn = false
     //These are sample players just to fill the list! Remove later
-    gameStateViewModel.repository.players = mutableListOf(
-        Player(UUID.randomUUID().toString(), "Steve"),
-        Player(UUID.randomUUID().toString(), "Evil Steve"),
-        Player(UUID.randomUUID().toString(), "Dani"))
+//    gameStateViewModel.repository.players = mutableListOf(
+//        Player(UUID.randomUUID().toString(), "Steve"),
+//        Player(UUID.randomUUID().toString(), "Evil Steve"),
+//        Player(UUID.randomUUID().toString(), "Dani"))
     gameStateViewModel.repository.cardHand = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),
         Card("Alter the Future", CardType.SEE_THE_FUTURE)
     )
-    val opponentName1 = gameStateViewModel.repository.players[0].name
-    val opponentName2 = gameStateViewModel.repository.players[1].name
-    val opponentName3 = gameStateViewModel.repository.players[2].name
+    val players = gameStateViewModel.repository.players
+
+
+    val opponentName1 = players.getOrNull(0)?.name ?: "Waiting..."
+    val opponentName2 = players.getOrNull(1)?.name ?: "Waiting..."
+    val opponentName3 = players.getOrNull(2)?.name ?: "Waiting..."
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
