@@ -1,6 +1,10 @@
-package com.example.boomboomfrontend.viewmodel
+package com.example.boomboomfrontend.viewmodel.lobby
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.LobbyPlayer
@@ -11,7 +15,7 @@ import com.example.boomboomfrontend.network.CreateLobbyRequest
 import com.example.boomboomfrontend.network.RetrofitInstance
 import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetworkPacket
 import com.example.boomboomfrontend.network.websocket.Callbacks
-import com.example.boomboomfrontend.network.websocket.Stomp
+
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +24,8 @@ import java.util.UUID
 
 class LobbyViewModel : ViewModel(), Callbacks {
 
-    private val stomp = Stomp(this)
+    private val stompLobbyService = StompLobbyService { res -> onResponse(res) }
+    var goToGame by mutableStateOf(false);
 
     // Lobby creation response
     private val _lobbyState = MutableStateFlow<LobbyNetworkPacket?>(null)
@@ -34,8 +39,32 @@ class LobbyViewModel : ViewModel(), Callbacks {
     private val _lobbies = MutableStateFlow<Map<String, LobbyResponse>>(emptyMap())
     val lobbies: StateFlow<Map<String, LobbyResponse>> = _lobbies
 
+
+    fun createGame(){
+        stompLobbyService.createGame()
+    }
+
+    fun connect(){
+        stompLobbyService.connect {
+            Log.i("Lobby","Trying to connect to Server;")
+        }
+    }
+
+
+
     override fun onResponse(res: String) {
         Log.d("WebSocket", "Received message: $res")
+
+        try {
+            val type= stompLobbyService.processServerMessage(res)
+
+            if(type == "GAME_CREATED"){
+                goToGame = true
+            }
+        }catch (e:Exception){
+            goToGame = false
+            Log.e("LobbyViewModel","Failed reading message from server: ${e.localizedMessage}")
+        }
     }
 
     fun createLobby(player: LobbyPlayer, maxPlayers: Int = 4) {
@@ -111,8 +140,11 @@ class LobbyViewModel : ViewModel(), Callbacks {
 
     fun getPlayerList(): StateFlow<List<Player>> = players
     fun getLobbyMap(): StateFlow<Map<String, LobbyResponse>> = lobbies
+
+    private fun PlayerResponse.toPlayer(): Player {
+        return Player(id = this.id, name = this.name)
+    }
+
 }
 
-private fun PlayerResponse.toPlayer(): Player {
-    return Player(id = this.id, name = this.name)
-}
+

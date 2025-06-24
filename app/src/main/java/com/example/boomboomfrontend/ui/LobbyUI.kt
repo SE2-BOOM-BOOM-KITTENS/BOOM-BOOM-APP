@@ -1,6 +1,5 @@
 package com.example.boomboomfrontend.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,7 +17,7 @@ import com.example.boomboomfrontend.logic.Lobby
 import com.example.boomboomfrontend.model.ConnectionStatus
 import com.example.boomboomfrontend.model.LobbyPlayer
 import com.example.boomboomfrontend.model.Player
-import com.example.boomboomfrontend.viewmodel.LobbyViewModel
+import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
