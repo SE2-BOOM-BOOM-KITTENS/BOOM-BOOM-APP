@@ -12,6 +12,7 @@ import com.example.boomboomfrontend.ui.ConnectionScreen
 import com.example.boomboomfrontend.ui.gameUI.GameScreen
 import com.example.boomboomfrontend.ui.LobbyScreen
 import com.example.boomboomfrontend.ui.RegisterScreen
+import com.example.boomboomfrontend.ui.gameUI.PlayersInLobbyScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("test-server") { ServerTestActivity() }
+
+                composable("players_in_lobby/{lobbyId}") { backStackEntry ->
+                    val lobbyId = backStackEntry.arguments?.getString("lobbyId")
+                    PlayersInLobbyScreen(lobbyId = lobbyId.toString(), navController = navController, onEnterGameScreen = {
+                        navController.navigate("game")
+                    })
+                }
             }
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
