@@ -12,8 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.viewmodel.LobbyViewModel
+import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 import com.example.boomboomfrontend.viewmodel.PlayerViewModel
 import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 import java.util.UUID

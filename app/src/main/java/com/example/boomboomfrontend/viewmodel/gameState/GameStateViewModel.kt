@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
-    private val stompService = StompService(this)
+    private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
 
@@ -21,14 +21,17 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     val responseMessage: StateFlow<String> = _responseMessage
 
     init {
-        stompService.connect(){
+        val stackTrace = Throwable().stackTrace
+        val caller = stackTrace.getOrNull(1)
+        println("Instantiated by: ${caller?.className}.${caller?.methodName}")
+//        stompGameService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
-            joinGame()
-        }
+            stompGameService.getHand()
+//        }
     }
 
     override fun onResponse(res: String) {
-        if(res.equals("Disconnected")){
+        if(res == "Disconnected"){
             clientInfo.currentLobbyID = null
             return
         }
@@ -50,29 +53,29 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         }
     }
 
-    fun playCard(list: MutableList<Card>?){
-        stompService.playCard(list)
-        stompService.getHand()
+    fun playCard(card: Card){
+        stompGameService.playCard(card)
+        stompGameService.getHand()
     }
 
     fun pass(){
-        stompService.pass()
-        stompService.getHand()
+        stompGameService.pass()
+        stompGameService.getHand()
     }
 
     fun joinGame(){
         val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
-        stompService.joinGame(playerMessage)
+        stompGameService.joinGame(playerMessage)
     }
 
     fun exit(){
         viewModelScope.launch {
-            stompService.disconnect()
+            stompGameService.disconnect()
         }
     }
 
     fun explode(){
-        stompService.explode()
+        stompGameService.explode()
     }
 
     fun handleExplosion(){
