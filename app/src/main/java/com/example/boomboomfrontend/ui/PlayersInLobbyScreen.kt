@@ -13,8 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.boomboomfrontend.viewmodel.LobbyViewModel
-import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
+import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 import java.util.*
 
 @Composable
@@ -22,10 +21,19 @@ fun PlayersInLobbyScreen(
     navController: NavController,
     onEnterGameScreen: () -> Unit,
     lobbyId: String?,
-    lobbyViewModel: LobbyViewModel = viewModel(),
-    gameStateViewModel: GameStateViewModel = viewModel()
+    lobbyViewModel: LobbyViewModel = viewModel()
 ) {
     val players by lobbyViewModel.players.collectAsState()
+
+    LaunchedEffect(Unit) {
+        lobbyViewModel.connect()
+    }
+
+    LaunchedEffect(lobbyViewModel.goToGame) {
+        if (lobbyViewModel.goToGame) {
+            navController.navigate("game")
+        }
+    }
 
     LaunchedEffect(lobbyId) {
         lobbyId?.let {
@@ -60,9 +68,8 @@ fun PlayersInLobbyScreen(
 
         Button(
             onClick = {
-                gameStateViewModel.repository.players = players.toMutableList()
-                navController.navigate("game")
-                onEnterGameScreen()
+                lobbyViewModel.createGame()
+                Log.i("Debug","Request sent")
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)

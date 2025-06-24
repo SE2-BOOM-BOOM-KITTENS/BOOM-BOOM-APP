@@ -5,41 +5,39 @@ import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
 
-class StompService(callbacks: Callbacks) {
+class StompGameService(callbacks: Callbacks) {
     // fixme instead of passing this whole object just pass the callback method (after annotating the interface as functional)
-    private val stomp = Stomp(callbacks)
-
-    fun connect(onConnect: ()->Unit){
-        stomp.connect(onConnect)
+    init {
+        Stomp.setCallbacks(callbacks)
     }
 
     suspend fun disconnect(){
         val playerMessage = PlayerMessage(action = "EXIT")
-        stomp.sendAction(playerMessage)
-        stomp.disconnect()
+        Stomp.sendAction(playerMessage)
+        Stomp.disconnect()
     }
 
-    fun playCard(list:MutableList<Card>?){
-        val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = list)
-        stomp.sendAction(playerMessage)
+    fun playCard(card: Card){
+        val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = card)
+        Stomp.sendAction(playerMessage)
     }
 
     fun getHand(){
         val playerMessage = PlayerMessage(action = "HAND")
-        stomp.sendAction(playerMessage)
+        Stomp.sendAction(playerMessage)
     }
 
     fun pass(){
         val playerMessage = PlayerMessage(action = "PASS")
-        stomp.sendAction(playerMessage)
+        Stomp.sendAction(playerMessage)
     }
 
     fun joinGame(playerMessage: PlayerMessage){
-        stomp.joinGame(playerMessage)
+        Stomp.joinGame(playerMessage)
     }
 
     fun explode(){
         val playerMessage = PlayerMessage(action = "EXPLODE")
-        stomp.sendAction(playerMessage)
+        Stomp.sendAction(playerMessage)
     }
 }

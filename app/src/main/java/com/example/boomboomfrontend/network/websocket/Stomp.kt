@@ -18,17 +18,23 @@ val clientInfo = ClientInfoHolder.clientInfo
 private val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?id=${clientInfo.playerId}"
 private val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?id=${clientInfo.playerId}"
 
-class Stomp(private val callbacks: Callbacks) {
-
-
+object Stomp {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private lateinit var client: StompClient
     private var session: StompSession? = null
-
     private var sessionJob: Job? = null
-
     private var isConnected = false
+
+    private var callbacks: Callbacks? = null
+
+    fun setCallbacks(cb:Callbacks){
+        callbacks = cb
+    }
+
+    fun reset(){
+        callbacks = null
+    }
 
     fun connect(onConnected: (()-> Unit)?=null) {
         if (isConnected) {
@@ -36,8 +42,8 @@ class Stomp(private val callbacks: Callbacks) {
             onConnected?.invoke()
             return
         }
-        client = StompClient(OkHttpWebSocketClient())
 
+        client = StompClient(OkHttpWebSocketClient())
         tryConnect( LOCAL_WEBSOCKET_URI,onConnected=onConnected){
             tryConnect(REMOTE_WEBSOCKET_URI, onConnected=onConnected)
         }
@@ -144,6 +150,16 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
+    fun createGame(){
+        val json = JSONObject().apply {
+            put("lobbyId", PlayerMessage().lobbyId)
+        }
+
+        coroutineScope.launch {
+            session?.sendText("/app/createGame",json.toString())
+        }
+    }
+
 
     suspend fun disconnect() {
         coroutineScope.launch {
@@ -163,7 +179,7 @@ class Stomp(private val callbacks: Callbacks) {
 
     private fun callback(msg: String) {
         Handler(Looper.getMainLooper()).post {
-            callbacks.onResponse(msg)
+            callbacks!!.onResponse(msg)
         }
     }
 

@@ -14,11 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.boomboomfrontend.model.PlayerResponse
-import com.example.boomboomfrontend.network.ApiRepository
-import com.example.boomboomfrontend.viewmodel.PlayerViewModel
 import com.example.boomboomfrontend.viewmodel.RegisterViewModel
-import retrofit2.Response
 
 @Preview
 @Composable
