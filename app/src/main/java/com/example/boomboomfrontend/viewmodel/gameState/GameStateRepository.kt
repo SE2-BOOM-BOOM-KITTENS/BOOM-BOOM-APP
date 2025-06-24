@@ -7,13 +7,14 @@ import androidx.compose.runtime.setValue
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.model.Player
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import java.util.UUID
 
 class GameStateRepository() {
     val clientInfo = ClientInfoHolder.clientInfo
     var players = mutableListOf<Player>()
-    var cardHand: MutableList<Card> = mutableListOf()
+    var cardHand = MutableStateFlow<List<Card>>(emptyList())
     var winner: Player? = null;
     var gameFinished by mutableStateOf(false)
     var playerCount: Int = 0
@@ -64,7 +65,7 @@ class GameStateRepository() {
     }
 
     fun updateHand(gameStateJson: JSONObject?){
-        val handId = UUID.fromString(gameStateJson?.getString("playerId"))
+        //val handId = UUID.fromString(gameStateJson?.getString("playerId"))
         val newHand :MutableList<Card> = mutableListOf()
         val cardsJSON = gameStateJson?.getJSONArray("cards")
 
@@ -75,9 +76,9 @@ class GameStateRepository() {
             newHand.add(card)
         }
 
-        clientInfo.playerId = handId
-        cardHand = newHand
-        Log.i("HAND",gameStateJson.toString())
+        //clientInfo.playerId = handId
+        cardHand.value = newHand
+        Log.i("HAND", "Updated hand: ${newHand.map { it.name }}")
 
         if(checkForExplode()){
             //explode()
@@ -86,11 +87,12 @@ class GameStateRepository() {
     }
 
     fun checkForExplode(): Boolean{
-        if(cardHand.isNotEmpty()){
+        val hand = cardHand.value
+        if(hand.isNotEmpty()){
             var explodingKitten = 0
             var defuse = 0
 
-            for(card in cardHand){
+            for(card in hand){
                 if(card.type == CardType.EXPLODING_KITTEN){
                     explodingKitten++
                 }
@@ -104,6 +106,6 @@ class GameStateRepository() {
     }
 
     fun getCardHandText(): List<String> {
-        return cardHand.map { it.name }
+        return cardHand.value.map { it.name }
     }
 }

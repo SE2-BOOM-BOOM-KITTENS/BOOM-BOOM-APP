@@ -64,8 +64,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun joinGame(){
-        val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
-        stompService.joinGame(playerMessage)
+        stompService.joinGame()
     }
 
     fun exit(){

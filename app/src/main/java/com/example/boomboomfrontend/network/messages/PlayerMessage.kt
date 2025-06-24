@@ -10,6 +10,5 @@ data class PlayerMessage (
     val action: String? = "",
     val payload: Any? = null,
     val targetId: String? = null,
-    val lobbyId: UUID? = clientInfo.currentLobbyID){
-
-}
+    val lobbyId: UUID? = clientInfo.currentLobbyID
+)

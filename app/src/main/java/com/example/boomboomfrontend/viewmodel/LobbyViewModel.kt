@@ -9,6 +9,7 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
 import com.example.boomboomfrontend.network.CreateLobbyRequest
 import com.example.boomboomfrontend.network.RetrofitInstance
+import com.example.boomboomfrontend.network.messages.clientInfo
 import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetworkPacket
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
@@ -97,6 +98,7 @@ class LobbyViewModel : ViewModel(), Callbacks {
             try {
                 val response = RetrofitInstance.api.joinLobby(lobbyId, playerId)
                 if (response.isSuccessful) {
+                    clientInfo.currentLobbyID = UUID.fromString(lobbyId)
                     Log.d("LobbyViewModel", "Successfully joined lobby $lobbyId")
                 } else {
                     Log.e("LobbyViewModel", "Failed to join lobby: ${response.code()}")

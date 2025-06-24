@@ -2,6 +2,7 @@ package com.example.boomboomfrontend.viewmodel.gameState
 
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
+import com.example.boomboomfrontend.network.messages.clientInfo
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
 
@@ -34,7 +35,11 @@ class StompService(callbacks: Callbacks) {
         stomp.sendAction(playerMessage)
     }
 
-    fun joinGame(playerMessage: PlayerMessage){
+    fun joinGame(){
+        val playerMessage = PlayerMessage(
+            action = "JOIN_GAME",
+            lobbyId = clientInfo.currentLobbyID
+        )
         stomp.joinGame(playerMessage)
     }
 
@@ -43,7 +48,7 @@ class StompService(callbacks: Callbacks) {
         stomp.sendAction(playerMessage)
     }
 
-    fun sendCombo(list: List<Card>) {   // ✅ NEU!
+    fun sendCombo(list: List<Card>) {
         val playerMessage = PlayerMessage(action = "catComboPlayed", payload = list)
         stomp.sendAction(playerMessage)
     }

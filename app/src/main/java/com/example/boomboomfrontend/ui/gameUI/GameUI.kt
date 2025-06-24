@@ -73,11 +73,11 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
 //        Player(UUID.randomUUID().toString(), "Steve"),
 //        Player(UUID.randomUUID().toString(), "Evil Steve"),
 //        Player(UUID.randomUUID().toString(), "Dani"))
-    gameStateViewModel.repository.cardHand = mutableListOf(
+/*    gameStateViewModel.repository.cardHand = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),
         Card("Alter the Future", CardType.SEE_THE_FUTURE)
-    )
+    )*/
     val players = gameStateViewModel.repository.players
 
 
@@ -126,9 +126,11 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             .background(Color(background))
     ) {
 
+        val cardHand by gameStateViewModel.repository.cardHand.collectAsState()
+
         DialogUI(
             visible = showCardDialog.value,
-            cards = gameStateViewModel.repository.cardHand,
+            cards = cardHand,
             onDismiss = { showCardDialog.value = false }
         )
 
@@ -398,9 +400,10 @@ fun ServerMessage(serverMessage: String){
 
 @Composable
 fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: MutableState<String>){
-    val labels = gameStateViewModel.repository.getCardHandText()
+    val hand by gameStateViewModel.repository.cardHand.collectAsState()
+    val labels = hand.map { it.name }
 
-    val onClicks = gameStateViewModel.repository.cardHand.map { card ->
+    val onClicks = hand.map { card ->
         {
             selectedCardText.value = card.name
             when (card.type) {
