@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
+import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
@@ -18,7 +19,8 @@ class StompService(callbacks: Callbacks) {
         stomp.disconnect()
     }
 
-    fun sendAction(playerMessage:PlayerMessage){
+    fun playCard(list:MutableList<Card>?){
+        val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = list)
         stomp.sendAction(playerMessage)
     }
 
@@ -27,11 +29,17 @@ class StompService(callbacks: Callbacks) {
         stomp.sendAction(playerMessage)
     }
 
+    fun pass(){
+        val playerMessage = PlayerMessage(action = "PASS")
+        stomp.sendAction(playerMessage)
+    }
+
     fun joinGame(playerMessage: PlayerMessage){
         stomp.joinGame(playerMessage)
     }
 
     fun explode(){
-        stomp.explode(PlayerMessage())
+        val playerMessage = PlayerMessage(action = "EXPLODE")
+        stomp.sendAction(playerMessage)
     }
 }
