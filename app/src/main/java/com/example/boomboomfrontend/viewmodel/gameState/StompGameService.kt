@@ -36,6 +36,11 @@ class StompGameService(callbacks: Callbacks) {
         Stomp.joinGame(playerMessage)
     }
 
+    fun initGame(){
+        val playerMessage = PlayerMessage(action = "INIT")
+        Stomp.sendAction(playerMessage)
+    }
+
     fun explode(){
         val playerMessage = PlayerMessage(action = "EXPLODE")
         Stomp.sendAction(playerMessage)

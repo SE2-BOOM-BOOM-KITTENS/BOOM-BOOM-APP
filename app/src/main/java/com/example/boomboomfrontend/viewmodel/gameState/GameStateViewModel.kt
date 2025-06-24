@@ -24,6 +24,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         val stackTrace = Throwable().stackTrace
         val caller = stackTrace.getOrNull(1)
         println("Instantiated by: ${caller?.className}.${caller?.methodName}")
+        stompGameService.initGame()
 //        stompGameService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             stompGameService.getHand()
