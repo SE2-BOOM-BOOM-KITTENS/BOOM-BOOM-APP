@@ -3,6 +3,7 @@ package com.example.boomboomfrontend.viewmodel.gameState
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,13 +49,13 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         }
     }
 
-    fun playCard(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
+    fun playCard(list: MutableList<Card>?){
+        stompService.playCard(list)
         stompService.getHand()
     }
 
-    fun pass(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
+    fun pass(){
+        stompService.pass()
         stompService.getHand()
     }
 
