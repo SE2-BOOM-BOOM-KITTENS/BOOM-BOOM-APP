@@ -3,8 +3,11 @@ package com.example.boomboomfrontend.viewmodel.gameState
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.boomboomfrontend.logic.cardlogic.CatComboType
+import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
+import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +87,47 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         repository.players.addAll(playersFromLobby)
     }
 
+    // Combo-Liste
+    val selectedCombo: MutableList<Card> = mutableListOf()
+    private val _showFeralCatPicker = MutableStateFlow<Card?>(null)
+    val showFeralCatPicker: StateFlow<Card?> = _showFeralCatPicker
 
+    // Karte toggeln (hinzufügen oder entfernen)
+    fun toggleCardInCombo(card: Card) {
+        if (selectedCombo.contains(card)) {
+            selectedCombo.remove(card)
+        } else {
+            if (card.type == CardType.FERAL_CAT) {
+                // Trigger UI: Frage den Spieler nach aliasType.
+                _showFeralCatPicker.value = card
+            } else {
+                selectedCombo.add(card)
+            }
+        }
+    }
 
+    // Combo prüfen & senden
+    fun trySendCombo() {
+        val comboType = detectCatCombo(selectedCombo)
+        if (comboType != CatComboType.NONE) {
+            stompService.sendCombo(selectedCombo)
+            selectedCombo.clear()
+        }
+    }
+
+    // Combo zurücksetzen
+    fun clearCombo() {
+        selectedCombo.clear()
+    }
+
+    fun cancelFeralCatPicker() {
+        _showFeralCatPicker.value = null
+    }
+
+    fun confirmFeralCatType(chosenType: CardType) {
+        val feralCat = _showFeralCatPicker.value ?: return
+        feralCat.aliasType = chosenType
+        selectedCombo.add(feralCat)
+        _showFeralCatPicker.value = null
+    }
 }

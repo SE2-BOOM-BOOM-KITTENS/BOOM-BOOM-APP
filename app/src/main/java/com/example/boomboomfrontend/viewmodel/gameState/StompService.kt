@@ -42,4 +42,9 @@ class StompService(callbacks: Callbacks) {
         val playerMessage = PlayerMessage(action = "EXPLODE")
         stomp.sendAction(playerMessage)
     }
+
+    fun sendCombo(list: List<Card>) {   // ✅ NEU!
+        val playerMessage = PlayerMessage(action = "catComboPlayed", payload = list)
+        stomp.sendAction(playerMessage)
+    }
 }

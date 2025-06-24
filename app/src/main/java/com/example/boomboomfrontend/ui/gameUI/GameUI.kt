@@ -41,8 +41,11 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
+import com.example.boomboomfrontend.logic.cardlogic.CatComboType
+import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
 import com.example.boomboomfrontend.ui.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
+import androidx.compose.material3.AlertDialog
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -401,7 +404,16 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         {
             selectedCardText.value = card.name
             when (card.type) {
-                CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
+                // CAT-Karten: toggeln
+                CardType.CAT_TACO,
+                CardType.CAT_BEARD,
+                CardType.CAT_HAIRY_POTATO,
+                CardType.CAT_RAINBOW_RALPHING,
+                CardType.CAT_CATERMELON,
+                CardType.FERAL_CAT -> {
+                    gameStateViewModel.toggleCardInCombo(card)
+                }
+                    CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
                 CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
                 CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
                 CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
@@ -411,7 +423,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.DRAW_FROM_THE_BOTTOM -> playCard(gameStateViewModel,"Draw from the Bottom",CardType.DRAW_FROM_THE_BOTTOM)
                 CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
                 CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
-                else -> passTurn(gameStateViewModel) // fallback
+                else -> { /* do nothing */ }
             }
         }
     }
@@ -431,5 +443,62 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                     gameStateViewModel = gameStateViewModel,
                 )
         }
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+
+    // Nur anzeigen, wenn Combo-Logik aktiv ist
+    if (gameStateViewModel.selectedCombo.isNotEmpty()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { gameStateViewModel.trySendCombo() },
+                enabled = detectCatCombo(gameStateViewModel.selectedCombo) != CatComboType.NONE
+            ) {
+                Text("Combo ausspielen")
+            }
+
+            Button(
+                onClick = { gameStateViewModel.clearCombo() }
+            ) {
+                Text("Combo abbrechen")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        //Optional: Zeige gewählte Cats live an
+        Text(
+            text = "Gewählt: ${gameStateViewModel.selectedCombo.joinToString { it.name }}",
+            color = Color.White,
+            fontSize = 12.sp
+        )
+    }
+
+    val feralCatToPick by gameStateViewModel.showFeralCatPicker.collectAsState()
+
+    if (feralCatToPick != null) {
+        AlertDialog(
+            onDismissRequest = { gameStateViewModel.cancelFeralCatPicker() },
+            title = { Text("Feral Cat wählen") },
+            text = {
+                Column {
+                    Text("Als welche Cat soll die Feral Cat zählen?")
+                    // List Cat Types:
+                    val catTypes = listOf(
+                        CardType.CAT_TACO, CardType.CAT_BEARD,
+                        CardType.CAT_HAIRY_POTATO, CardType.CAT_RAINBOW_RALPHING, CardType.CAT_CATERMELON
+                    )
+                    catTypes.forEach { type ->
+                        Button(onClick = {
+                            gameStateViewModel.confirmFeralCatType(type)
+                        }) {
+                            Text(type.name)
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
     }
 }
