@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.ui.gameUI
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -39,9 +41,8 @@ import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import java.util.UUID
 import com.example.boomboomfrontend.R
-import com.example.boomboomfrontend.logic.cardlogic.CatComboType
-import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
 import com.example.boomboomfrontend.ui.DialogUI
+import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -65,21 +66,25 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
 
     gameStateViewModel.repository.myTurn = false
     //These are sample players just to fill the list! Remove later
-    gameStateViewModel.repository.players = mutableListOf(
-        Player(UUID.randomUUID().toString(), "Steve"),
-        Player(UUID.randomUUID().toString(), "Evil Steve"),
-        Player(UUID.randomUUID().toString(), "Dani"))
+//    gameStateViewModel.repository.players = mutableListOf(
+//        Player(UUID.randomUUID().toString(), "Steve"),
+//        Player(UUID.randomUUID().toString(), "Evil Steve"),
+//        Player(UUID.randomUUID().toString(), "Dani"))
     gameStateViewModel.repository.cardHand = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),
         Card("Alter the Future", CardType.SEE_THE_FUTURE)
     )
-    val opponentName1 = gameStateViewModel.repository.players[0].name
-    val opponentName2 = gameStateViewModel.repository.players[1].name
-    val opponentName3 = gameStateViewModel.repository.players[2].name
+    val players = gameStateViewModel.repository.players
+
+
+    val opponentName1 = players.getOrNull(0)?.name ?: "Waiting..."
+    val opponentName2 = players.getOrNull(1)?.name ?: "Waiting..."
+    val opponentName3 = players.getOrNull(2)?.name ?: "Waiting..."
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+
     BackHandler(enabled = true) {
         showExitDialog = true
     }
@@ -95,6 +100,19 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             },
             onDismiss = {
                 showExitDialog = false
+            }
+        )
+    }
+
+    if(gameStateViewModel.repository.gameFinished){
+        WinPopup(
+            onPlay = {
+                gameStateViewModel.exit()
+                navController.navigate("lobby")
+            },
+            onDismiss = {
+                gameStateViewModel.exit()
+                navController.navigate("lobby")
             }
         )
     }
@@ -383,24 +401,17 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
         {
             selectedCardText.value = card.name
             when (card.type) {
-                // CAT-Karten: toggeln
-                CardType.CAT_TACO,
-                CardType.CAT_BEARD,
-                CardType.CAT_HAIRY_POTATO,
-                CardType.CAT_RAINBOW_RALPHING,
-                CardType.CAT_CATERMELON,
-                CardType.FERAL_CAT -> {
-                    gameStateViewModel.toggleCardInCombo(card)
-                }
-
                 CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
                 CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
                 CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
                 CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
                 CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
-
-                else -> { /* do nothing */ }
+                CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
+                CardType.DRAW_FROM_THE_BOTTOM -> playCard(gameStateViewModel,"Draw from the Bottom",CardType.DRAW_FROM_THE_BOTTOM)
+                CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
+                CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
+                else -> passTurn(gameStateViewModel) // fallback
             }
         }
     }
@@ -420,63 +431,5 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                     gameStateViewModel = gameStateViewModel,
                 )
         }
-    }
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    // Nur anzeigen, wenn Combo-Logik aktiv ist
-    if (gameStateViewModel.selectedCombo.isNotEmpty()) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(
-                onClick = { gameStateViewModel.trySendCombo() },
-                enabled = detectCatCombo(gameStateViewModel.selectedCombo) != CatComboType.NONE
-            ) {
-                Text("Combo ausspielen")
-            }
-
-            Button(
-                onClick = { gameStateViewModel.clearCombo() }
-            ) {
-                Text("Combo abbrechen")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        //Optional: Zeige gewählte Cats live an
-        Text(
-            text = "Gewählt: ${gameStateViewModel.selectedCombo.joinToString { it.name }}",
-            color = Color.White,
-            fontSize = 12.sp
-        )
-    }
-
-    val feralCatToPick by gameStateViewModel.showFeralCatPicker.collectAsState()
-
-    if (feralCatToPick != null) {
-        AlertDialog(
-            onDismissRequest = { gameStateViewModel.cancelFeralCatPicker() },
-            title = { Text("Feral Cat wählen") },
-            text = {
-                Column {
-                    Text("Als welche Cat soll die Feral Cat zählen?")
-                    // List Cat Types:
-                    val catTypes = listOf(
-                        CardType.CAT_TACO, CardType.CAT_BEARD,
-                        CardType.CAT_HAIRY_POTATO, CardType.CAT_RAINBOW_RALPHING, CardType.CAT_CATERMELON
-                    )
-                    catTypes.forEach { type ->
-                        Button(onClick = {
-                            gameStateViewModel.confirmFeralCatType(type)
-                        }) {
-                            Text(type.name)
-                        }
-                    }
-                }
-            },
-            confirmButton = {}
-        )
     }
 }

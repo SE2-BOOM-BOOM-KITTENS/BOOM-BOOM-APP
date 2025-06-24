@@ -103,6 +103,7 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
+    //TO BE REMOVED; TEMPORARY
     fun joinGame(playerMessage: PlayerMessage, onJoined: (()-> Unit)?=null){
         val json = JSONObject().apply {
             put("payload",playerMessage.payload)
@@ -115,19 +116,6 @@ class Stomp(private val callbacks: Callbacks) {
             session?.sendText("/app/addPlayer",json.toString())
         }
         onJoined?.invoke()
-    }
-
-    fun explode(playerMessage: PlayerMessage){
-        val json = JSONObject().apply {
-            put("playerName",playerMessage)
-            put("action", "EXPLODE")
-            put("payload", null)
-            put("lobbyId", playerMessage.lobbyId)
-        }
-
-        coroutineScope.launch {
-            session?.sendText("/app/action",json.toString())
-        }
     }
 
     fun sendErrorAction(playerMessage: PlayerMessage){
@@ -157,10 +145,13 @@ class Stomp(private val callbacks: Callbacks) {
     }
 
 
-    fun disconnect() {
+    suspend fun disconnect() {
         coroutineScope.launch {
             try {
                 session?.disconnect()
+                session = null
+                isConnected = false
+                clientInfo.currentLobbyID = null
                 callback("Disconnected")
             } catch (e: Exception) {
                 callback("Error disconnecting: ${e.localizedMessage}")
@@ -188,23 +179,6 @@ class Stomp(private val callbacks: Callbacks) {
 
         } catch (e:Exception){
             callback("Error parsing message: ${e.localizedMessage}")
-        }
-    }
-
-    private fun handleIncomingMessage1(msg:String){
-        try {
-            // if Msg is JSON
-            if (msg.trim().startsWith("{")) {
-                val json = JSONObject(msg)
-                val from = json.optString("from", "Server")
-                val text = json.optString("text", msg)
-                callback("[$from] $text")
-            } else {
-                // WebSocket works!
-                callback(msg)
-            }
-        } catch (e: Exception) {
-            callback("Error: $msg")
         }
     }
 }

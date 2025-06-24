@@ -2,14 +2,14 @@ package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.example.boomboomfrontend.logic.cardlogic.detectCatCombo
-import com.example.boomboomfrontend.logic.cardlogic.CatComboType
-import com.example.boomboomfrontend.model.CardType
+import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
@@ -28,6 +28,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     override fun onResponse(res: String) {
+        if(res.equals("Disconnected")){
+            clientInfo.currentLobbyID = null
+            return
+        }
         try{
             val(type, message, gameStateJson) = repository.processServerMessage(res)
             _responseMessage.value = message
@@ -46,13 +50,13 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         }
     }
 
-    fun playCard(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
+    fun playCard(list: MutableList<Card>?){
+        stompService.playCard(list)
         stompService.getHand()
     }
 
-    fun pass(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
+    fun pass(){
+        stompService.pass()
         stompService.getHand()
     }
 
@@ -62,7 +66,9 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun exit(){
-        stompService.disconnect()
+        viewModelScope.launch {
+            stompService.disconnect()
+        }
     }
 
     fun explode(){
@@ -73,52 +79,11 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     }
 
-    // Combo-Liste
-    val selectedCombo: MutableList<Card> = mutableListOf()
-    private val _showFeralCatPicker = MutableStateFlow<Card?>(null)
-    val showFeralCatPicker: StateFlow<Card?> = _showFeralCatPicker
-
-    // Karte toggeln (hinzufügen oder entfernen)
-    fun toggleCardInCombo(card: Card) {
-        if (selectedCombo.contains(card)) {
-            selectedCombo.remove(card)
-        } else {
-            if (card.type == CardType.FERAL_CAT) {
-                // Trigger UI: Frage den Spieler nach aliasType.
-                _showFeralCatPicker.value = card
-            } else {
-                selectedCombo.add(card)
-            }
-        }
+    fun setPlayersFromLobby(playersFromLobby: List<Player>) {
+        repository.players.clear()
+        repository.players.addAll(playersFromLobby)
     }
 
-    // Combo prüfen & senden
-    fun trySendCombo() {
-        val comboType = detectCatCombo(selectedCombo)
-        if (comboType != CatComboType.NONE) {
-            val message = PlayerMessage(
-                action = "catComboPlayed",
-                payload = selectedCombo
-            )
-            stompService.sendAction(message)
-            selectedCombo.clear()
-        }
-    }
 
-    // Combo zurücksetzen
-    fun clearCombo() {
-        selectedCombo.clear()
-    }
-
-    fun cancelFeralCatPicker() {
-        _showFeralCatPicker.value = null
-    }
-
-    fun confirmFeralCatType(chosenType: CardType) {
-        val feralCat = _showFeralCatPicker.value ?: return
-        feralCat.aliasType = chosenType
-        selectedCombo.add(feralCat)
-        _showFeralCatPicker.value = null
-    }
 
 }
