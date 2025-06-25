@@ -43,8 +43,6 @@ class MainActivity : ComponentActivity() {
                     GameScreen(navController= navController)
                 }
 
-                composable("test-server") { ServerTestActivity() }
-
                 composable("players_in_lobby/{lobbyId}") { backStackEntry ->
                     val lobbyId = backStackEntry.arguments?.getString("lobbyId")
                     PlayersInLobbyScreen(lobbyId = lobbyId.toString(), navController = navController, onEnterGameScreen = {
