@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +15,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
+    var lockButtons = false
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
@@ -39,11 +39,15 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             _responseMessage.value = message
 
             when(type){
-                "GAME_STATE" -> repository.updateState(gameStateJson)
+                "GAME_STATE" -> {
+                    repository.updateState(gameStateJson)
+                    stompGameService.getHand()
+                }
                 "HAND" -> {
                     Log.i("Hand","updating Hand")
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
+                    lockButtons = false
                 }
                 "TIMEOUT" -> {
                     Log.i("timeout","Current Player Timed out")
@@ -56,13 +60,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun playCard(card: Card){
+        lockButtons = true
         stompGameService.playCard(card)
-        stompGameService.getHand()
     }
 
     fun pass(){
         stompGameService.pass()
-        stompGameService.getHand()
     }
 
     fun exit(){

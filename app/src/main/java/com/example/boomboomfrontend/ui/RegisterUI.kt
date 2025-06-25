@@ -51,7 +51,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
         Text("Click Bypass if you don't want to register and connect to server. TEMPORARY; DELETE LATER")
         Button(onClick = {
-            navController.navigate("lobby")
+            navController.navigate("connection-screen")
         }) {
             Text("Bypass")
         }
