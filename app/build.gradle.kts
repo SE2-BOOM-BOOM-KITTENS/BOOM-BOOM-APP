@@ -170,6 +170,7 @@ android {
             property("sonar.host.url", "https://sonarcloud.io")
             property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
             property("sonar.androidLint.reportPaths", "build/reports/lint-results-debug.xml")
+            property("sonar.exclusions", "**/ui/**/*.*")
         }
     }
 }
