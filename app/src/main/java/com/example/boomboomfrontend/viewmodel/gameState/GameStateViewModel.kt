@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
-
     private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
@@ -81,9 +80,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun handleExplosion(){
-//        if(this.explodeDialog){
-//           explode()
-//        }
+        explodeDialog.value = true
     }
 
     fun setPlayersFromLobby(playersFromLobby: List<Player>) {

@@ -35,7 +35,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.R
-import com.example.boomboomfrontend.ui.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.ExplodeDialog
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
@@ -118,13 +117,6 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             .fillMaxSize()
             .background(Color(background))
     ) {
-
-        DialogUI(
-            visible = showCardDialog.value,
-            cards = gameStateViewModel.repository.cardHand,
-            onDismiss = { showCardDialog.value = false }
-        )
-
         // Center content
         Box(
             modifier = Modifier.fillMaxSize(),

@@ -24,8 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.boomboomfrontend.ui.gameUI.border
 import com.example.boomboomfrontend.ui.gameUI.cardback
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateViewModel
 import kotlinx.coroutines.delay
 
 @Preview(
@@ -35,6 +37,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun ExplodeDialog(
     visible: Boolean = true,
+    gameStateViewModel: GameStateViewModel = viewModel(),
     onDismiss: () -> Unit = {},
 ) {
 if (visible) {
@@ -62,7 +65,7 @@ if (visible) {
             Spacer(modifier = Modifier.height(15.dp))
 
             Button(
-                onClick = {  },
+                onClick = { gameStateViewModel.exit() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(cardback)
                 ),
