@@ -73,7 +73,7 @@ fun ConnectionScreen(
         }
 
         // Show current players
-        players.forEachIndexed { i, player ->
+        players.forEachIndexed { _, player ->
             Row(
                 Modifier
                     .border(1.dp, Color.Black)
