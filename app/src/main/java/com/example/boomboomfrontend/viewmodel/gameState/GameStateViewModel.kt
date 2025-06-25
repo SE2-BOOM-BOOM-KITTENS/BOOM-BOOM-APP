@@ -1,6 +1,7 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
@@ -16,6 +17,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
     var lockButtons = false
+    var explodeDialog = mutableStateOf(false)
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
@@ -79,14 +81,13 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun handleExplosion(){
-
+//        if(this.explodeDialog){
+//           explode()
+//        }
     }
 
     fun setPlayersFromLobby(playersFromLobby: List<Player>) {
         repository.players.clear()
         repository.players.addAll(playersFromLobby)
     }
-
-
-
 }
