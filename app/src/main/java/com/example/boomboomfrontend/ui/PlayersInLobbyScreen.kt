@@ -53,7 +53,7 @@ fun PlayersInLobbyScreen(
                 lobbyViewModel.leaveLobby(info.currentLobbyID.toString(),info.playerId)
                 info.currentLobbyID = null
                 lobbyViewModel.goToLobby = false
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             },
             onDismiss = {
                 showExitDialog = false
