@@ -1,6 +1,7 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
@@ -13,11 +14,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
-
     private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
     var lockButtons = false
+    var explodeDialog = mutableStateOf(false)
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
@@ -52,7 +53,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
                     lockButtons = false
                 }
                 "TIMEOUT" -> {
-                    Log.i("timeout","Current Player Timed out")
+                    repository.updateState(gameStateJson)
+                    if(repository.myTurn){
+                        Log.i("Hand","Player timed out")
+                    } else{
+                        repository.updateState(gameStateJson)
+                    }
                 }
                 "EXPLODE" -> handleExplosion()
                 "SHUFFLE" -> shuffleDrawPile()
@@ -88,7 +94,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun handleExplosion(){
-
+        explodeDialog.value = true
     }
 
     fun setPlayersFromLobby(playersFromLobby: List<Player>) {
@@ -96,10 +102,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         repository.players.addAll(playersFromLobby)
     }
 
+
     private fun shuffleDrawPile() {
         repository.notifyShuffle()
         _responseMessage.value = "Deck shuffled"
     }
+
 
 
 
