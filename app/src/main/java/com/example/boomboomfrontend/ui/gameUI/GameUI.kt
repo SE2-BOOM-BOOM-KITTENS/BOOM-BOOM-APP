@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.R
-import com.example.boomboomfrontend.ui.DialogUI
+import com.example.boomboomfrontend.ui.gameUI.dialogUI.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
