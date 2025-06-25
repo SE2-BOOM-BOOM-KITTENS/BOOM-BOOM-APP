@@ -60,11 +60,6 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
     gameStateViewModel.repository.myTurn = false
-    //These are sample players just to fill the list! Remove later
-//    gameStateViewModel.repository.players = mutableListOf(
-//        Player(UUID.randomUUID().toString(), "Steve"),
-//        Player(UUID.randomUUID().toString(), "Evil Steve"),
-//        Player(UUID.randomUUID().toString(), "Dani"))
     gameStateViewModel.repository.cardHand = mutableListOf(
         Card("Blank", CardType.BLANK),
         Card("Defuse", CardType.DEFUSE),

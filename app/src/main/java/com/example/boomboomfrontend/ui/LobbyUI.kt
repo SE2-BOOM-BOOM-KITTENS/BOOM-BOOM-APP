@@ -13,13 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.model.LobbyPlayer
+import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: NavHostController, onEnterLobby: () -> Unit) {
     var name by remember { mutableStateOf("") }
+    val clientInfo = ClientInfoHolder.clientInfo
+
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Dein Name:")
@@ -28,7 +30,7 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
         Spacer(Modifier.height(8.dp))
 
         Button(onClick = {
-   lobbyViewModel.createLobby(LobbyPlayer(name), 4)
+   lobbyViewModel.createLobby(clientInfo.playerId!!, 4)
         }) {
             Text("Lobby erstellen")
         }
