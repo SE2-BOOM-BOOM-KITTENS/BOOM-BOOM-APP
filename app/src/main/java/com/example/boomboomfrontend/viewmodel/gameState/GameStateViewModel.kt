@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.Card
+import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
                     Log.i("timeout","Current Player Timed out")
                 }
                 "EXPLODE" -> handleExplosion()
+                "SHUFFLE" -> shuffleDrawPile()
             }
         } catch (e:Exception){
             Log.e("GameStateError", "Failed Updating GameState: ${e.localizedMessage}")
@@ -57,6 +59,9 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     fun playCard(card: Card){
         stompGameService.playCard(card)
+        if (card.type == CardType.SHUFFLE) {
+            stompGameService.shuffleDrawPile()
+        }
         stompGameService.getHand()
     }
 
@@ -83,6 +88,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         repository.players.clear()
         repository.players.addAll(playersFromLobby)
     }
+
+    private fun shuffleDrawPile() {
+        repository.notifyShuffle()
+        _responseMessage.value = "Deck shuffled"
+    }
+
 
 
 

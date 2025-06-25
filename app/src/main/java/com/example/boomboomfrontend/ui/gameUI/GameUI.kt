@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.ui.gameUI
 
+import android.view.animation.AnimationUtils
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,6 +39,7 @@ import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.ui.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
+import com.example.boomboomfrontend.viewmodel.gameState.GameStateRepository
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
@@ -126,7 +129,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 CardUI(selectedCardText.value)
-                DeckUI()
+                DeckUI(gameStateViewModel.repository)
             }
         }
 
@@ -247,7 +250,7 @@ fun CardUI(textField: String) {
 }
 
 @Composable
-fun DeckUI() {
+fun DeckUI(repository: GameStateRepository) {
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
@@ -260,6 +263,10 @@ fun DeckUI() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
+
+    LaunchedEffect(repository.lastShuffleTimestamp) {
+    }
+
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.example.boomboomfrontend.viewmodel.gameState
 
+import android.util.Log
 import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
@@ -43,6 +44,11 @@ class StompGameService(callbacks: Callbacks) {
 
     fun explode(){
         val playerMessage = PlayerMessage(action = "EXPLODE")
+        Stomp.sendAction(playerMessage)
+    }
+
+    fun shuffleDrawPile() {
+        val playerMessage = PlayerMessage(action = "SHUFFLE")
         Stomp.sendAction(playerMessage)
     }
 }

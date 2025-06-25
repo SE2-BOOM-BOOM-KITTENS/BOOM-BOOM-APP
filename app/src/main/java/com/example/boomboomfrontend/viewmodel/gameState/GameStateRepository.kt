@@ -14,6 +14,7 @@ class GameStateRepository() {
     val clientInfo = ClientInfoHolder.clientInfo
     var players = mutableListOf<Player>()
     var cardHand: MutableList<Card> = mutableListOf()
+    var drawPile: MutableList<Card> = mutableListOf()
     var winner: Player? = null;
     var gameFinished by mutableStateOf(false)
     var playerCount: Int = 0
@@ -36,6 +37,20 @@ class GameStateRepository() {
         if(gameStateJson != null){
             clientInfo.currentLobbyID = UUID.fromString(gameStateJson.getString("lobbyId"))
             playerCount = gameStateJson.getInt("playerCount")
+            val drawPileJson = gameStateJson.optJSONArray("drawPile")
+            drawPile.clear()
+
+            if (drawPileJson != null) {
+                for (i in 0 until drawPileJson.length()) {
+                    val cardJson = drawPileJson.getJSONObject(i)
+                    val name = cardJson.getString("name")
+                    val type = CardType.valueOf(cardJson.getString("type"))
+                    drawPile.add(Card(name, type))
+                }
+
+                Log.i("DRAW_PILE_AFTER", drawPile.joinToString { it.name })
+            }
+
             //myTurn = gameStateJson.getBoolean("myTurn")
 
             val currentPlayer = gameStateJson.getJSONObject("currentPlayer")
@@ -107,5 +122,11 @@ class GameStateRepository() {
 
     fun getCardHandText(): List<String> {
         return cardHand.map { it.name }
+    }
+
+    var lastShuffleTimestamp by mutableStateOf<Long?>(null)
+
+    fun notifyShuffle() {
+        lastShuffleTimestamp = System.currentTimeMillis()
     }
 }
