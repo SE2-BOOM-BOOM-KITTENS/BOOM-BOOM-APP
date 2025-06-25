@@ -47,6 +47,9 @@ class GameStateViewModel :ViewModel() ,Callbacks {
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
                 }
+                "TIMEOUT" -> {
+                    Log.i("timeout","Current Player Timed out")
+                }
                 "EXPLODE" -> handleExplosion()
             }
         } catch (e:Exception){
