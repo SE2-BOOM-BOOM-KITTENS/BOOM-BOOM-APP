@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.R
-import com.example.boomboomfrontend.ui.DialogUI
+import com.example.boomboomfrontend.ui.dialogs.ExplodeDialog
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
@@ -63,16 +63,25 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
     gameStateViewModel.repository.myTurn = true
     val players = gameStateViewModel.repository.players
 
-
     val opponentName1 = players.getOrNull(0)?.name ?: ""
     val opponentName2 = players.getOrNull(1)?.name ?: ""
     val opponentName3 = players.getOrNull(2)?.name ?: ""
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+    val showExplodeDialog by remember { mutableStateOf(false) }
 
     BackHandler(enabled = true) {
         showExitDialog = true
+    }
+
+    if(showExplodeDialog){
+        ExplodeDialog(
+            onDismiss = {
+                gameStateViewModel.exit()
+                navController.navigate("connection-screen")
+            }
+        )
     }
 
     if(showExitDialog){
@@ -108,13 +117,6 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             .fillMaxSize()
             .background(Color(background))
     ) {
-
-        DialogUI(
-            visible = showCardDialog.value,
-            cards = gameStateViewModel.repository.cardHand,
-            onDismiss = { showCardDialog.value = false }
-        )
-
         // Center content
         Box(
             modifier = Modifier.fillMaxSize(),

@@ -16,7 +16,7 @@ class ShuffleActionHandler (private val context: Context, private val gameClient
         }
     }
 
-    private fun shuffleDeck(){
+    fun shuffleDeck(){
         // Kommunikation mit dem Server
         gameClient.shuffleDeck()
 
