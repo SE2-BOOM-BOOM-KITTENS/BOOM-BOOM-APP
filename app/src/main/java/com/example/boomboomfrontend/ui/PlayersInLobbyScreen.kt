@@ -51,7 +51,7 @@ fun PlayersInLobbyScreen(
             onPass = {
                 lobbyViewModel.clientInfo.currentLobbyID = null
                 lobbyViewModel.goToLobby = false
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             },
             onDismiss = {
                 showExitDialog = false

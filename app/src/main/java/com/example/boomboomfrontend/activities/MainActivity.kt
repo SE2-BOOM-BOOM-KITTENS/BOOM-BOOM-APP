@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.boomboomfrontend.ui.ConnectionScreen
 import com.example.boomboomfrontend.ui.gameUI.GameScreen
-import com.example.boomboomfrontend.ui.LobbyScreen
 import com.example.boomboomfrontend.ui.RegisterScreen
 import com.example.boomboomfrontend.ui.gameUI.PlayersInLobbyScreen
 
@@ -28,11 +27,6 @@ class MainActivity : ComponentActivity() {
             NavHost(navController = navController, startDestination = "register") {
                 composable("register"){
                     RegisterScreen(navController)
-                }
-                composable("lobby") {
-                    LobbyScreen(navController = navController, onEnterLobby = {
-                        navController.navigate("connection-screen")
-                    })
                 }
                 composable("connection-screen") {
                     ConnectionScreen(navController = navController, onEnterGameScreen = {

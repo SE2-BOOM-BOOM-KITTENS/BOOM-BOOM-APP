@@ -31,7 +31,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
     if(isRegistered){
         LaunchedEffect(Unit) {
-            navController.navigate("lobby"){
+            navController.navigate("connection-screen"){
                 popUpTo("register"){inclusive=true}
             }
         }
