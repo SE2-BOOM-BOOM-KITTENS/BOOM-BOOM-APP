@@ -6,13 +6,10 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.logic.CardManager
 import com.example.boomboomfrontend.logic.GameManager
 import com.example.boomboomfrontend.model.Player
-import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.model.CardType
 import com.example.boomboomfrontend.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

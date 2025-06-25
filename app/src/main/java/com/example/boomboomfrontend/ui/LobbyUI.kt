@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.logic.Lobby
-import com.example.boomboomfrontend.model.ConnectionStatus
 import com.example.boomboomfrontend.model.LobbyPlayer
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
@@ -28,20 +26,12 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
     var joined by remember { mutableStateOf(false) }
     val clientInfo = ClientInfoHolder.clientInfo
 
+
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Dein Name:")
         TextField(value = name, onValueChange = { name = it })
 
         Spacer(Modifier.height(8.dp))
-
-//        Button(onClick = {
-//            if (name.isNotBlank()) {
-//                val host = Player(id = "0", name, ConnectionStatus.JOINED, 1, isAlive = true)
-//                lobby = Lobby(host, maxPlayers = 4)
-//            }
-//        }) {
-//            Text("Lobby erstellen")
-//        }
 
         Button(onClick = {
    lobbyViewModel.createLobby(clientInfo.playerId!!, 4)
@@ -49,31 +39,12 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
             Text("Lobby erstellen")
         }
 
-
-        Spacer(Modifier.height(8.dp))
-
-//        lobby?.let {
-//            Text("Lobby-Code: ${it.getRoomCode()}")
-//        }
-
         Spacer(Modifier.height(8.dp))
 
         Button(onClick = {
-            val p = Player(id = "1", name = "Player", ConnectionStatus.NOT_CONNECTED, 1, isAlive = true)
             navController.navigate("connection-screen")
         }) {
             Text("Lobby beitreten")
-        }
-
-        Spacer(Modifier.height(16.dp))
-        Text("Status: ${if (joined) "Beigetreten" else "Nicht verbunden"}")
-
-        Spacer(Modifier.height(16.dp))
-
-        Button(onClick = {
-            navController.navigate("test-server")
-        }) {
-            Text("Zum Server/Client Test")
         }
     }
 }
