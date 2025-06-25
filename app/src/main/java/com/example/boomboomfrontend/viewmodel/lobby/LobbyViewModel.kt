@@ -140,6 +140,21 @@ class LobbyViewModel : ViewModel(), Callbacks {
         }
     }
 
+    fun leaveLobby(lobbyId: String, playerId: UUID?) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.leaveLobby(lobbyId, playerId)
+                if (response.isSuccessful) {
+                    Log.d("LobbyViewModel", "Successfully leaved lobby $lobbyId")
+                } else {
+                    Log.e("LobbyViewModel", "Failed to leave lobby: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("LobbyViewModel", "Error leaving lobby: ${e.message}")
+            }
+        }
+    }
+
 
 
     fun getPlayerList(): StateFlow<List<Player>> = players

@@ -49,7 +49,9 @@ fun PlayersInLobbyScreen(
 
             },
             onPass = {
-                lobbyViewModel.clientInfo.currentLobbyID = null
+                val info = lobbyViewModel.clientInfo
+                lobbyViewModel.leaveLobby(info.currentLobbyID.toString(),info.playerId)
+                info.currentLobbyID = null
                 lobbyViewModel.goToLobby = false
                 navController.navigate("lobby")
             },
