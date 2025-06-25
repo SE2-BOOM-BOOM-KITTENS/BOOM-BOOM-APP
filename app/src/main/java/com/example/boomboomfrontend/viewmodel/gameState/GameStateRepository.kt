@@ -39,7 +39,6 @@ class GameStateRepository() {
             players.clear()
             clientInfo.currentLobbyID = UUID.fromString(gameStateJson.getString("lobbyId"))
             playerCount = gameStateJson.getInt("playerCount")
-            //myTurn = gameStateJson.getBoolean("myTurn")
 
             val currentPlayer = gameStateJson.getJSONObject("currentPlayer")
             val id = UUID.fromString(currentPlayer.getString("id"))
@@ -58,6 +57,8 @@ class GameStateRepository() {
             for(i in 0 until discardPileArray.length()){
                 val name = discardPileArray.getJSONObject(i).getString("name")
                 val typeString = discardPileArray.getJSONObject(i).getString("type")
+                val idString = discardPileArray.getJSONObject(i).getString("id")
+                Log.i("ID","ID IS: $idString")
                 val type = try{
                     CardType.valueOf(typeString.uppercase())
                 } catch(e: IllegalArgumentException){
@@ -65,11 +66,13 @@ class GameStateRepository() {
                 }
 
                 val cheatDuplicated = discardPileArray.getJSONObject(i).getBoolean("cheatDuplicated")
-                val card = Card(name,type,cheatDuplicated)
+
+                val card = Card(name,type,cheatDuplicated,UUID.fromString(idString))
                 discardPileList.add(card)
             }
             this.discardPile = discardPileList
-            cardPlayed = discardPileList.last()
+            if(discardPileList.isNotEmpty())
+                cardPlayed = discardPileList.last()
 
             val winnerJson = gameStateJson.optJSONObject("winner")
             if(winnerJson != null) {
@@ -90,24 +93,31 @@ class GameStateRepository() {
     }
 
     fun updateHand(gameStateJson: JSONObject?){
-        val handId = UUID.fromString(gameStateJson?.getString("playerId"))
-        val newHand :MutableList<Card> = mutableListOf()
-        val cardsJSON = gameStateJson?.getJSONArray("cards")
+        try {
+            val handId = UUID.fromString(gameStateJson?.getString("playerId"))
+            val newHand: MutableList<Card> = mutableListOf()
+            val cardsJSON = gameStateJson?.getJSONArray("cards")
 
-        for(i in 0 until cardsJSON!!.length()){
-            val cardJSON = cardsJSON.getJSONObject(i)
-            val type = cardJSON.getString("type")
-            val duplicated = cardJSON.getBoolean("cheatDuplicated")
-            val card = Card(cardJSON.getString("name"), CardType.valueOf(type),duplicated)
-            newHand.add(card)
-        }
+            for (i in 0 until cardsJSON!!.length()) {
+                val cardJSON = cardsJSON.getJSONObject(i)
+                val type = cardJSON.getString("type")
+                val duplicated = cardJSON.getBoolean("cheatDuplicated")
+                val id = cardJSON.getString("id")
+                val card = Card(
+                    cardJSON.getString("name"),
+                    CardType.valueOf(type),
+                    duplicated,
+                    id = UUID.fromString(id)
+                )
+                newHand.add(card)
+            }
 
-        clientInfo.playerId = handId
-        cardHand = newHand
-        Log.i("HAND",gameStateJson.toString())
+            clientInfo.playerId = handId
+            cardHand = newHand
+            Log.i("HAND", gameStateJson.toString())
 
-        if(checkForExplode()){
-            //explode()
+        }catch (e: Exception){
+            Log.e("GameState","Failed to Update Hand ${e.localizedMessage}")
         }
 
     }

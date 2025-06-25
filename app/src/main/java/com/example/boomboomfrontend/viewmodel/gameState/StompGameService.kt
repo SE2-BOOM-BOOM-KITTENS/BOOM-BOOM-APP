@@ -22,6 +22,7 @@ class StompGameService(callbacks: Callbacks) {
         val cardJson = JSONObject().apply {
             put("name", card.name)
             put("type", card.type)
+            put("id", card.id)
         }
         val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = cardJson)
         Stomp.sendAction(playerMessage)
@@ -39,6 +40,28 @@ class StompGameService(callbacks: Callbacks) {
 
     fun joinGame(playerMessage: PlayerMessage){
         Stomp.joinGame(playerMessage)
+    }
+
+    fun cheat(card: Card){
+        val cardJson = JSONObject().apply {
+            put("name", card.name)
+            put("type", card.type)
+            put("id",card.id)
+        }
+
+        val playerMessage = PlayerMessage(action = "CHEAT", payload = cardJson)
+        Stomp.sendAction(playerMessage)
+    }
+
+    fun checkCheat(card: Card){
+        val cardJson = JSONObject().apply {
+            put("name", card.name)
+            put("type", card.type)
+            put("id",card.id)
+        }
+
+        val playerMessage = PlayerMessage(action = "CHECK_CHEAT", payload = cardJson)
+        Stomp.sendAction(playerMessage)
     }
 
     fun initGame(){
