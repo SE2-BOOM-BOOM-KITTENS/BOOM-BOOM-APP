@@ -31,7 +31,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
     if(isRegistered){
         LaunchedEffect(Unit) {
-            navController.navigate("lobby"){
+            navController.navigate("connection-screen"){
                 popUpTo("register"){inclusive=true}
             }
         }
@@ -51,7 +51,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
         Text("Click Bypass if you don't want to register and connect to server. TEMPORARY; DELETE LATER")
         Button(onClick = {
-            navController.navigate("lobby")
+            navController.navigate("connection-screen")
         }) {
             Text("Bypass")
         }

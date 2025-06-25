@@ -3,7 +3,8 @@ package com.example.boomboomfrontend.viewmodel.gameState
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.boomboomfrontend.network.messages.PlayerMessage
+import com.example.boomboomfrontend.model.Player
+import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,22 +12,25 @@ import kotlinx.coroutines.launch
 
 class GameStateViewModel :ViewModel() ,Callbacks {
 
-    private val stompService = StompService(this)
+    private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
+    var lockButtons = false
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
 
     init {
-        stompService.connect(){
+        val stackTrace = Throwable().stackTrace
+        val caller = stackTrace.getOrNull(1)
+        println("Instantiated by: ${caller?.className}.${caller?.methodName}")
+        stompGameService.initGame()
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
-            joinGame()
-        }
+            stompGameService.getHand()
     }
 
     override fun onResponse(res: String) {
-        if(res.equals("Disconnected")){
+        if(res == "Disconnected"){
             clientInfo.currentLobbyID = null
             return
         }
@@ -35,11 +39,18 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             _responseMessage.value = message
 
             when(type){
-                "GAME_STATE" -> repository.updateState(gameStateJson)
+                "GAME_STATE" -> {
+                    repository.updateState(gameStateJson)
+                    stompGameService.getHand()
+                }
                 "HAND" -> {
                     Log.i("Hand","updating Hand")
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
+                    lockButtons = false
+                }
+                "TIMEOUT" -> {
+                    Log.i("timeout","Current Player Timed out")
                 }
                 "EXPLODE" -> handleExplosion()
             }
@@ -48,34 +59,34 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         }
     }
 
-    fun playCard(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
-        stompService.getHand()
+    fun playCard(card: Card){
+        lockButtons = true
+        stompGameService.playCard(card)
     }
 
-    fun pass(playerMessage: PlayerMessage){
-        stompService.sendAction(playerMessage)
-        stompService.getHand()
-    }
-
-    fun joinGame(){
-        val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
-        stompService.joinGame(playerMessage)
+    fun pass(){
+        stompGameService.pass()
     }
 
     fun exit(){
         viewModelScope.launch {
-            stompService.disconnect()
+            stompGameService.disconnect()
         }
     }
 
     fun explode(){
-        stompService.explode()
+        stompGameService.explode()
     }
 
     fun handleExplosion(){
 
     }
+
+    fun setPlayersFromLobby(playersFromLobby: List<Player>) {
+        repository.players.clear()
+        repository.players.addAll(playersFromLobby)
+    }
+
 
 
 }

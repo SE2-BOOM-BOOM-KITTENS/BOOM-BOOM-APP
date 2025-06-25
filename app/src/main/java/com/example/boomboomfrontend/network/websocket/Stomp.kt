@@ -18,17 +18,23 @@ val clientInfo = ClientInfoHolder.clientInfo
 private val LOCAL_WEBSOCKET_URI = "ws://10.0.2.2:8080/game?id=${clientInfo.playerId}"
 private val REMOTE_WEBSOCKET_URI = "ws://se2-demo.aau.at:53211/game?id=${clientInfo.playerId}"
 
-class Stomp(private val callbacks: Callbacks) {
-
-
+object Stomp {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private lateinit var client: StompClient
     private var session: StompSession? = null
-
     private var sessionJob: Job? = null
-
     private var isConnected = false
+
+    private var callbacks: Callbacks? = null
+
+    fun setCallbacks(cb:Callbacks){
+        callbacks = cb
+    }
+
+    fun reset(){
+        callbacks = null
+    }
 
     fun connect(onConnected: (()-> Unit)?=null) {
         if (isConnected) {
@@ -36,8 +42,8 @@ class Stomp(private val callbacks: Callbacks) {
             onConnected?.invoke()
             return
         }
-        client = StompClient(OkHttpWebSocketClient())
 
+        client = StompClient(OkHttpWebSocketClient())
         tryConnect( LOCAL_WEBSOCKET_URI,onConnected=onConnected){
             tryConnect(REMOTE_WEBSOCKET_URI, onConnected=onConnected)
         }
@@ -103,6 +109,7 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
+    //TO BE REMOVED; TEMPORARY
     fun joinGame(playerMessage: PlayerMessage, onJoined: (()-> Unit)?=null){
         val json = JSONObject().apply {
             put("payload",playerMessage.payload)
@@ -115,19 +122,6 @@ class Stomp(private val callbacks: Callbacks) {
             session?.sendText("/app/addPlayer",json.toString())
         }
         onJoined?.invoke()
-    }
-
-    fun explode(playerMessage: PlayerMessage){
-        val json = JSONObject().apply {
-            put("playerName",playerMessage)
-            put("action", "EXPLODE")
-            put("payload", null)
-            put("lobbyId", playerMessage.lobbyId)
-        }
-
-        coroutineScope.launch {
-            session?.sendText("/app/action",json.toString())
-        }
     }
 
     fun sendErrorAction(playerMessage: PlayerMessage){
@@ -156,6 +150,16 @@ class Stomp(private val callbacks: Callbacks) {
         }
     }
 
+    fun createGame(){
+        val json = JSONObject().apply {
+            put("lobbyId", PlayerMessage().lobbyId)
+        }
+
+        coroutineScope.launch {
+            session?.sendText("/app/createGame",json.toString())
+        }
+    }
+
 
     suspend fun disconnect() {
         coroutineScope.launch {
@@ -175,39 +179,18 @@ class Stomp(private val callbacks: Callbacks) {
 
     private fun callback(msg: String) {
         Handler(Looper.getMainLooper()).post {
-            callbacks.onResponse(msg)
+            callbacks!!.onResponse(msg)
         }
     }
 
     private fun handleIncomingMessage(msg: String){
         try{
             Log.i("HANDLEINCOMINGMESSSAGE", "Message is been handled")
-            val json = JSONObject(msg)
-
-            val type = json.getString("type")
-            val message = json.getString("message")
 
             callback(msg)
 
         } catch (e:Exception){
             callback("Error parsing message: ${e.localizedMessage}")
-        }
-    }
-
-    private fun handleIncomingMessage1(msg:String){
-        try {
-            // if Msg is JSON
-            if (msg.trim().startsWith("{")) {
-                val json = JSONObject(msg)
-                val from = json.optString("from", "Server")
-                val text = json.optString("text", msg)
-                callback("[$from] $text")
-            } else {
-                // WebSocket works!
-                callback(msg)
-            }
-        } catch (e: Exception) {
-            callback("Error: $msg")
         }
     }
 }

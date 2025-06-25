@@ -3,7 +3,6 @@ package com.example.boomboomfrontend.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
 import com.example.boomboomfrontend.network.ApiRepository
 import com.example.boomboomfrontend.network.messages.PlayerMessage
@@ -28,7 +27,9 @@ class PlayerViewModel : ViewModel(), Callbacks {
     val responseMessage: StateFlow<String> = _responseMessage
 
     // STOMP WebSocket-Client
-    private val stomp = Stomp(this)
+    init {
+        Stomp.setCallbacks(this)
+    }
 
     // API: add player
     fun addPlayer(name: String) {
@@ -68,25 +69,16 @@ class PlayerViewModel : ViewModel(), Callbacks {
         }
     }
 
-    // WebSocket: connect
-    fun connectWebSocket() {
-        stomp.connect()
-    }
 
     // WebSocket: send Response from WebSocket
     fun sendResponseMessage() {
-        stomp.sendResponseMessage()
+        Stomp.sendResponseMessage()
     }
-
-    // WebSocket: send JSON - might need later
-//    fun sendJsonMessage(from: String = "Client") {
-//        stomp.sendAction(action = from, payload = "Text von $from")
-//    }
 
     // WebSocket: disconnect
     fun disconnectWebSocket() {
         viewModelScope.launch {
-        stomp.disconnect()
+        Stomp.disconnect()
             }
     }
 
@@ -101,17 +93,13 @@ class PlayerViewModel : ViewModel(), Callbacks {
         disconnectWebSocket()
     }
 
-//    fun sendAction() {
-//        stomp.sendAction("Test", "Hello")
-//    }
-
     fun testBroadcast(){
         val playerMessage = PlayerMessage()
-        stomp.sendDebugTest(playerMessage)
+        Stomp.sendDebugTest(playerMessage)
     }
 
     fun sendErrorAction(){
         val playerMessage = PlayerMessage()
-        stomp.sendErrorAction(playerMessage)
+        Stomp.sendErrorAction(playerMessage)
     }
 }

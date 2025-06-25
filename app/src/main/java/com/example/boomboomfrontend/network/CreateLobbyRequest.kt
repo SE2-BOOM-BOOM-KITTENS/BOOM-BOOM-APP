@@ -1,8 +1,9 @@
 package com.example.boomboomfrontend.network
 
-import com.example.boomboomfrontend.model.LobbyPlayer
+
+import java.util.UUID
 
 data class CreateLobbyRequest(
-    val player: LobbyPlayer,
+    val playerId: UUID,
     val maxPlayers: Int
 )

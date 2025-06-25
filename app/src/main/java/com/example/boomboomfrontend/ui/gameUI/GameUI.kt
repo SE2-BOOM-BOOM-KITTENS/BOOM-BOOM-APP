@@ -22,7 +22,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -34,16 +33,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.boomboomfrontend.model.Card
-import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
-import java.util.UUID
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.ui.gameUI.dialogUI.DialogUI
 import com.example.boomboomfrontend.ui.dialogs.WinPopup
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
+const val cheat_cardfront = 0xffffffff
 const val cardfront = 0xffb2766b
 const val border = 0xff000000
 const val servertext = 0x99eeeeee
@@ -59,23 +56,17 @@ fun GameScreenPreview(navController: NavController = rememberNavController()){
 
 @Composable
 fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewModel = viewModel()) {
-    val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
+    val selectedCardText = remember { mutableStateOf("boo") }
+    val selectedCardDupe = remember { mutableStateOf(false) }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
-    gameStateViewModel.repository.myTurn = false
-    //These are sample players just to fill the list! Remove later
-    gameStateViewModel.repository.players = mutableListOf(
-        Player(UUID.randomUUID().toString(), "Steve"),
-        Player(UUID.randomUUID().toString(), "Evil Steve"),
-        Player(UUID.randomUUID().toString(), "Dani"))
-    gameStateViewModel.repository.cardHand = mutableListOf(
-        Card("Blank", CardType.BLANK),
-        Card("Defuse", CardType.DEFUSE),
-        Card("Alter the Future", CardType.SEE_THE_FUTURE)
-    )
-    val opponentName1 = gameStateViewModel.repository.players[0].name
-    val opponentName2 = gameStateViewModel.repository.players[1].name
-    val opponentName3 = gameStateViewModel.repository.players[2].name
+    gameStateViewModel.repository.myTurn = true
+    val players = gameStateViewModel.repository.players
+
+
+    val opponentName1 = players.getOrNull(0)?.name ?: ""
+    val opponentName2 = players.getOrNull(1)?.name ?: ""
+    val opponentName3 = players.getOrNull(2)?.name ?: ""
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
@@ -91,7 +82,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             },
             onPass = {
                 gameStateViewModel.exit()
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             },
             onDismiss = {
                 showExitDialog = false
@@ -103,11 +94,11 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
         WinPopup(
             onPlay = {
                 gameStateViewModel.exit()
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             },
             onDismiss = {
                 gameStateViewModel.exit()
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             }
         )
     }
@@ -136,7 +127,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
                 modifier = Modifier.fillMaxSize()
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardUI(selectedCardText.value)
+                CardUI(selectedCardText.value, selectedCardDupe.value)
                 DeckUI()
             }
         }
@@ -171,7 +162,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterStart
         ) {
-            LeftOpponentHand(opponentName1)
+            LeftOpponentHand(opponentName2)
         }
 
         // Top center
@@ -179,7 +170,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            TopOpponentHand(opponentName2)
+            TopOpponentHand(opponentName1)
         }
 
 
@@ -206,7 +197,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
 @Composable
 fun PassButton(gameStateViewModel: GameStateViewModel) {
     Button(
-        enabled = gameStateViewModel.repository.myTurn,
+        enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
         onClick = { passTurn(gameStateViewModel) },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(cardback)
@@ -223,9 +214,28 @@ fun PassButton(gameStateViewModel: GameStateViewModel) {
 }
 
 @Composable
+fun cheatButton(gameStateViewModel: GameStateViewModel){
+    Button(
+        enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(cardback)
+        ),
+        modifier = Modifier.size(120.dp, 40.dp)
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+            .background(Color(cardfront), RoundedCornerShape(10.dp)),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text(text = "Cheat",
+            color = Color.White,
+            fontSize = 13.sp)
+    }
+}
+
+@Composable
 fun ExitButton(gameStateViewModel: GameStateViewModel) {
     Button(
-        enabled = gameStateViewModel.repository.myTurn,
+        enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
         onClick = { },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(cardback)
@@ -242,11 +252,12 @@ fun ExitButton(gameStateViewModel: GameStateViewModel) {
 }
 
 @Composable
-fun CardUI(textField: String) {
+fun CardUI(textField: String, isDupe:Boolean) {
+    val frontColor = if (isDupe) Color(cheat_cardfront) else Color(cardfront)
     Box(
         modifier = Modifier
             .size(110.dp, 150.dp)
-            .background(Color(cardfront), RoundedCornerShape(10.dp))
+            .background(frontColor, RoundedCornerShape(10.dp))
             .border(2.dp, Color(border), RoundedCornerShape(10.dp))
     ) {
         Text(
@@ -345,24 +356,25 @@ fun Modifier.vertical() =
     }
 
 @Composable
-fun Cards(labels: List<String>, onClicks: List<() -> Unit>, gameStateViewModel: GameStateViewModel) {
+fun Cards(labels: List<String>, onClicks: List<() -> Unit>, gameStateViewModel: GameStateViewModel, dupes: List<Boolean>) {
     Row(
         modifier = Modifier.background(Color(cardback)),
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
-        labels.zip(onClicks).forEach { (label, onClick) ->
+        labels.zip(onClicks).zip(dupes).forEach { (pair, isDupe) ->
+            val frontColor = if (isDupe) Color(cheat_cardfront) else Color(cardfront)
             Button(
-                enabled = gameStateViewModel.repository.myTurn,
-                onClick = onClick,
+                enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
+                onClick = pair.second,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(cardfront)
+                    containerColor = frontColor
                 ),
                 modifier = Modifier.size(90.dp, 150.dp)
                     .border(2.dp, Color(border), RoundedCornerShape(10.dp))
                     .background(Color(cardfront), RoundedCornerShape(10.dp)),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text(text = label,
+                Text(text = pair.first,
                     color = Color.White,
                     fontSize = 13.sp)
             }
@@ -391,6 +403,7 @@ fun ServerMessage(serverMessage: String){
 @Composable
 fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: MutableState<String>){
     val labels = gameStateViewModel.repository.getCardHandText()
+    val dupes = gameStateViewModel.repository.getCardCheatValue()
 
     val onClicks = gameStateViewModel.repository.cardHand.map { card ->
         {
@@ -403,9 +416,10 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                 CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
                 CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
                 CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
-                CardType.DRAW_FROM_THE_BOTTOM -> drawFromBottom(gameStateViewModel)
+                CardType.DRAW_FROM_THE_BOTTOM -> playCard(gameStateViewModel,"Draw from the Bottom",CardType.DRAW_FROM_THE_BOTTOM)
                 CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
                 CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
+                CardType.CAT_BEARD -> playCard(gameStateViewModel, "Cat beard", CardType.CAT_BEARD)
                 else -> passTurn(gameStateViewModel) // fallback
             }
         }
@@ -424,6 +438,7 @@ fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: Mutable
                     labels = labels,
                     onClicks = onClicks,
                     gameStateViewModel = gameStateViewModel,
+                    dupes = dupes
                 )
         }
     }
