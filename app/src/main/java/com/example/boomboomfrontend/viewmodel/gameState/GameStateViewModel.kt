@@ -24,9 +24,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     val responseMessage: StateFlow<String> = _responseMessage
 
     init {
-        val stackTrace = Throwable().stackTrace
-        val caller = stackTrace.getOrNull(1)
-        println("Instantiated by: ${caller?.className}.${caller?.methodName}")
         stompGameService.initGame()
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             stompGameService.getHand()
@@ -34,9 +31,11 @@ class GameStateViewModel :ViewModel() ,Callbacks {
 
     override fun onResponse(res: String) {
         if(res == "Disconnected"){
+            Log.i("Disconnected","Disconnected")
             clientInfo.currentLobbyID = null
             return
         }
+
         try{
             val(type, message, gameStateJson) = repository.processServerMessage(res)
             _responseMessage.value = message
@@ -50,6 +49,13 @@ class GameStateViewModel :ViewModel() ,Callbacks {
                     Log.i("Hand","updating Hand")
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
+                    Log.i("Hand","Unlocking buttons")
+                    lockButtons = false
+                }
+                "CHEAT" -> {
+                    Log.i("Hand","updating Cheated Hand")
+                    repository.updateHand(gameStateJson)
+                    Log.i("Hand","Unlocking buttons")
                     lockButtons = false
                 }
                 "TIMEOUT" -> {
@@ -87,6 +93,18 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         viewModelScope.launch {
             stompGameService.disconnect()
         }
+    }
+
+    fun cheat(card: Card){
+        lockButtons = true
+        stompGameService.cheat(card)
+    }
+
+    fun checkCheat(){
+        Log.i("ACCUSE","BEGINNING ACCUSATION")
+        val card = repository.cardPlayed
+        if(card != null)
+            stompGameService.checkCheat(card)
     }
 
     fun explode(){

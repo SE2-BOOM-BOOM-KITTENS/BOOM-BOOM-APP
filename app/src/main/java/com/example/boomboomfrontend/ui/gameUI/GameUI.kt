@@ -44,7 +44,7 @@ import com.example.boomboomfrontend.viewmodel.gameState.GameStateRepository
 
 const val background = 0xff962319
 const val cardback = 0xff1c0e0b
-const val cheat_cardfront = 0xffffffff
+const val cheat_cardfront = 0xffac5b4d
 const val cardfront = 0xffb2766b
 const val border = 0xff000000
 const val servertext = 0x99eeeeee
@@ -60,8 +60,9 @@ fun GameScreenPreview(navController: NavController = rememberNavController()){
 
 @Composable
 fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewModel = viewModel()) {
-    val selectedCardText = remember { mutableStateOf("boo") }
+    val selectedCardText = remember { mutableStateOf("") }
     val selectedCardDupe = remember { mutableStateOf(false) }
+    val cheatMode = remember { mutableStateOf(false) }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
     gameStateViewModel.repository.myTurn = true
@@ -154,7 +155,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
                 .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            CardSelect(gameStateViewModel, selectedCardText)
+            CardSelect(gameStateViewModel, selectedCardText, selectedCardDupe,cheatMode)
         }
 
         Box (
@@ -165,12 +166,16 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             PassButton(gameStateViewModel)
         }
 
-        Box (
+        Row (
             modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopStart
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top
         ) {
             ExitButton(gameStateViewModel)
+            CheatButton(gameStateViewModel, cheatMode)
+            CheckCheatButton(gameStateViewModel)
         }
 
         // Left
@@ -230,10 +235,12 @@ fun PassButton(gameStateViewModel: GameStateViewModel) {
 }
 
 @Composable
-fun cheatButton(gameStateViewModel: GameStateViewModel){
+fun CheatButton(gameStateViewModel: GameStateViewModel, cheatMode:MutableState<Boolean>){
     Button(
         enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
-        onClick = {},
+        onClick = {
+            cheatMode.value = !cheatMode.value
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(cardback)
         ),
@@ -242,7 +249,27 @@ fun cheatButton(gameStateViewModel: GameStateViewModel){
             .background(Color(cardfront), RoundedCornerShape(10.dp)),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Text(text = "Cheat",
+        val label = if (cheatMode.value) "Cheat: ON" else "Cheat: OFF"
+        Text(text = label,
+            color = Color.White,
+            fontSize = 13.sp)
+    }
+}
+@Composable
+fun CheckCheatButton(gameStateViewModel: GameStateViewModel){
+    Button(
+        onClick = {
+          gameStateViewModel.checkCheat()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(cardback)
+        ),
+        modifier = Modifier.size(120.dp, 40.dp)
+            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
+            .background(Color(cardfront), RoundedCornerShape(10.dp)),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text(text = "Check Cheat",
             color = Color.White,
             fontSize = 13.sp)
     }
@@ -421,26 +448,91 @@ fun ServerMessage(serverMessage: String){
 }
 
 @Composable
-fun CardSelect(gameStateViewModel: GameStateViewModel, selectedCardText: MutableState<String>){
+fun CardSelect(
+    gameStateViewModel: GameStateViewModel,
+    selectedCardText: MutableState<String>,
+    selectedCardCheated: MutableState<Boolean>,
+    cheatMode: MutableState<Boolean>
+){
     val labels = gameStateViewModel.repository.getCardHandText()
     val dupes = gameStateViewModel.repository.getCardCheatValue()
 
     val onClicks = gameStateViewModel.repository.cardHand.map { card ->
         {
             selectedCardText.value = card.name
-            when (card.type) {
-                CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK)
-                CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE)
-                CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE)
-                CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE)
-                CardType.SEE_THE_FUTURE -> playCard(gameStateViewModel, "See the Future", CardType.SEE_THE_FUTURE)
-                CardType.ALTER_THE_FUTURE -> playCard(gameStateViewModel, "Alter the Future", CardType.ALTER_THE_FUTURE)
-                CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE)
-                CardType.DRAW_FROM_THE_BOTTOM -> playCard(gameStateViewModel,"Draw from the Bottom",CardType.DRAW_FROM_THE_BOTTOM)
-                CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK)
-                CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP)
-                CardType.CAT_BEARD -> playCard(gameStateViewModel, "Cat beard", CardType.CAT_BEARD)
-                else -> passTurn(gameStateViewModel) // fallback
+            selectedCardCheated.value = card.cheatDuplicated
+            if(cheatMode.value){
+                cheat(gameStateViewModel,card)
+            }
+            else {
+                when (card.type) {
+                    CardType.BLANK -> playCard(gameStateViewModel, "Blank", CardType.BLANK, card.id!!)
+                    CardType.DEFUSE -> playCard(gameStateViewModel, "Defuse", CardType.DEFUSE,card.id!!)
+                    CardType.NOPE -> playCard(gameStateViewModel, "Nope", CardType.NOPE, card.id!!)
+                    CardType.SHUFFLE -> playCard(gameStateViewModel, "Shuffle", CardType.SHUFFLE, card.id!!)
+                    CardType.SEE_THE_FUTURE -> playCard(
+                        gameStateViewModel,
+                        "See the Future",
+                        CardType.SEE_THE_FUTURE,
+                        card.id!!
+                    )
+
+                    CardType.ALTER_THE_FUTURE -> playCard(
+                        gameStateViewModel,
+                        "Alter the Future",
+                        CardType.ALTER_THE_FUTURE,
+                        card.id!!
+                    )
+
+                    CardType.REVERSE -> playCard(gameStateViewModel, "Reverse", CardType.REVERSE, card.id!!)
+                    CardType.DRAW_FROM_THE_BOTTOM -> playCard(
+                        gameStateViewModel,
+                        "Draw from the Bottom",
+                        CardType.DRAW_FROM_THE_BOTTOM,
+                        card.id!!
+                    )
+
+                    CardType.ATTACK -> playCard(gameStateViewModel, "Attack", CardType.ATTACK, card.id!!)
+                    CardType.SKIP -> playCard(gameStateViewModel, "Skip", CardType.SKIP, card.id!!)
+                    CardType.CAT_BEARD -> playCard(
+                        gameStateViewModel,
+                        "Cat beard",
+                        CardType.CAT_BEARD,
+                        card.id!!
+                    )
+                    CardType.CAT_TACO -> playCard(
+                        gameStateViewModel,
+                        "Cat Taco",
+                        CardType.CAT_TACO,
+                        card.id!!
+                    )
+                    CardType.CAT_HAIRY_POTATO -> playCard(
+                        gameStateViewModel,
+                        "Cat hairy potato",
+                        CardType.CAT_HAIRY_POTATO,
+                        card.id!!
+                    )
+                    CardType.CAT_RAINBOW_RALPHING -> playCard(
+                        gameStateViewModel,
+                        "Cat rainbow ralphing",
+                        CardType.CAT_RAINBOW_RALPHING,
+                        card.id!!
+                    )
+                    CardType.CAT_CATERMELON -> playCard(
+                        gameStateViewModel,
+                        "Cat catermelon",
+                        CardType.CAT_CATERMELON,
+                        card.id!!
+                    )
+                    CardType.FERAL_CAT -> playCard(
+                        gameStateViewModel,
+                        "Feral Cat",
+                        CardType.FERAL_CAT,
+                        card.id!!
+                    )
+
+                    else -> passTurn(gameStateViewModel) // fallback
+                }
             }
         }
     }
