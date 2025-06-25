@@ -1,3 +1,17 @@
+val retrofitVersion = "2.9.0"
+val krossbowVersion = "7.0.0"
+val kotlinxVersion = "1.7.3"
+val okhttpVersion = "4.12.0"
+val androidxCoreVersion = "1.9.0"
+val androidxLifecycleVersion = "2.6.1"
+val androidxActivityVersion = "1.7.0"
+val androidxAppcompatVersion = "1.6.1"
+val androidxRecyclerviewVersion = "1.3.1"
+val androidxNavigationVersion = "2.7.7"
+val kotlinxSerializationVersion = "1.6.3"
+val junitVersion = "5.8.1"
+val mockitoVersion = "5.2.0"
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -49,7 +63,7 @@ android {
 
     lint {
         xmlReport = true
-        htmlReport = false // optional
+        htmlReport = false
     }
 
 
@@ -108,37 +122,36 @@ android {
             include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         })
     }
-
     dependencies {
-        implementation("com.squareup.retrofit2:retrofit:2.9.0")
-        implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-        implementation("org.hildan.krossbow:krossbow-websocket-okhttp:7.0.0")
-        implementation("org.hildan.krossbow:krossbow-stomp-core:7.0.0")
-        implementation("org.hildan.krossbow:krossbow-websocket-builtin:7.0.0")
+        implementation("com.squareup.retrofit2:retrofit:${retrofitVersion}")
+        implementation("com.squareup.retrofit2:converter-gson:${retrofitVersion}")
+        implementation("org.hildan.krossbow:krossbow-websocket-okhttp:${krossbowVersion}")
+        implementation("org.hildan.krossbow:krossbow-stomp-core:${krossbowVersion}")
+        implementation("org.hildan.krossbow:krossbow-websocket-builtin:${krossbowVersion}")
 
-        implementation("com.squareup.okhttp3:okhttp:4.12.0")
+        implementation("com.squareup.okhttp3:okhttp:${okhttpVersion}")
 
-        implementation("androidx.core:core-ktx:1.9.0")
-        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-        implementation("androidx.activity:activity-compose:1.7.0")
+        implementation("androidx.core:core-ktx:${androidxCoreVersion}")
+        implementation("androidx.lifecycle:lifecycle-runtime-ktx:${androidxLifecycleVersion}")
+        implementation("androidx.activity:activity-compose:${androidxActivityVersion}")
         implementation(platform("androidx.compose:compose-bom:2023.03.00"))
         implementation("androidx.compose.ui:ui")
         implementation("androidx.compose.ui:ui-graphics")
         implementation("androidx.compose.ui:ui-tooling-preview")
         implementation("androidx.compose.material3:material3")
-        implementation("androidx.appcompat:appcompat:1.6.1")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-        implementation("androidx.recyclerview:recyclerview:1.3.1")
-        implementation("androidx.navigation:navigation-compose:2.7.7")
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+        implementation("androidx.appcompat:appcompat:${androidxAppcompatVersion}")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinxVersion}")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinxVersion}")
+        implementation("androidx.recyclerview:recyclerview:${androidxRecyclerviewVersion}")
+        implementation("androidx.navigation:navigation-compose:${androidxNavigationVersion}")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinxSerializationVersion}")
 
 
-        testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-        testImplementation("org.mockito:mockito-core:5.2.0")
+        testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${kotlinxVersion}")
+        testImplementation("org.mockito:mockito-core:${mockitoVersion}")
         testImplementation(kotlin("test"))
-        testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+        testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoVersion}")
 
 
         androidTestImplementation("androidx.test.ext:junit:1.1.5")
