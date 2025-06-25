@@ -51,7 +51,12 @@ class GameStateViewModel :ViewModel() ,Callbacks {
                     lockButtons = false
                 }
                 "TIMEOUT" -> {
-                    Log.i("timeout","Current Player Timed out")
+                    repository.updateState(gameStateJson)
+                    if(repository.myTurn){
+                        Log.i("Hand","Player timed out")
+                    } else{
+                        repository.updateState(gameStateJson)
+                    }
                 }
                 "EXPLODE" -> handleExplosion()
             }
