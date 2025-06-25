@@ -85,8 +85,11 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         stompGameService.cheat(card)
     }
 
-    fun checkCheat(card: Card){
-        stompGameService.checkCheat(card)
+    fun checkCheat(){
+        Log.i("ACCUSE","BEGINNING ACCUSATION")
+        val card = repository.cardPlayed
+        if(card != null)
+            stompGameService.checkCheat(card)
     }
 
     fun explode(){

@@ -150,12 +150,12 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             PassButton(gameStateViewModel)
         }
 
-        Column (
+        Row (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top
         ) {
             ExitButton(gameStateViewModel)
             CheatButton(gameStateViewModel, cheatMode)
@@ -242,9 +242,8 @@ fun CheatButton(gameStateViewModel: GameStateViewModel, cheatMode:MutableState<B
 @Composable
 fun CheckCheatButton(gameStateViewModel: GameStateViewModel){
     Button(
-        enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
         onClick = {
-          //  gameStateViewModel.checkCheat()
+          gameStateViewModel.checkCheat()
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(cardback)
