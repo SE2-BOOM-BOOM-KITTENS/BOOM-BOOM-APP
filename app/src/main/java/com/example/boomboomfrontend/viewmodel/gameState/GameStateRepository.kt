@@ -17,6 +17,8 @@ class GameStateRepository() {
     var winner: Player? = null;
     var gameFinished by mutableStateOf(false)
     var playerCount: Int = 0
+    var discardPile: MutableList<Card>? = null
+    var cardPlayed: Card? = null
     var myTurn: Boolean = false
 
     fun processServerMessage(msg:String): Triple<String, String, JSONObject?>{
@@ -34,6 +36,7 @@ class GameStateRepository() {
     fun updateState(gameStateJson: JSONObject?){
         Log.i("UPDATE_STATE",gameStateJson.toString())
         if(gameStateJson != null){
+            players.clear()
             clientInfo.currentLobbyID = UUID.fromString(gameStateJson.getString("lobbyId"))
             playerCount = gameStateJson.getInt("playerCount")
             //myTurn = gameStateJson.getBoolean("myTurn")
@@ -46,6 +49,27 @@ class GameStateRepository() {
             } else {
                 myTurn = false
             }
+
+            var discardPile = gameStateJson.getJSONObject("discardPile")
+            val discardPileArray = discardPile.getJSONArray("cards")
+
+            val discardPileList = mutableListOf<Card>()
+
+            for(i in 0 until discardPileArray.length()){
+                val name = discardPileArray.getJSONObject(i).getString("name")
+                val typeString = discardPileArray.getJSONObject(i).getString("type")
+                val type = try{
+                    CardType.valueOf(typeString.uppercase())
+                } catch(e: IllegalArgumentException){
+                    throw IllegalArgumentException("Card type $typeString is not valid")
+                }
+
+                val cheatDuplicated = discardPileArray.getJSONObject(i).getBoolean("cheatDuplicated")
+                val card = Card(name,type,cheatDuplicated)
+                discardPileList.add(card)
+            }
+            this.discardPile = discardPileList
+            cardPlayed = discardPileList.last()
 
             val winnerJson = gameStateJson.optJSONObject("winner")
             if(winnerJson != null) {
@@ -73,7 +97,8 @@ class GameStateRepository() {
         for(i in 0 until cardsJSON!!.length()){
             val cardJSON = cardsJSON.getJSONObject(i)
             val type = cardJSON.getString("type")
-            val card = Card(cardJSON.getString("name"), CardType.valueOf(type))
+            val duplicated = cardJSON.getBoolean("cheatDuplicated")
+            val card = Card(cardJSON.getString("name"), CardType.valueOf(type),duplicated)
             newHand.add(card)
         }
 
@@ -107,5 +132,9 @@ class GameStateRepository() {
 
     fun getCardHandText(): List<String> {
         return cardHand.map { it.name }
+    }
+
+    fun getCardCheatValue(): List<Boolean>{
+        return cardHand.map { it.cheatDuplicated }
     }
 }
