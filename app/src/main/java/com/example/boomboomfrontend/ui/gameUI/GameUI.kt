@@ -57,10 +57,14 @@ fun GameScreenPreview(navController: NavController = rememberNavController()){
 
 @Composable
 fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewModel = viewModel()) {
-    val selectedCardText = remember { mutableStateOf("") }
+    var selectedCardText = remember { mutableStateOf("") }
     val selectedCardDupe = remember { mutableStateOf(false) }
     val cheatMode = remember { mutableStateOf(false) }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
+
+    if(gameStateViewModel.repository.hasLastCardPlayed){
+        selectedCardText = remember {   mutableStateOf(gameStateViewModel.repository.cardPlayed!!.name)}
+    }
 
     gameStateViewModel.repository.myTurn = true
     val players = gameStateViewModel.repository.players
@@ -169,7 +173,6 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            ExitButton(gameStateViewModel)
             CheatButton(gameStateViewModel, cheatMode)
             CheckCheatButton(gameStateViewModel)
         }
@@ -266,25 +269,6 @@ fun CheckCheatButton(gameStateViewModel: GameStateViewModel){
         shape = RoundedCornerShape(10.dp)
     ) {
         Text(text = "Check Cheat",
-            color = Color.White,
-            fontSize = 13.sp)
-    }
-}
-
-@Composable
-fun ExitButton(gameStateViewModel: GameStateViewModel) {
-    Button(
-        enabled = gameStateViewModel.repository.myTurn && !gameStateViewModel.lockButtons,
-        onClick = { },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(cardback)
-        ),
-        modifier = Modifier.size(120.dp, 40.dp)
-            .border(2.dp, Color(border), RoundedCornerShape(10.dp))
-            .background(Color(cardback), RoundedCornerShape(10.dp)),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Text(text = "Exit Game",
             color = Color.White,
             fontSize = 13.sp)
     }

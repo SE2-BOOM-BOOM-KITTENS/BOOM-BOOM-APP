@@ -20,6 +20,7 @@ class GameStateRepository() {
     var discardPile: MutableList<Card>? = null
     var cardPlayed: Card? = null
     var myTurn: Boolean = false
+    var hasLastCardPlayed by mutableStateOf(false)
 
     fun processServerMessage(msg:String): Triple<String, String, JSONObject?>{
         Log.i("JSON_PROCESSING", "Processing json")
@@ -71,8 +72,10 @@ class GameStateRepository() {
                 discardPileList.add(card)
             }
             this.discardPile = discardPileList
-            if(discardPileList.isNotEmpty())
+            if(discardPileList.isNotEmpty()) {
                 cardPlayed = discardPileList.last()
+                hasLastCardPlayed = true
+            }
 
             val winnerJson = gameStateJson.optJSONObject("winner")
             if(winnerJson != null) {
