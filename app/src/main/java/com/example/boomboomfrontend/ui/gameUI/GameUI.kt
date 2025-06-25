@@ -492,6 +492,36 @@ fun CardSelect(
                         CardType.CAT_BEARD,
                         card.id!!
                     )
+                    CardType.CAT_TACO -> playCard(
+                        gameStateViewModel,
+                        "Cat Taco",
+                        CardType.CAT_TACO,
+                        card.id!!
+                    )
+                    CardType.CAT_HAIRY_POTATO -> playCard(
+                        gameStateViewModel,
+                        "Cat hairy potato",
+                        CardType.CAT_HAIRY_POTATO,
+                        card.id!!
+                    )
+                    CardType.CAT_RAINBOW_RALPHING -> playCard(
+                        gameStateViewModel,
+                        "Cat rainbow ralphing",
+                        CardType.CAT_RAINBOW_RALPHING,
+                        card.id!!
+                    )
+                    CardType.CAT_CATERMELON -> playCard(
+                        gameStateViewModel,
+                        "Cat catermelon",
+                        CardType.CAT_CATERMELON,
+                        card.id!!
+                    )
+                    CardType.FERAL_CAT -> playCard(
+                        gameStateViewModel,
+                        "Feral Cat",
+                        CardType.FERAL_CAT,
+                        card.id!!
+                    )
 
                     else -> passTurn(gameStateViewModel) // fallback
                 }
