@@ -17,6 +17,7 @@ import com.example.boomboomfrontend.logic.Lobby
 import com.example.boomboomfrontend.model.ConnectionStatus
 import com.example.boomboomfrontend.model.LobbyPlayer
 import com.example.boomboomfrontend.model.Player
+import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,6 +26,7 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
     var name by remember { mutableStateOf("") }
     var lobby: Lobby? by remember { mutableStateOf(null) }
     var joined by remember { mutableStateOf(false) }
+    val clientInfo = ClientInfoHolder.clientInfo
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Dein Name:")
@@ -42,7 +44,7 @@ fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: Nav
 //        }
 
         Button(onClick = {
-   lobbyViewModel.createLobby(LobbyPlayer(name), 4)
+   lobbyViewModel.createLobby(clientInfo.playerId!!, 4)
         }) {
             Text("Lobby erstellen")
         }

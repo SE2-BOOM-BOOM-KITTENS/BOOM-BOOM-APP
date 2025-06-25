@@ -1,6 +1,7 @@
 package com.example.boomboomfrontend.ui.gameUI
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 import java.util.*
 
@@ -34,6 +36,29 @@ fun PlayersInLobbyScreen(
             navController.navigate("game")
         }
     }
+
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = true) {
+        showExitDialog = true
+    }
+
+    if(showExitDialog){
+        ExitPopup(
+            onPlay = {
+
+            },
+            onPass = {
+                lobbyViewModel.clientInfo.currentLobbyID = null
+                lobbyViewModel.goToLobby = false
+                navController.navigate("lobby")
+            },
+            onDismiss = {
+                showExitDialog = false
+            }
+        )
+    }
+
 
     LaunchedEffect(lobbyId) {
         lobbyId?.let {

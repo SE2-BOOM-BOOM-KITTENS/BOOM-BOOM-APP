@@ -3,11 +3,9 @@ package com.example.boomboomfrontend.viewmodel.lobby
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.boomboomfrontend.model.LobbyPlayer
 import com.example.boomboomfrontend.model.LobbyResponse
 import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.model.PlayerResponse
@@ -15,6 +13,8 @@ import com.example.boomboomfrontend.network.CreateLobbyRequest
 import com.example.boomboomfrontend.network.RetrofitInstance
 import com.example.boomboomfrontend.network.messages.networkPackets.LobbyNetworkPacket
 import com.example.boomboomfrontend.network.websocket.Callbacks
+import com.example.boomboomfrontend.network.websocket.clientInfo
+import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +26,8 @@ class LobbyViewModel : ViewModel(), Callbacks {
 
     private val stompLobbyService = StompLobbyService { res -> onResponse(res) }
     var goToGame by mutableStateOf(false);
+    var goToLobby by mutableStateOf(false)
+    val clientInfo = ClientInfoHolder.clientInfo
 
     // Lobby creation response
     private val _lobbyState = MutableStateFlow<LobbyNetworkPacket?>(null)
@@ -67,19 +69,21 @@ class LobbyViewModel : ViewModel(), Callbacks {
         }
     }
 
-    fun createLobby(player: LobbyPlayer, maxPlayers: Int = 4) {
+    fun createLobby(playerId: UUID, maxPlayers: Int = 4) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.createLobby(
-                    CreateLobbyRequest(player, maxPlayers)
+                    CreateLobbyRequest(playerId, maxPlayers)
                 )
 
                 if (response.isSuccessful) {
                     _lobbyState.value = response.body()
                     Log.d("LobbyViewModel", "Lobby created: ${response.body()}")
+                    clientInfo.currentLobbyID = response.body()?.lobbyId
+                    goToLobby = true
                 } else {
                     Log.e("LobbyError", "Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
-                    val json = Gson().toJson(CreateLobbyRequest(player, maxPlayers))
+                    val json = Gson().toJson(CreateLobbyRequest(playerId, maxPlayers))
                     Log.d("CreateLobbyRequest_JSON", json)
                 }
             } catch (e: Exception) {
