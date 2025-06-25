@@ -92,11 +92,11 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
         WinPopup(
             onPlay = {
                 gameStateViewModel.exit()
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             },
             onDismiss = {
                 gameStateViewModel.exit()
-                navController.navigate("lobby")
+                navController.navigate("connection-screen")
             }
         )
     }
