@@ -69,20 +69,11 @@ class PlayerViewModel : ViewModel(), Callbacks {
         }
     }
 
-    // WebSocket: connect
-//    fun connectWebSocket() {
-//        Stomp.connect()
-//    }
 
     // WebSocket: send Response from WebSocket
     fun sendResponseMessage() {
         Stomp.sendResponseMessage()
     }
-
-    // WebSocket: send JSON - might need later
-//    fun sendJsonMessage(from: String = "Client") {
-//        stomp.sendAction(action = from, payload = "Text von $from")
-//    }
 
     // WebSocket: disconnect
     fun disconnectWebSocket() {
@@ -101,10 +92,6 @@ class PlayerViewModel : ViewModel(), Callbacks {
         super.onCleared()
         disconnectWebSocket()
     }
-
-//    fun sendAction() {
-//        stomp.sendAction("Test", "Hello")
-//    }
 
     fun testBroadcast(){
         val playerMessage = PlayerMessage()

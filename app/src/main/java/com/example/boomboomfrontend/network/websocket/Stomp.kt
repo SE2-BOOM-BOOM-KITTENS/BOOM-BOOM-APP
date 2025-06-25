@@ -186,10 +186,6 @@ object Stomp {
     private fun handleIncomingMessage(msg: String){
         try{
             Log.i("HANDLEINCOMINGMESSSAGE", "Message is been handled")
-            val json = JSONObject(msg)
-
-            val type = json.getString("type")
-            val message = json.getString("message")
 
             callback(msg)
 
