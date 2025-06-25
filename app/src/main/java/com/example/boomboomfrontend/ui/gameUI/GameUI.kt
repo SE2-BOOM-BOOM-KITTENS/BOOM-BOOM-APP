@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.ui.dialogs.ExitPopup
 import com.example.boomboomfrontend.R
 import com.example.boomboomfrontend.ui.DialogUI
@@ -59,18 +58,13 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
     val selectedCardText = remember { mutableStateOf("BLANK\nCARD") }
     val serverMessage by gameStateViewModel.responseMessage.collectAsState()
 
-    gameStateViewModel.repository.myTurn = false
-    gameStateViewModel.repository.cardHand = mutableListOf(
-        Card("Blank", CardType.BLANK),
-        Card("Defuse", CardType.DEFUSE),
-        Card("Alter the Future", CardType.SEE_THE_FUTURE)
-    )
+    gameStateViewModel.repository.myTurn = true
     val players = gameStateViewModel.repository.players
 
 
-    val opponentName1 = players.getOrNull(0)?.name ?: "Waiting..."
-    val opponentName2 = players.getOrNull(1)?.name ?: "Waiting..."
-    val opponentName3 = players.getOrNull(2)?.name ?: "Waiting..."
+    val opponentName1 = players.getOrNull(0)?.name ?: ""
+    val opponentName2 = players.getOrNull(1)?.name ?: ""
+    val opponentName3 = players.getOrNull(2)?.name ?: ""
 
     val showCardDialog = remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
@@ -166,7 +160,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterStart
         ) {
-            LeftOpponentHand(opponentName1)
+            LeftOpponentHand(opponentName2)
         }
 
         // Top center
@@ -174,7 +168,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            TopOpponentHand(opponentName2)
+            TopOpponentHand(opponentName1)
         }
 
 

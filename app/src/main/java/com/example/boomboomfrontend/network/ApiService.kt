@@ -36,5 +36,10 @@ interface ApiService {
         @Header("playerId") playerId: UUID?
     ): Response<ResponseBody>
 
+    @POST("lobbies/{lobbyId}/leave")
+    suspend fun leaveLobby(
+        @Header("lobbyId") lobbyId: String,
+        @Header("playerId") playerId: UUID?
+    ): Response<ResponseBody>
 
 }

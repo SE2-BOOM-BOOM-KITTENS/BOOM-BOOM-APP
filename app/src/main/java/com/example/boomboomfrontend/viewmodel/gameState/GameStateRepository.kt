@@ -58,7 +58,9 @@ class GameStateRepository() {
             for(i in 0 until playersJSON.length()){
                 val playerJSON = playersJSON.getJSONObject(i)
                 val player = Player(playerJSON.getString("id"),playerJSON.getString("name"))
-                players.add(player)
+                if(clientInfo.playerId != UUID.fromString(player.id)) {
+                    players.add(player)
+                }
             }
         }
     }
