@@ -18,7 +18,9 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
     var lockButtons = false
+
     var explodeDialog = mutableStateOf(false)
+
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
@@ -72,6 +74,10 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         } catch (e:Exception){
             Log.e("GameStateError", "Failed Updating GameState: ${e.localizedMessage}")
         }
+    }
+
+    fun getLastCardPlayedName(){
+        repository.cardPlayed!!.name
     }
 
     fun playCard(card: Card){
