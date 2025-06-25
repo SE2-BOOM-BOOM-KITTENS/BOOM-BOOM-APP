@@ -4,6 +4,7 @@ import com.example.boomboomfrontend.model.Card
 import com.example.boomboomfrontend.network.messages.PlayerMessage
 import com.example.boomboomfrontend.network.websocket.Callbacks
 import com.example.boomboomfrontend.network.websocket.Stomp
+import org.json.JSONObject
 
 class StompGameService(callback: (String) -> Unit) {
 
@@ -18,7 +19,11 @@ class StompGameService(callback: (String) -> Unit) {
     }
 
     fun playCard(card: Card){
-        val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = card)
+        val cardJson = JSONObject().apply {
+            put("name", card.name)
+            put("type", card.type)
+        }
+        val playerMessage = PlayerMessage(action = "PLAY_CARDS", payload = cardJson)
         Stomp.sendAction(playerMessage)
     }
 

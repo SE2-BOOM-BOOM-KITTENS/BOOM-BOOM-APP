@@ -17,6 +17,7 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     private val stompGameService = StompGameService { res -> onResponse(res) }
     val repository = GameStateRepository()
     val clientInfo = ClientInfoHolder.clientInfo
+    var lockButtons = false
 
     private val _responseMessage = MutableStateFlow("")
     val responseMessage: StateFlow<String> = _responseMessage
@@ -40,11 +41,15 @@ class GameStateViewModel :ViewModel() ,Callbacks {
             _responseMessage.value = message
 
             when(type){
-                "GAME_STATE" -> repository.updateState(gameStateJson)
+                "GAME_STATE" -> {
+                    repository.updateState(gameStateJson)
+                    stompGameService.getHand()
+                }
                 "HAND" -> {
                     Log.i("Hand","updating Hand")
                     repository.updateHand(gameStateJson)
                     if(repository.checkForExplode()) explode()
+                    lockButtons = false
                 }
                 "TIMEOUT" -> {
                     Log.i("timeout","Current Player Timed out")
@@ -58,16 +63,18 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     }
 
     fun playCard(card: Card){
+        lockButtons = true
         stompGameService.playCard(card)
+
         if (card.type == CardType.SHUFFLE) {
             stompGameService.shuffleDrawPile()
         }
         stompGameService.getHand()
+
     }
 
     fun pass(){
         stompGameService.pass()
-        stompGameService.getHand()
     }
 
     fun exit(){

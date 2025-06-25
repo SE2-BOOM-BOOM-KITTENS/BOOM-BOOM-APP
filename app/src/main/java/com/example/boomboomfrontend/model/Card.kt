@@ -2,7 +2,8 @@ package com.example.boomboomfrontend.model
 
 data class Card(
     val name: String,
-    val type: CardType
+    val type: CardType,
+    val cheatDuplicated: Boolean = false,
 )
 
 
