@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boomboomfrontend.model.LobbyPlayer
-import com.example.boomboomfrontend.model.Player
 import com.example.boomboomfrontend.viewmodel.gameState.ClientInfoHolder
 import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 
@@ -22,8 +20,6 @@ import com.example.boomboomfrontend.viewmodel.lobby.LobbyViewModel
 @Composable
 fun LobbyScreen(lobbyViewModel: LobbyViewModel = viewModel(), navController: NavHostController, onEnterLobby: () -> Unit) {
     var name by remember { mutableStateOf("") }
-    var lobby: Lobby? by remember { mutableStateOf(null) }
-    var joined by remember { mutableStateOf(false) }
     val clientInfo = ClientInfoHolder.clientInfo
 
 
