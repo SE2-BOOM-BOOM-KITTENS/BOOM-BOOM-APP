@@ -11,10 +11,7 @@ class GameManager(
 
     var currentPlayer: Player? = null
     var currentPlayerIndex = 0
-  
-   //   fun addPlayer (player: Player){
-   //     players.add(player)
-   // }
+
 
     fun eliminatePlayer (player:Player){
         player.isAlive = false
@@ -49,8 +46,7 @@ class GameManager(
         //Karte ziehen
         val drawn = cardManager.drawCard()
         if (drawn != null) {
-//            val effect = CardEffectRegistry.getEffect(drawn.type)
-//            effect.apply(player, this)
+
         } else {
             println("${player.name} konnte keine Karte ziehen – Deck ist leer.")
         }

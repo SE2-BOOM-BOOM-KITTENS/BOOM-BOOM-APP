@@ -8,7 +8,11 @@ class GameClient {
     private lateinit var webSocketClient: WebSocketClient
 
     fun shuffleDeck(){
-       // webSocketClient.sendMessage("SHUFFLE_DECK")
+
+    }
+
+    private fun updateDeckState(message: String){
+        // Logik um Deck-Zustand zu aktualisieren
     }
 
     fun onMessageReceived(message: String){
@@ -18,8 +22,6 @@ class GameClient {
         }
     }
 
-    private fun updateDeckState(message: String){
-        // Logik um Deck-Zustand zu aktualisieren
-    }
+
 
 }

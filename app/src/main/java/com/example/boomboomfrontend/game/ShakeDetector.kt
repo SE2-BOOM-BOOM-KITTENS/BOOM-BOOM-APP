@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import kotlin.math.sqrt
 
 class ShakeDetector (private val context: Context, private val onShakeDetected: () -> Unit) : SensorEventListener {
 
@@ -21,10 +22,9 @@ class ShakeDetector (private val context: Context, private val onShakeDetected: 
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null){
-            if (isShakeDetected(event)){
+        if (event != null && isShakeDetected(event)){
                 onShakeDetected() // wenn schütteln erkannt wird, ruf die Callback-Methode auf
-            }
+
         }
     }
 
@@ -34,12 +34,12 @@ class ShakeDetector (private val context: Context, private val onShakeDetected: 
         val y = event.values[1]
         val z = event.values[2]
 
-        val acceleration = Math.sqrt((x * x + y * y + z * z).toDouble())
+        val acceleration = sqrt((x * x + y * y + z * z).toDouble())
         return acceleration > SHAKE_THRESHOLD
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int){
-
+        //empty?
     }
 
     companion object{

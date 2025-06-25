@@ -2,7 +2,6 @@ package com.example.boomboomfrontend.game
 
 import android.content.Context
 import android.view.animation.AnimationUtils
-import android.media.MediaPlayer
 import android.view.View
 import com.example.boomboomfrontend.R
 
@@ -29,11 +28,5 @@ class ShuffleActionHandler (private val context: Context, private val gameClient
         val shuffleAnimation = AnimationUtils.loadAnimation(context, R.anim.shuffle_animation)
         shuffleView.startAnimation(shuffleAnimation)
     }
-
-    /*
-    private fun playShuffleSound(){
-        val sound = MediaPlayer.create(context, R.raw.shuffle_sound)
-        sound.start()
-    }*/
 
 }

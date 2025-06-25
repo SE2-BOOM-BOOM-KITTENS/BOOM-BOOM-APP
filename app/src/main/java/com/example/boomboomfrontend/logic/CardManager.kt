@@ -32,7 +32,6 @@ class CardManager {
         deck.insertAt(card, position)
     }
 
-    //fun deckSize(): Int = deck.size()
 
     fun getDiscardPile(): List<Card> = discardPile
 }

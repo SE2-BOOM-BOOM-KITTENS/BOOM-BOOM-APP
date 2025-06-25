@@ -132,7 +132,7 @@ fun GameScreen(navController: NavController, gameStateViewModel: GameStateViewMo
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
 
                 CardUI(selectedCardText.value, selectedCardDupe.value)
-                DeckUI()
+                DeckUI(repository = GameStateRepository())
             }
         }
 
