@@ -25,10 +25,8 @@ class GameStateViewModel :ViewModel() ,Callbacks {
         val caller = stackTrace.getOrNull(1)
         println("Instantiated by: ${caller?.className}.${caller?.methodName}")
         stompGameService.initGame()
-//        stompGameService.connect(){
             Log.i("ViewModel","Trying to connect to Server; LobbyId: ${clientInfo.currentLobbyID}")
             stompGameService.getHand()
-//        }
     }
 
     override fun onResponse(res: String) {
@@ -65,11 +63,6 @@ class GameStateViewModel :ViewModel() ,Callbacks {
     fun pass(){
         stompGameService.pass()
         stompGameService.getHand()
-    }
-
-    fun joinGame(){
-        val playerMessage = PlayerMessage(clientInfo.playerName,null,clientInfo.playerId)
-        stompGameService.joinGame(playerMessage)
     }
 
     fun exit(){
